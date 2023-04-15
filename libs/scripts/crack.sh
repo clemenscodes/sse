@@ -7,18 +7,20 @@ while read -r password; do
     err="stderr.txt"
     out="stdout.txt"
     echo "Testing password: $password"
+    skip=false
     if openssl enc -d -aes-256-cbc -a -in "$input" -k "$password" >$out 2>$err; then
-        echo "Positive. Comparing hashes."
-        non_ascii_chars=$(echo "$out" | tr -d '[:print:]')
-        if [ -n "$non_ascii_chars" ]; then
-            echo "The string '$out' contains non-ASCII characters."
-            continue
+        if ! file $out | grep -q "text"; then
+            skip=true
         fi
-        echo "SUCCESS! Password: $password"
-        echo
-        cat $out
-        exit 0
-        # fi
+        if file $out | grep -q "ISO"; then
+            skip=true
+        fi
+        if [ $skip = 'false' ]; then
+            echo "SUCCESS! Password: $password"
+            cat $out
+            rm $out
+            exit 0
+        fi
+        rm $err
     fi
 done <"$passwords"
-
