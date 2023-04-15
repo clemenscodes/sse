@@ -1,0 +1,16 @@
+{
+    "name": "scripts",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "libs/scripts",
+    "projectType": "library",
+    "targets": {
+        "start": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "libs/scripts",
+                "command": "./main.sh"
+            }
+        }
+    },
+    "tags": []
+}
