@@ -7,7 +7,7 @@
         "start": {
             "executor": "nx:run-commands",
             "options": {
-                "command": "./main.sh"
+                "command": "libs/scripts/main.sh"
             }
         }
     },
