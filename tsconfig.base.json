@@ -15,7 +15,11 @@
         "skipDefaultLibCheck": true,
         "baseUrl": ".",
         "paths": {
-            "@sse/nodemailer": ["libs/nodemailer/src/index.ts"]
+            "@sse/nodemailer": ["libs/nodemailer/src/index.ts"],
+            "@sse/password-strength-lib": [
+                "libs/password-strength-lib/src/index.ts"
+            ],
+            "@sse/utils": ["libs/utils/src/index.ts"]
         }
     },
     "exclude": ["node_modules", "tmp"]
