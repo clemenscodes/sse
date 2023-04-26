@@ -3,7 +3,7 @@ export enum PasswordStrength {
     Strong,
 }
 
-export function passwordStrength(vname: string, nname: string, straße: string, hnr: string, plz: string, city: string, pw: string): PasswordStrength {
+export function passwordStrength(vname: string, nname: string, strasse: string, hnr: string, plz: string, city: string, pw: string): PasswordStrength {
     let upperCase = false;
     let lowerCase = false;
     let specialCharacter = false;
@@ -21,7 +21,7 @@ export function passwordStrength(vname: string, nname: string, straße: string, 
         if(((b.charCodeAt(0) >= 32 && b.charCodeAt(0) < 48) || (b.charCodeAt(0) > 57 && b.charCodeAt(0) < 65) || (b.charCodeAt(0) > 90 && b.charCodeAt(0) < 97) || (b.charCodeAt(0) > 123 && b.charCodeAt(0) < 127) || b.charCodeAt(0) > 168) && !specialCharacter){
             specialCharacter = true;
         }
-        if(pw.toLowerCase().includes(vname.toLowerCase()) || pw.toLowerCase().includes(nname.toLowerCase()) || pw.toLowerCase().includes(straße.toLowerCase()) || pw.includes(hnr) || pw.includes(plz) || pw.toLowerCase().includes(city.toLowerCase())){
+        if(pw.toLowerCase().includes(vname.toLowerCase()) || pw.toLowerCase().includes(nname.toLowerCase()) || pw.toLowerCase().includes(strasse.toLowerCase()) || pw.includes(hnr) || pw.includes(plz) || pw.toLowerCase().includes(city.toLowerCase())){
             input = true;
         }
     }
