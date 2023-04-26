@@ -11,7 +11,6 @@ export function passwordStrength(vname: string, nname: string, strasse: string, 
 
     for(let i = 0; i < pw.length; i++){
         const b = pw.charAt(i);
-        console.log(b.charCodeAt(0))
         if(b === b.toUpperCase() && !upperCase && ((b.charCodeAt(0) > 64 && b.charCodeAt(0) < 91) || (b.charCodeAt(0) > 96 && b.charCodeAt(0) < 123))){
             upperCase = true;
         }
