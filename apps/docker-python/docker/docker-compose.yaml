@@ -1,0 +1,14 @@
+version: '3.9'
+name: sse
+services:
+    docker-python:
+        build:
+            context: '../../../'
+            dockerfile: apps/docker-python/docker/Dockerfile
+        volumes:
+            - '../assets/app.txt:/data/app.txt'
+        container_name: 'flask'
+        ports:
+            - '5000:5000'
+        restart: always
+        command: python server.py

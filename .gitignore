@@ -41,3 +41,7 @@ Thumbs.db
 **/stderr.txt
 **/stdout.txt
 **/.env
+
+**/stderr.txt
+**/stdout.txt
+**/.nx-container
