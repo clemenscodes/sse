@@ -2,6 +2,8 @@ name: Docker Python
 
 on:
     push:
+        paths:
+            - 'apps/docker-python/**'
         branches:
             - main
 
@@ -46,6 +48,6 @@ jobs:
               run: yarn install --immutable
 
             - name: Build and Push Docker Image
-              run: npx nx build docker-python
+              run: npx nx build docker-python --configuration=ci
               env:
                   INPUT_GITHUB_TOKEN: ${{ secrets.SSE_GITHUB_TOKEN }}
