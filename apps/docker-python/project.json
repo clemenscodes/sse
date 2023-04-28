@@ -10,19 +10,20 @@
                 "command": "docker compose -f apps/docker-python/docker/docker-compose.yaml up -d --remove-orphans"
             }
         },
-        "docker": {
+        "build": {
             "executor": "@nx-tools/nx-container:build",
             "options": {
                 "file": "apps/docker-python/docker/Dockerfile",
                 "engine": "docker",
                 "load": true,
                 "metadata": {
-                    "images": ["python-app"],
+                    "images": ["ghcr.io/clemenscodes/sse/docker-python"],
                     "tags": ["type=schedule", "type=sha"]
                 }
             },
             "configurations": {
                 "ci": {
+                    "push": true,
                     "cache-from": ["type=gha"],
                     "cache-to": ["type=gha,mode=max"]
                 }
