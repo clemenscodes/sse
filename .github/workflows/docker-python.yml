@@ -46,4 +46,4 @@ jobs:
               run: yarn install --immutable
 
             - name: Build and Push Docker Image
-              run: nx build docker-python
+              run: npx nx build docker-python
