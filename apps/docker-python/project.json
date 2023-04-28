@@ -1,0 +1,34 @@
+{
+    "name": "docker-python",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "apps/docker-python/src",
+    "projectType": "application",
+    "targets": {
+        "start": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "docker compose -f apps/docker-python/docker/docker-compose.yaml up -d --remove-orphans"
+            }
+        },
+        "docker": {
+            "executor": "@nx-tools/nx-container:build",
+            "options": {
+                "file": "apps/docker-python/docker/Dockerfile",
+                "engine": "docker",
+                "load": true,
+                "metadata": {
+                    "images": ["python-app"],
+                    "tags": ["type=schedule", "type=sha"]
+                }
+            },
+            "configurations": {
+                "ci": {
+                    "cache-from": ["type=gha"],
+                    "cache-to": ["type=gha,mode=max"]
+                }
+            }
+        }
+    },
+    "implicitDependencies": [],
+    "tags": []
+}
