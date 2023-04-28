@@ -1,0 +1,81 @@
+Delivered-To: viperlarry2000@gmail.com
+Received: by 2002:a17:902:6bc1:b0:1a6:467c:fc11 with SMTP id m1csp281279plt;
+        Thu, 27 Apr 2023 07:46:27 -0700 (PDT)
+X-Google-Smtp-Source: ACHHUZ5QQTSptNQN3rDWk+j+xVEj/XXN3LL3fzGYLhV9j8nes2lGpniiA+tKs8Xm0oFqig0ixI5d
+X-Received: by 2002:adf:db44:0:b0:2f9:61b5:7796 with SMTP id f4-20020adfdb44000000b002f961b57796mr1632812wrj.29.1682606787383;
+        Thu, 27 Apr 2023 07:46:27 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1682606787; cv=none;
+        d=google.com; s=arc-20160816;
+        b=glKbsla5yuvu/jbwkxLfks8GCCkf1J7TfCRo9ziEeQr3Ry15e70M2TVf6LodCkOwP3
+         VzAedOu3WTD+jx7C9NfgH8QauAPf6G49WEkW9wjKXSBaamsjbRMpjbPZDHaT5Bi9Fqcu
+         hhKfUShoKTNmFHVs7cLYmwUX2/f1ngKWT+x2YZCvou2SJ+8XS43NsYEOlAggu6vLFgI8
+         WRFUwxkSg0Eq4YU2BTzQq3uGYSZtqRD3VJBBGPfcy8ZXFcffSTeDqdd6ZnVftR+jkH5D
+         XbScgrThcfPj4F1YMyc77Ktb8VCshgyTNxi0bLSeHZRPFn5wUBm8Zkgwa33kPHIk2fWD
+         G6xQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=list-unsubscribe:from:feedback-id:list-unsubscribe-post
+         :mime-version:sender:origin-messageid:message-id:subject:date:to
+         :dkim-signature;
+        bh=J38qe7pBzZ2CGqcynPILKE4EzggbICrpGtKaMZpd88I=;
+        b=qztYQjjXEuiOuiWCib4OWthyHsshTG7/AjI0DygqXd4lkx5D6L508f6zN+myP0rQOv
+         H+ReSCZl7LiSdjVRh15Nljsy0RcQ2VxdI9hIuUDZQs93wLJDudgZVq5b3hHQsw3rinQJ
+         Nld9txzjMSn2xcyhFE8Z1zJeWJXaAzOLOtm77sK7+kbu9BCq9NLGAau86CKCJh7pF25B
+         IH7fzDy/oon7HyXz9G/Fx/2lKGnkxM2lDRfj4kliup27IM1N5DWeWHgo7ZL5RC54tsRO
+         L298xVZOJI6M0ga0To2xMZ6GdCh1oymAFChlLKM6pIOQMBcVZOo8BZbpDgN/B2+/AaRr
+         7ekQ==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@sendinblue.com header.s=mail header.b=3bNnF5v0;
+       spf=pass (google.com: domain of bounces-215246218-schabowski=stasi.de@hz.d.sender-sib.com designates 77.32.148.52 as permitted sender) smtp.mailfrom="bounces-215246218-Schabowski=stasi.de@hz.d.sender-sib.com"
+Return-Path: <bounces-215246218-Schabowski=stasi.de@hz.d.sender-sib.com>
+Received: from hz.d.sender-sib.com (hz.d.sender-sib.com. [77.32.148.52])
+        by mx.google.com with ESMTPS id b14-20020adff24e000000b002fae2bf51b6si10350537wrp.1054.2023.04.27.07.46.27
+        for <viperlarry2000@gmail.com>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Apr 2023 07:46:27 -0700 (PDT)
+Received-SPF: pass (google.com: domain of bounces-215246218-schabowski=stasi.de@hz.d.sender-sib.com designates 77.32.148.52 as permitted sender) client-ip=77.32.148.52;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@sendinblue.com header.s=mail header.b=3bNnF5v0;
+       spf=pass (google.com: domain of bounces-215246218-schabowski=stasi.de@hz.d.sender-sib.com designates 77.32.148.52 as permitted sender) smtp.mailfrom="bounces-215246218-Schabowski=stasi.de@hz.d.sender-sib.com"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sendinblue.com;
+ q=dns/txt; s=mail; bh=J38qe7pBzZ2CGqcynPILKE4EzggbICrpGtKaMZpd88I=;
+ h=from:sender:subject:date:to:mime-version:content-type:list-unsubscribe:x-csa-complaints:list-unsubscribe-post;
+        b=3bNnF5v0LXa1fC/d5xoxt+OvlUxOpC3sZjnfQVD7uwzON/8ACKx8egMA/kfnKe3uYojIveLBS5if
+        vNsLApXPbri+S7pPOCWyiNosu4GdGzMX3YX93b/ObHGUrfAt+wJLMj9+WA6wiIySjgu8dbBPo7OB
+        JeqN0rFws+kaooRQrWU=
+Received: by smtp-relay.sendinblue.com with ESMTP id 5deb3251-def2-402f-8334-c96880a73771; Thu, 27 April 2023 14:46:27 +0000 (UTC)
+X-Mailin-EID: MjE1MjQ2MjE4fnZpcGVybGFycnkyMDAwQGdtYWlsLmNvbX48NTNkNDNmOWYtY2M4YS1kNGNjLWRkNjYtM2E5MWE4ZTcxYjNlQHN0YXNpLmRlPn5oei5kLnNlbmRlci1zaWIuY29t
+To: <viperlarry2000@gmail.com>
+Date: Thu, 09 Nov 1989 17:00:00 +0000
+Subject: Ups chrn48 27.4.2023, 16:46:26
+Message-Id: <5deb3251-def2-402f-8334-c96880a73771@smtp-relay.sendinblue.com>
+Origin-messageId: <53d43f9f-cc8a-d4cc-dd66-3a91a8e71b3e@stasi.de>
+Content-Type: multipart/alternative; boundary="--_NmP-784479950648708b-Part_1"
+Sender: Schabowski@stasi.de
+MIME-Version: 1.0
+X-sib-id: ESn8MvklyD33mDDHre5hptMDkWAF5gf5sZpq2wkbEtTsVTR7yMocKCfmagvu3dBKirMEEZZyWTjbwOWl3UVwFCsPzDsVLZ8yicCoe39dHxhDLL_NcZyPaxogI2auhhzpXaOs5dPqQY1MscX3heXq3eeo5eTLLeP-xpOdos3jYFVaIUe1Jyk
+X-CSA-Complaints: csa-complaints@eco.de
+List-Unsubscribe-Post: List-Unsubscribe=One-Click
+Feedback-ID: 77.32.148.52:6010394_-1:6010394:Sendinblue
+From: "Guenther Schabowski" <Schabowski@stasi.de>
+List-Unsubscribe: <mailto:unsubscribe-t@hz.d.sender-sib.com?subject=unsub-MjE1MjQ2MjE4fnZpcGVybGFycnkyMDAwQGdtYWlsLmNvbX48NTNkNDNmOWYtY2M4YS1kNGNjLWRkNjYtM2E5MWE4ZTcxYjNlQHN0YXNpLmRlPn5HdWVudGhlciBTY2hhYm93c2tpIDxTY2hhYm93c2tpQHN0YXNpLmRlPn41ZGViMzI1MS1kZWYyLTQwMmYtODMzNC1jOTY4ODBhNzM3NzE%3D&body=MjE1MjQ2MjE4fnZpcGVybGFycnkyMDAwQGdtYWlsLmNvbX48NTNkNDNmOWYtY2M4YS1kNGNjLWRkNjYtM2E5MWE4ZTcxYjNlQHN0YXNpLmRlPn5HdWVudGhlciBTY2hhYm93c2tpIDxTY2hhYm93c2tpQHN0YXNpLmRlPn41ZGViMzI1MS1kZWYyLTQwMmYtODMzNC1jOTY4ODBhNzM3NzE%3D>, <https://gabadje.r.af.d.sendibt2.com/tr/un/li/jlUhryeA8j8M1QFjwhcjRp-W0fEz8L69wCLfx5XvWRCLnLHKr7zZcsIy54LjCG9myz-yajJIatanb7kvVOchY35hcALc-sZLVbmlQaPqanc1rtfmGwS2IuDAda1upZ46EnE4Gc_JOS63rdgxOdI55TTlHTKTB6izetOCaWYrtIqPB6-mZ3eQPt7f_XaPT_Mqkckmd66-Klp7XzIB-5U2HMDGAWKuBXXjbJwkQlt5S-6nn35pabA1yISkXSx2gT1g36LP0E72>
+
+
+----_NmP-784479950648708b-Part_1
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+Endlich mal Urlaub in Spanien
+
+
+----_NmP-784479950648708b-Part_1
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+Entschuldige Egon.<img width=3D'1' height=3D'1' src=3D'https://gabadje.r.af=
+.d.sendibt2.com/tr/op/QA1dOZY4wtisyKNKJ6PGIjxcB=5FHYC-PKDsrYMHfabXilGfZFJnp=
+M3k=5FUoLAY1ru1HuUdqPxszM4fmMuKTSsn-gzHJYRFvVVT3oFTqBcfw9u7PJX14NPJok8h8E6Q=
+9mKLV-FkrPkj-cL0q0i93S7NntNteUzzYm4r1Xk6Xi-rWEzz' alt=3D'' />
+
+
+
+----_NmP-784479950648708b-Part_1--
