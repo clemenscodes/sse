@@ -48,4 +48,4 @@ jobs:
             - name: Build and Push Docker Image
               run: npx nx build docker-python
               env:
-                  INPUT_GITHUB_TOKEN: ${{ secrets.SSE:GITHUB_TOKEN }}
+                  INPUT_GITHUB_TOKEN: ${{ secrets.SSE_GITHUB_TOKEN }}
