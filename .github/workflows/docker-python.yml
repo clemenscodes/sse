@@ -22,7 +22,7 @@ jobs:
               with:
                   registry: ghcr.io
                   username: ${{ github.actor }}
-                  password: ${{ secrets.GITHUB_TOKEN }}
+                  password: ${{ secrets.SSE_GITHUB_TOKEN }}
 
             - name: Derive SHAs
               uses: nrwl/nx-set-shas@v3
