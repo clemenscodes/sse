@@ -45,3 +45,5 @@ Thumbs.db
 **/stderr.txt
 **/stdout.txt
 **/.nx-container
+apps/nginx/certs/**
+!apps/nginx/certs/.gitkeep

@@ -1,0 +1,14 @@
+version: '3.9'
+name: sse
+services:
+    nginx:
+        image: nginx
+        container_name: 'nginx'
+        ports:
+            - '80:80'
+            - '443:443'
+        volumes:
+            - '../certs/:/etc/nginx/certs/:ro'
+            - '../config/nginx.conf:/etc/nginx/nginx.conf:ro'
+            - '../index.html:/data/www/index.html:ro'
+        restart: always

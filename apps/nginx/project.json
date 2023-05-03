@@ -1,0 +1,44 @@
+{
+    "name": "nginx",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "apps/nginx",
+    "projectType": "application",
+    "targets": {
+        "start": {
+            "dependsOn": ["ssl"],
+            "command": "docker compose -f apps/nginx/docker/docker-compose.yaml up -d --remove-orphans"
+        },
+        "ssl": {
+            "command": "apps/nginx/scripts/genCert.sh"
+        },
+        "spoofdns": {
+            "dependsOn": ["start"],
+            "command": "apps/nginx/scripts/dnsSpoof.sh"
+        },
+        "unspoof": {
+            "command": "apps/nginx/scripts/unspoof.sh"
+        },
+        "build": {
+            "executor": "@nx-tools/nx-container:build",
+            "options": {
+                "file": "apps/nginx/docker/Dockerfile",
+                "engine": "docker",
+                "load": true,
+                "metadata": {
+                    "images": ["ghcr.io/clemenscodes/sse/nginx"],
+                    "tags": ["type=schedule", "type=sha"]
+                }
+            },
+            "configurations": {
+                "ci": {
+                    "cache-from": ["type=gha"],
+                    "cache-to": ["type=gha,mode=max"],
+                    "load": false,
+                    "push": true
+                }
+            }
+        }
+    },
+    "implicitDependencies": [],
+    "tags": []
+}
