@@ -9,6 +9,6 @@ services:
             - '443:443'
         volumes:
             - '../certs/:/etc/nginx/certs/:ro'
-            - '../config/nginx.conf:/etc/nginx/nginx.conf:ro'
+            - '../config/nginx.conf:/etc/nginx/conf.d/nginx.conf:ro'
             - '../index.html:/data/www/index.html:ro'
         restart: always
