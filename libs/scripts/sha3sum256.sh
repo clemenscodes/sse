@@ -2,5 +2,5 @@
 
 msg="$1"
 echo "hashing $msg"
-hash=$(echo -n "$msg" | sha3sum -a 256 | awk '{print $1}')
+hash=$(printf "%s" "$msg" | sha3sum -a 256 | awk '{print $1}')
 echo "$hash"
