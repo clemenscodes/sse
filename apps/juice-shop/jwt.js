@@ -1,7 +1,8 @@
-import jwt_decode from "jwt-decode";
+import jwt_decode from 'jwt-decode';
 
 // Put this as item token in localStorage and navigate to http://localhost:3000/#/adminstration
-var token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7InJvbGUiOiJhZG1pbiJ9fQ"
+var token =
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7InJvbGUiOiJhZG1pbiJ9fQ';
 var decoded = jwt_decode(token);
 
 console.log(decoded);
