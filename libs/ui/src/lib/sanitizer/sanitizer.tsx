@@ -14,9 +14,13 @@ export function Sanitizer({ ...props }: SanitizerProps) {
 
     return (
         <>
-            <input type="text" onChange={(e) => setInput(e.target.value)} />
-            <button onClick={() => sanitizeInput(input)}>Enter</button>
-            <p dangerouslySetInnerHTML={{ __html: output }} />
+            <input
+                aria-label="xss-input"
+                type="text"
+                onChange={(e) => setInput(e.target.value)}
+            />
+            <button onClick={() => sanitizeInput(input)}>Sanitize</button>
+            <p data-testid="xss-output" dangerouslySetInnerHTML={{ __html: output }} />
         </>
     );
 }

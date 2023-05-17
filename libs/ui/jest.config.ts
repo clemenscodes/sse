@@ -8,5 +8,6 @@ export default {
             { jsc: { transform: { react: { runtime: 'automatic' } } } },
         ],
     },
+    setupFilesAfterEnv: ['<rootDir>/setupTests.ts'],
     moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
 };
