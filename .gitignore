@@ -47,3 +47,7 @@ Thumbs.db
 **/.nx-container
 apps/nginx/certs/**
 !apps/nginx/certs/.gitkeep
+
+# Next.js
+.next
+**/.next
