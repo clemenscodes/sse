@@ -20,7 +20,13 @@ export function Sanitizer({ ...props }: SanitizerProps) {
                 onChange={(e) => setInput(e.target.value)}
             />
             <button onClick={() => sanitizeInput(input)}>Sanitize</button>
-            <p data-testid="xss-output" dangerouslySetInnerHTML={{ __html: output }} />
+            <p>Custom Sanitization: </p>
+            <p
+                data-testid="xss-output"
+                dangerouslySetInnerHTML={{ __html: output }}
+            />
+            <p>React Sanitization: </p>
+            <p data-testid="react-sanitized">{output}</p>
         </>
     );
 }
