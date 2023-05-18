@@ -9,6 +9,5 @@ export default {
             { tsconfig: '<rootDir>/tsconfig.spec.json' },
         ],
     },
-    moduleFileExtensions: ['ts', 'js', 'html'],
-    coverageDirectory: '../../coverage/apps/password-strength',
+    moduleFileExtensions: ['ts', 'js', 'html']
 };

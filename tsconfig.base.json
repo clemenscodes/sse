@@ -19,9 +19,9 @@
             "@sse/password-strength-lib": [
                 "libs/password-strength-lib/src/index.ts"
             ],
-            "@sse/utils": ["libs/utils/src/index.ts"],
             "@ui": ["libs/ui/src/index.ts"],
-            "@ui/server": ["libs/ui/src/server.ts"]
+            "@ui/server": ["libs/ui/src/server.ts"],
+            "@utils": ["libs/utils/src/index.ts"]
         }
     },
     "exclude": ["node_modules", "tmp"]

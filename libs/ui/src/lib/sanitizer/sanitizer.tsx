@@ -1,4 +1,5 @@
 'use client';
+import { sanitize } from '@utils';
 import { useState } from 'react';
 
 /* eslint-disable-next-line */
@@ -9,7 +10,8 @@ export function Sanitizer({ ...props }: SanitizerProps) {
     const [output, setOutput] = useState('');
 
     const sanitizeInput = (input: string) => {
-        setOutput(input);
+        const sanitizedInput = sanitize(input);
+        setOutput(sanitizedInput);
     };
 
     return (
@@ -26,7 +28,7 @@ export function Sanitizer({ ...props }: SanitizerProps) {
                 dangerouslySetInnerHTML={{ __html: output }}
             />
             <p>React Sanitization: </p>
-            <p data-testid="react-sanitized">{output}</p>
+            <p data-testid="react-sanitized">{input}</p>
         </>
     );
 }

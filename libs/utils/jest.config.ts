@@ -1,8 +1,7 @@
 /* eslint-disable */
 export default {
-    displayName: 'email',
+    displayName: 'utils',
     preset: '../../jest.preset.js',
-    testEnvironment: 'node',
     transform: {
         '^.+\\.[tj]s$': [
             'ts-jest',
