@@ -1,3 +1,5 @@
 export function sanitize(input: string): string {
-    return input;
+    const temp = document.createElement('div');
+    temp.textContent = input;
+    return temp.innerHTML;
 }
