@@ -1,0 +1,21 @@
+{
+    "name": "juice-shop",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "apps/juice-shop",
+    "projectType": "application",
+    "targets": {
+        "start": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "docker compose -f apps/juice-shop/docker-compose.yml up -d"
+            }
+        },
+        "jwt": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "node apps/juice-shop/jwt.js"
+            }
+        }
+    },
+    "tags": []
+}

@@ -1,0 +1,24 @@
+{
+    "name": "notes",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "apps/notes",
+    "projectType": "application",
+    "implicitDependencies": ["client", "server"],
+    "targets": {
+        "serve": {
+            "command": "libs/scripts/dev.sh"
+        },
+        "lint": {
+            "command": "yarn nx affected -t lint --output-style=stream --exclude=$(cat apps/notes/ignored.txt) --parallel"
+        },
+        "build": {
+            "command": "yarn nx affected -t build --output-style=stream --exclude=$(cat apps/notes/ignored.txt) --parallel"
+        },
+        "test": {
+            "command": "yarn nx affected -t test --output-style=stream --exclude=$(cat apps/notes/ignored.txt) --parallel"
+        },
+        "docker": {
+            "command": "yarn nx affected -t docker --output-style=stream --exclude=$(cat apps/notes/ignored.txt) --parallel"
+        }
+    }
+}

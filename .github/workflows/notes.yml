@@ -1,0 +1,65 @@
+name: Notes
+
+on:
+    push:
+        branches: [main]
+    pull_request:
+        types: [opened, synchronize]
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
+    cancel-in-progress: true
+
+env:
+    NEXT_TELEMETRY_DISABLED: 1
+
+jobs:
+    ci:
+        permissions:
+            contents: read
+            actions: read
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v3
+              with:
+                  fetch-depth: 0
+
+            - name: Derive SHAs
+              uses: nrwl/nx-set-shas@v3
+
+            - name: Install Node
+              uses: actions/setup-node@v3
+              with:
+                  node-version: 16
+
+            - name: Cache Node
+              id: node_cache
+              uses: actions/cache@v3
+              with:
+                  path: |
+                      node_modules/
+                  key: ubuntu-latest-node-${{ hashFiles('yarn.lock') }}
+                  restore-keys: ubuntu-latest-node-
+
+            - name: Install Node Dependencies
+              if: steps.node_cache.outputs.cache-hit != 'true'
+              run: yarn install --immutable
+
+            - name: Nx Cloud - Main Job
+              uses: nrwl/ci/.github/workflows/nx-cloud-main.yml@v0.13.0
+              with:
+                  parallel-commands: |
+                      npx nx-cloud record -- npx nx format:check
+                  parallel-commands-on-agents: |
+                      yarn nx lint notes
+                      yarn nx build notes
+                      yarn nx test notes
+                      yarn nx e2e notes
+                      yarn nx docker notes
+
+    agents:
+        name: Nx Cloud - Agents
+        uses: nrwl/ci/.github/workflows/nx-cloud-agents.yml@v0.13.0
+        with:
+            number-of-agents: 3

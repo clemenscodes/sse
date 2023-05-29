@@ -1,13 +1,20 @@
 {
     "$schema": "./node_modules/nx/schemas/nx-schema.json",
     "npmScope": "sse",
-    "defaultProject": "sse",
+    "defaultProject": "notes",
     "tasksRunnerOptions": {
         "default": {
-            "runner": "@nrwl/nx-cloud",
+            "runner": "nx-cloud",
             "options": {
-                "cacheableOperations": ["build", "lint", "test", "e2e"],
-                "accessToken": "M2EzMzhiYzktYzQ2My00MTdlLTgyN2MtODc5YTAxZmQwOTBhfHJlYWQtd3JpdGU="
+                "cacheableOperations": [
+                    "build",
+                    "export",
+                    "lint",
+                    "test",
+                    "e2e",
+                    "docker"
+                ],
+                "accessToken": "ZTM5Y2RlNjYtNWZiNC00MGE5LWEyYWItNWI5ZjAwZDE5YzlifHJlYWQtd3JpdGU="
             }
         }
     },
@@ -29,6 +36,9 @@
                 "{workspaceRoot}/.eslintrc.json",
                 "{workspaceRoot}/.eslintignore"
             ]
+        },
+        "e2e": {
+            "inputs": ["default", "^production"]
         }
     },
     "namedInputs": {
@@ -41,5 +51,21 @@
             "!{projectRoot}/.eslintrc.json"
         ],
         "sharedGlobals": []
+    },
+    "generators": {
+        "@nx/react": {
+            "application": {
+                "babel": true
+            },
+            "library": {
+                "unitTestRunner": "jest"
+            }
+        },
+        "@nx/next": {
+            "application": {
+                "style": "css",
+                "linter": "eslint"
+            }
+        }
     }
 }

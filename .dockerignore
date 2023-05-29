@@ -1,0 +1,16 @@
+.git
+.github
+.nx-container
+.storybook
+.vscode
+.yarn/cache
+.dockerignore
+.editorconfig
+.eslintrc.json
+.prettierignore
+.prettierrc
+jest.config.ts
+jest.preset.js
+README.md
+**/Dockerfile
+**/.vscode

@@ -1,10 +1,10 @@
 {
-  "recommendations": [
-    "nrwl.angular-console",
-    "esbenp.prettier-vscode",
-    "firsttris.vscode-jest-runner",
-    "ms-azuretools.vscode-docker",
-    "ahmadalli.vscode-nginx-conf",
-    "dbaeumer.vscode-eslint"
-  ]
+    "recommendations": [
+        "nrwl.angular-console",
+        "esbenp.prettier-vscode",
+        "firsttris.vscode-jest-runner",
+        "ms-azuretools.vscode-docker",
+        "bradlc.vscode-tailwindcss",
+        "dbaeumer.vscode-eslint"
+    ]
 }

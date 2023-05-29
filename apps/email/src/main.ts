@@ -1,6 +1,7 @@
 import { mail } from '@sse/nodemailer';
-import SMTPTransport from 'nodemailer/lib/smtp-transport';
 import * as dotenv from 'dotenv';
+import SMTPTransport from 'nodemailer/lib/smtp-transport';
+
 dotenv.config();
 
 const name = 'Guenther Schabowski';

@@ -1,4 +1,5 @@
 import * as nodemailer from 'nodemailer';
+
 import Mail = require('nodemailer/lib/mailer');
 import SMTPTransport = require('nodemailer/lib/smtp-transport');
 

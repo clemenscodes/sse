@@ -1,0 +1,37 @@
+FROM node:16.19-alpine
+
+RUN set -e; \
+    apk update && apk add --no-cache --update \
+    tini \
+    && apk del --purge apk-tools \
+    && rm -rf /var/cache/apk/*
+
+RUN addgroup -g 2000 nodejs \
+    && adduser -D -G nodejs -u 2000 nextjs
+
+ENV APP_HOME /app
+ENV APP client
+ENV APP_DIR apps/notes/$APP
+ENV PORT 4200
+ENV HOST 0.0.0.0
+ENV HOSTNAME localhost
+ENV NODE_ENV production
+ENV NEXT_TELEMETRY_DISABLED 1
+
+WORKDIR $APP_HOME
+
+USER nextjs
+
+COPY --chown=nextjs:nodejs dist/$APP_DIR/.next/standalone ./
+COPY --chown=nextjs:nodejs dist/$APP_DIR/public ./$APP_DIR/public
+COPY --chown=nextjs:nodejs dist/$APP_DIR/.next/static ./dist/$APP_DIR/.next/static
+COPY --chown=nextjs:nodejs $APP_DIR/scripts/start.sh ./
+
+EXPOSE $PORT
+
+# Use tini to manage zombie processes and signal forwarding
+# https://github.com/krallin/tini
+ENTRYPOINT ["/sbin/tini", "--"]
+
+# Pass the startup script as arguments to Tini
+CMD ["node", "/app/apps/notes/client/server.js"]

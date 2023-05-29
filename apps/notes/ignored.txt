@@ -1,0 +1,1 @@
+docker-python,email,juice-shop,nginx,password-strength,sanitizer,nodemailer,password-strength-lib,ui,notes
