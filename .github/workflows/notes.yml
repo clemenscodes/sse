@@ -37,8 +37,16 @@ jobs:
             actions: read
         runs-on: ubuntu-latest
         steps:
-            - name: Checkout
+            - name: Checkout [Pull Request]
               uses: actions/checkout@v3
+              if: github.event_name == 'pull_request'
+              with:
+                  ref: ${{ github.event.pull_request.head.sha }}
+                  fetch-depth: 0
+
+            - name: Checkout [Main]
+              uses: actions/checkout@v3
+              if: github.event_name != 'pull_request'
               with:
                   fetch-depth: 0
 
@@ -88,12 +96,15 @@ jobs:
             - name: Abort Workflow
               if: failure()
               run: |
-                  curl -X POST -H "Authorization: Bearer ${{ secrets.REPO_GITHUB_TOKEN }}" https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/cancel
+                  curl -X POST -H "Authorization: Bearer ${{ secrets.SSE_GITHUB_TOKEN }}" https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/cancel
 
     agents:
         name: Agent ${{ matrix.agent }}
         needs: [set-agents]
         runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            actions: read
         defaults:
             run:
                 shell: bash
