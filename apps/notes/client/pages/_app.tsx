@@ -1,17 +1,21 @@
-import { AppProps } from 'next/app';
+import { site } from '@config';
+import { type AppProps } from 'next/app';
 import Head from 'next/head';
+import '../styles.css';
 
-function CustomApp({ Component, pageProps }: AppProps) {
+const App: React.FC<AppProps> = ({ Component, ...pageProps }) => {
     return (
         <>
             <Head>
-                <title>Welcome to notes!</title>
+                <meta
+                    name="viewport"
+                    content="width=device-width, initial-scale=0.8"
+                />
+                <title>{site.title}</title>
             </Head>
-            <main className="app">
-                <Component {...pageProps} />
-            </main>
+            <Component {...pageProps} />
         </>
     );
-}
+};
 
-export default CustomApp;
+export default App;

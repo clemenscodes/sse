@@ -10,7 +10,14 @@
             "defaultConfiguration": "production",
             "options": {
                 "root": "apps/notes/client",
-                "outputPath": "dist/apps/notes/client"
+                "outputPath": "dist/apps/notes/client",
+                "assets": [
+                    {
+                        "input": "libs/components/assets",
+                        "glob": "**/*",
+                        "output": ""
+                    }
+                ]
             },
             "configurations": {
                 "development": {

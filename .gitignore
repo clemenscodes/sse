@@ -57,3 +57,5 @@ apps/nginx/certs/**
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+apps/notes/client/public/*
+!apps/notes/client/public/favicon.ico

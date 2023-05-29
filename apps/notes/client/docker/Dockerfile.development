@@ -33,6 +33,7 @@ WORKDIR /app
 COPY package.json ./
 COPY yarn.lock ./
 COPY tsconfig.base.json ./
+COPY tailwind.config.ts ./
 COPY --from=builder /app/node_modules ./node_modules
 
 EXPOSE $PORT
