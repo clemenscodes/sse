@@ -7,4 +7,5 @@ export default {
         '^.+\\.[tj]sx?$': ['babel-jest', { presets: ['@nx/next/babel'] }],
     },
     moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
+    setupFilesAfterEnv: ['<rootDir>/setupTests.ts'],
 };

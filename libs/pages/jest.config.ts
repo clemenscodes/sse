@@ -7,7 +7,6 @@ export default {
             '@swc/jest',
             { jsc: { transform: { react: { runtime: 'automatic' } } } },
         ],
-        '^.+\\.svg$': 'jest-transform-stub',
     },
     moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
     setupFilesAfterEnv: ['<rootDir>/setupTests.ts'],

@@ -4,15 +4,28 @@
 
 - docker compose
 
-## Installation
+## Setup
 
 ```sh
 docker compose -f apps/notes/docker-compose.yaml up
 ```
 
-Alternative:
+### Alternative
+
+Install dependencies
 
 ```sh
 yarn
+```
+
+Run yarn script
+
+```sh
 yarn dev
+```
+
+Or:
+
+```sh
+yarn nx serve notes
 ```

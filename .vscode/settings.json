@@ -1,5 +1,5 @@
 {
     "tailwindCSS.experimental.classRegex": [
-        ["(cn|clsx|twMerge)\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"],
+        ["(cn|clsx|twMerge)\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
     ]
 }

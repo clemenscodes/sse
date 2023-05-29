@@ -1,11 +1,19 @@
 {
     "$schema": "./node_modules/nx/schemas/nx-schema.json",
     "npmScope": "sse",
-    "defaultProject": "sse",
+    "defaultProject": "notes",
     "tasksRunnerOptions": {
         "default": {
             "runner": "nx-cloud",
             "options": {
+                "cacheableOperations": [
+                    "build",
+                    "export",
+                    "lint",
+                    "test",
+                    "e2e",
+                    "docker"
+                ],
                 "accessToken": "ZTM5Y2RlNjYtNWZiNC00MGE5LWEyYWItNWI5ZjAwZDE5YzlifHJlYWQtd3JpdGU="
             }
         }

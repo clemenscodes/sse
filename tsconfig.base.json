@@ -23,6 +23,7 @@
                 "libs/password-strength-lib/src/index.ts"
             ],
             "@styles": ["libs/styles/src/index.ts"],
+            "@test/*": ["libs/test/src/*"],
             "@types": ["libs/types/src/index.ts"],
             "@ui": ["libs/ui/src/index.ts"],
             "@ui/server": ["libs/ui/src/server.ts"],

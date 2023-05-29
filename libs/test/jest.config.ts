@@ -1,6 +1,6 @@
 /* eslint-disable */
 export default {
-    displayName: 'components',
+    displayName: 'test',
     preset: '../../jest.preset.js',
     transform: {
         '^.+\\.[tj]sx?$': [
@@ -9,5 +9,4 @@ export default {
         ],
     },
     moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-    setupFilesAfterEnv: ['<rootDir>/setupTests.ts'],
 };
