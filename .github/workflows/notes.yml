@@ -12,9 +12,26 @@ concurrency:
 
 env:
     NEXT_TELEMETRY_DISABLED: 1
+    NX_CLOUD_DISTRIBUTED_EXECUTION_AGENT_COUNT: 2
+    NX_CLOUD_DISTRIBUTED_EXECUTION: true
+    NX_EXEC: 'yarn nx affected --nx-bail --base=$NX_BASE --head=$NX_HEAD --output-style=stream --exclude=$(cat apps/notes/ignored.txt) --parallel=$NX_CLOUD_DISTRIBUTED_EXECUTION_AGENT_COUNT -t'
 
 jobs:
-    ci:
+    set-agents:
+        runs-on: ubuntu-latest
+        name: Set Agent Matrix
+        outputs:
+            matrix: ${{ steps.set-matrix.outputs.matrix }}
+        steps:
+            - name: Calculate Matrix
+              id: set-matrix
+              shell: bash
+              run: |
+                  AGENTS_JSON_ARRAY=$(node -e "console.log(JSON.stringify(Array.from(new Array($NX_CLOUD_DISTRIBUTED_EXECUTION_AGENT_COUNT)).map((_, i) => i + 1)));")
+                  echo $AGENTS_JSON_ARRAY
+                  echo "matrix=$AGENTS_JSON_ARRAY" >> $GITHUB_OUTPUT
+
+    app:
         permissions:
             contents: read
             actions: read
@@ -38,6 +55,7 @@ jobs:
               uses: actions/cache@v3
               with:
                   path: |
+                      dist/**/.next/cache
                       node_modules/
                   key: ubuntu-latest-node-${{ hashFiles('yarn.lock') }}
                   restore-keys: ubuntu-latest-node-
@@ -46,20 +64,83 @@ jobs:
               if: steps.node_cache.outputs.cache-hit != 'true'
               run: yarn install --immutable
 
-            - name: Nx Cloud - Main Job
-              uses: nrwl/ci/.github/workflows/nx-cloud-main.yml@v0.13.0
+            - name: Start Agents
+              if: needs.agents.result != 'failure' &&
+                  needs.agents.result != 'cancelled' &&
+                  needs.agents.result != 'skipped'
+              run: npx nx-cloud start-ci-run --stop-agents-after=test
+
+            - name: Run Agents
+              id: agents
+              if: needs.agents.result != 'failure' &&
+                  needs.agents.result != 'cancelled' &&
+                  needs.agents.result != 'skipped'
+              uses: jameshenry/parallel-bash-commands@v1
               with:
-                  parallel-commands: |
-                      npx nx-cloud record -- npx nx format:check
-                  parallel-commands-on-agents: |
-                      yarn nx lint notes
-                      yarn nx build notes
-                      yarn nx test notes
-                      yarn nx e2e notes
-                      yarn nx docker notes
+                  cmd1: $NX_EXEC lint
+                  cmd2: $NX_EXEC build
+                  cmd3: $NX_EXEC test
+
+            - name: Stop Agents
+              if: always()
+              run: npx nx-cloud stop-all-agents
+
+            - name: Abort Workflow
+              if: failure()
+              run: |
+                  curl -X POST -H "Authorization: Bearer ${{ secrets.REPO_GITHUB_TOKEN }}" https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/cancel
 
     agents:
-        name: Nx Cloud - Agents
-        uses: nrwl/ci/.github/workflows/nx-cloud-agents.yml@v0.13.0
-        with:
-            number-of-agents: 3
+        name: Agent ${{ matrix.agent }}
+        needs: [set-agents]
+        runs-on: ubuntu-latest
+        defaults:
+            run:
+                shell: bash
+        strategy:
+            matrix:
+                agent:
+                    - ${{fromJson(needs.set-agents.outputs.matrix)}}
+        steps:
+            - name: Checkout [Pull Request]
+              uses: actions/checkout@v3
+              if: github.event_name == 'pull_request'
+              with:
+                  ref: ${{ github.event.pull_request.head.sha }}
+                  fetch-depth: 0
+
+            - name: Checkout [Main]
+              uses: actions/checkout@v3
+              if: github.event_name != 'pull_request'
+              with:
+                  fetch-depth: 0
+
+            - name: Derive SHAs
+              uses: nrwl/nx-set-shas@v3
+
+            - name: Install Node
+              uses: actions/setup-node@v3
+              with:
+                  node-version: 16
+
+            - name: Restore Node Cache
+              id: node_cache
+              uses: actions/cache/restore@v3
+              with:
+                  path: |
+                      dist/**/.next/cache
+                      node_modules/
+                  key: ubuntu-latest-node-${{ hashFiles('yarn.lock') }}
+                  restore-keys: ubuntu-latest-node-
+
+            - name: Install Node Dependencies
+              if: steps.node_cache.outputs.cache-hit != 'true'
+              run: yarn install --immutable
+
+            - name: Run Agent
+              run: npx nx-cloud start-agent
+
+            - name: Abort Workflow
+              if: failure()
+              run: |
+                  curl -X POST -H "Authorization: Bearer ${{ secrets.REPO_GITHUB_TOKEN }}" https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/cancel
