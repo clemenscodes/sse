@@ -13,8 +13,8 @@ describe('Sanitizer', () => {
         const xss = [
             '<iframe src="javascript:1+1"></iframe>',
             '-prompt(8)-',
-            '-prompt(8)-',
             "'-alert(1)//",
+            '<img src=x onerror="alert(`xss`)"/>',
             '<x onmousedown=alert(1)>click this!',
         ];
 

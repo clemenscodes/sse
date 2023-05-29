@@ -2,8 +2,10 @@
     "name": "sse",
     "version": "0.0.0",
     "license": "MIT",
-    "scripts": {},
     "private": true,
+    "scripts": {
+        "dev": "libs/scripts/dev.sh"
+    },
     "dependencies": {
         "@nestjs/common": "9.4.1",
         "@nestjs/core": "9.4.1",
@@ -17,7 +19,7 @@
         "react": "^18.2.0",
         "react-dom": "18.2.0",
         "reflect-metadata": "^0.1.13",
-        "rxjs": "^7.0.0",
+        "rxjs": "^7.8.0",
         "tslib": "^2.3.0"
     },
     "devDependencies": {
@@ -56,6 +58,7 @@
         "eslint": "~8.15.0",
         "eslint-config-next": "13.3.0",
         "eslint-config-prettier": "8.1.0",
+        "eslint-plugin-cypress": "^2.10.3",
         "eslint-plugin-import": "2.27.5",
         "eslint-plugin-jsx-a11y": "6.7.1",
         "eslint-plugin-react": "7.32.2",

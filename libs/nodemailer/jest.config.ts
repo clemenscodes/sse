@@ -9,5 +9,5 @@ export default {
             { tsconfig: '<rootDir>/tsconfig.spec.json' },
         ],
     },
-    moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx']
+    moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
 };

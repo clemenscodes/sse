@@ -51,3 +51,9 @@ apps/nginx/certs/**
 # Next.js
 .next
 **/.next
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions

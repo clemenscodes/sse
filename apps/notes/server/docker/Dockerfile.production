@@ -1,0 +1,41 @@
+FROM node:16.19-alpine as builder
+
+ENV APP server
+ENV APP_DIR apps/notes/$APP
+
+WORKDIR /app
+
+COPY apps/notes/$APP ./apps/notes/$APP
+COPY libs/ ./libs
+COPY dist/$APP_DIR/package.json ./
+COPY babel.config.json ./
+COPY tsconfig.base.json ./
+
+FROM node:16.19-alpine
+
+ENV HOST=0.0.0.0
+ENV PORT=3000
+ENV APP server
+ENV APP_DIR apps/notes/$APP
+
+WORKDIR /app
+
+RUN set -e; \
+    apk update && apk add --no-cache --update \
+    tini \
+    bash \
+    && apk del --purge apk-tools \
+    && rm -rf /var/cache/apk/*
+
+RUN addgroup --system $APP && \
+    adduser --system -G $APP $APP
+
+COPY dist/$APP_DIR $APP
+
+RUN chown -R $APP:$APP .
+
+RUN npm --prefix $APP --omit=dev -f install
+
+ENTRYPOINT ["/sbin/tini", "--"]
+
+CMD [ "/app/start.sh" ]

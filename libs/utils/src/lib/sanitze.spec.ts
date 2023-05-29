@@ -1,7 +1,7 @@
-import { sanitize} from './sanitize';
+import { sanitize } from './sanitize';
 
 describe('sanitize', () => {
     it('should sanitize', () => {
-        expect(sanitize("<bad html>")).toEqual('');
+        expect(sanitize('<bad html>')).toEqual('');
     });
 });
