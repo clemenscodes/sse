@@ -35,7 +35,10 @@ archive() {
 encrypt_backup() {
     backup_to_encrypt="$1"
     encrypted_backup="$2"
-    openssl enc -aes-256-cbc -salt -pbkdf2 -pass "pass:$ENCRYPTION_KEY" -in "$backup_to_encrypt" -out "$encrypted_backup"
+    openssl enc -aes-256-cbc -salt -pbkdf2 \
+        -pass "pass:$ENCRYPTION_KEY" \
+        -in "$backup_to_encrypt" \
+        -out "$encrypted_backup"
     rm "$backup_to_encrypt"
 }
 
