@@ -65,7 +65,6 @@ setup_supervision() {
 }
 
 setup_cronjob() {
-    echo "Setting up cronjob"
     username="$1"
     script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
     script_path="$script_dir/$(basename "${BASH_SOURCE[0]}")"
