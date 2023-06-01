@@ -66,10 +66,14 @@ setup_supervision() {
 
 setup_cronjob() {
     echo "Setting up cronjob"
-    # username="$1"
-    # script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-    # script_path="$script_dir/$(basename "${BASH_SOURCE[0]}")"
-    # echo "0 0 * * * /bin/bash $script_path" >>/var/spool/cron/"$username"
+    username="$1"
+    script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    script_path="$script_dir/$(basename "${BASH_SOURCE[0]}")"
+    cronjob="0 0 * * * /bin/bash $script_path"
+    cronjobs="/var/spool/cron/$username"
+    if ! grep -q "$script_path" "$cronjobs"; then
+        echo "$cronjob" >>"$cronjobs"
+    fi
 }
 
 main
