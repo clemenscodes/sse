@@ -5,28 +5,28 @@ services:
         depends_on: ['server']
         container_name: client
         build:
-            context: '../../'
+            context: '../../../'
             dockerfile: apps/notes/client/docker/Dockerfile.development
         ports:
             - '4200:4200'
         command: 'yarn nx serve client'
         volumes:
-            - './client:/app/apps/notes/client'
-            - './server:/app/apps/notes/server'
-            - '../../libs:/app/libs'
+            - '../client:/app/apps/notes/client'
+            - '../server:/app/apps/notes/server'
+            - '../../../libs:/app/libs'
         networks:
             - notes
     server:
         container_name: server
         command: 'yarn nx serve server'
         build:
-            context: '../../'
+            context: '../../../'
             dockerfile: apps/notes/server/docker/Dockerfile.development
         ports:
             - '3000:3000'
         volumes:
-            - './server:/app/apps/notes/server'
-            - '../../libs:/app/libs'
+            - '../server:/app/apps/notes/server'
+            - '../../../libs:/app/libs'
         networks:
             - notes
 

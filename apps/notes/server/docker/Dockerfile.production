@@ -38,4 +38,4 @@ RUN npm --prefix $APP --omit=dev -f install
 
 ENTRYPOINT ["/sbin/tini", "--"]
 
-CMD [ "/app/start.sh" ]
+CMD [ "node", "server" ]
