@@ -13,6 +13,14 @@ const nextConfig = {
         svgr: false,
     },
     output: 'standalone',
+    async rewrites() {
+        return [
+            {
+                source: '/api/:path*',
+                destination: 'http://server:3000/api/:path*',
+            },
+        ];
+    },
 };
 
 const plugins = [
