@@ -1,15 +1,29 @@
-FROM node:16.19-alpine as builder
-
-ENV APP server
-ENV APP_DIR apps/notes/$APP
+FROM node:16.19-alpine as installer
 
 WORKDIR /app
 
-COPY apps/notes/$APP ./apps/notes/$APP
+RUN apk add --no-cache yarn
+
+COPY .yarn ./.yarn
+COPY .yarnrc.yml ./
+COPY package.json ./
+COPY yarn.lock ./
+
+RUN yarn
+
+FROM node:16.19-alpine as builder
+
+WORKDIR /app
+
+COPY package.json ./
+COPY yarn.lock ./
+COPY apps/notes ./apps/notes
 COPY libs/ ./libs
-COPY dist/$APP_DIR/package.json ./
-COPY babel.config.json ./
 COPY tsconfig.base.json ./
+COPY nx.json ./
+COPY --from=installer /app/node_modules ./node_modules
+
+RUN yarn nx build server --configuration=production
 
 FROM node:16.19-alpine
 
@@ -30,9 +44,7 @@ RUN set -e; \
 RUN addgroup --system $APP && \
     adduser --system -G $APP $APP
 
-COPY dist/$APP_DIR $APP
-
-RUN chown -R $APP:$APP .
+COPY --from=builder --chown=$APP:$APP /app/dist/$APP_DIR $APP
 
 RUN npm --prefix $APP --omit=dev -f install
 
