@@ -4,10 +4,10 @@
 
 - docker compose
 
-## Setup
+## Quickstart
 
 ```sh
-docker compose -f apps/notes/docker-compose.yaml up
+docker compose -f apps/notes/docker/docker-compose.prod.yaml up
 ```
 
 ### Alternative
@@ -21,11 +21,23 @@ yarn
 Run yarn script
 
 ```sh
+yarn prod
+```
+
+Or:
+
+```sh
+yarn nx serve --configuration=production
+```
+
+## Development
+
+```sh
 yarn dev
 ```
 
 Or:
 
 ```sh
-yarn nx serve notes
+yarn nx serve 
 ```
