@@ -12,7 +12,7 @@ export const Home: NextPage<HomeProps> = ({ ...props }) => {
         >
             <Header />
             <main className={cn('mx-6 mb-auto mt-24 md:mx-12 xl:mx-24')}>
-                Notes App
+                Notes App!
             </main>
             <Footer />
         </div>

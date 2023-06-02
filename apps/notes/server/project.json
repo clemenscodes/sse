@@ -7,7 +7,7 @@
         "build": {
             "executor": "@nx/webpack:webpack",
             "outputs": ["{options.outputPath}"],
-            "defaultConfiguration": "production",
+            "defaultConfiguration": "development",
             "options": {
                 "target": "node",
                 "compiler": "tsc",
@@ -16,12 +16,13 @@
                 "tsConfig": "apps/notes/server/tsconfig.app.json",
                 "assets": ["apps/notes/server/src/assets"],
                 "isolatedConfig": true,
-                "generatePackageJson": true,
                 "webpackConfig": "apps/notes/server/webpack.config.js"
             },
             "configurations": {
                 "development": {},
-                "production": {}
+                "production": {
+                    "generatePackageJson": true
+                }
             }
         },
         "serve": {
@@ -88,6 +89,5 @@
             }
         }
     },
-    "implicitDependencies": ["server"],
     "tags": []
 }

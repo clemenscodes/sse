@@ -5,14 +5,32 @@
     "projectType": "application",
     "implicitDependencies": ["client", "server"],
     "targets": {
+        "build": {
+            "executor": "nx:run-commands",
+            "defaultConfiguration": "development",
+            "configurations": {
+                "development": {
+                    "command": "yarn nx affected -t build --output-style=stream --exclude=$(cat apps/notes/ignored.txt) --parallel"
+                },
+                "production": {
+                    "command": "yarn nx affected -t build --output-style=stream --exclude=$(cat apps/notes/ignored.txt) --configuration=production --parallel"
+                }
+            }
+        },
         "serve": {
-            "command": "libs/scripts/dev.sh"
+            "executor": "nx:run-commands",
+            "defaultConfiguration": "development",
+            "configurations": {
+                "development": {
+                    "command": "libs/scripts/dev.sh"
+                },
+                "production": {
+                    "command": "libs/scripts/prod.sh"
+                }
+            }
         },
         "lint": {
             "command": "yarn nx affected -t lint --output-style=stream --exclude=$(cat apps/notes/ignored.txt) --parallel"
-        },
-        "build": {
-            "command": "yarn nx affected -t build --output-style=stream --exclude=$(cat apps/notes/ignored.txt) --parallel"
         },
         "test": {
             "command": "yarn nx affected -t test --output-style=stream --exclude=$(cat apps/notes/ignored.txt) --parallel"

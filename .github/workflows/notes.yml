@@ -86,8 +86,8 @@ jobs:
               uses: jameshenry/parallel-bash-commands@v1
               with:
                   cmd1: $NX_EXEC lint
-                  cmd2: $NX_EXEC build
-                  cmd3: $NX_EXEC test
+                  cmd2: $NX_EXEC build --configuration=production
+                  cmd3: $NX_EXEC test --configuration=ci
 
             - name: Stop Agents
               if: always()

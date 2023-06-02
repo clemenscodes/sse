@@ -5,6 +5,7 @@
     "private": true,
     "scripts": {
         "dev": "libs/scripts/dev.sh",
+        "prod": "libs/scripts/prod.sh",
         "component": "libs/scripts/component.sh",
         "page": "libs/scripts/page.sh"
     },
