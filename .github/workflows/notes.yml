@@ -144,7 +144,7 @@ jobs:
                   curl -X POST -H "Authorization: Bearer ${{ secrets.SSE_GITHUB_TOKEN }}" https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/cancel
 
     agents:
-        name: Agent ${{ matrix.env copy.agent }}
+        name: Agent ${{ matrix.agent }}
         needs: [set-agents, deps]
         runs-on: ubuntu-latest
         permissions:
