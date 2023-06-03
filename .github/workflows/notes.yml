@@ -76,7 +76,9 @@ jobs:
 
             - name: Prisma Generation
               if: steps.node_cache.outputs.cache-hit != 'true'
-              run: yarn nx affected --nx-bail --base=$NX_BASE --head=$NX_HEAD -t generation
+              run: yarn prisma generate --schema=apps/notes/prisma/schema.prisma
+              env:
+                  PRISMA_SKIP_POSTINSTALL_GENERATE: 1
 
     app:
         name: Notes App
