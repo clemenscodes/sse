@@ -1,0 +1,13 @@
+{
+    "extends": "../../../tsconfig.base.json",
+    "files": [],
+    "include": [],
+    "ts-node": {
+        "compilerOptions": {
+            "module": "CommonJS"
+        }
+    },
+    "compilerOptions": {
+        "esModuleInterop": true
+    }
+}

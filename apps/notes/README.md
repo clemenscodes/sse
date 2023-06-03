@@ -7,7 +7,7 @@
 ## Quickstart
 
 ```sh
-docker compose -f apps/notes/docker/docker-compose.prod.yaml up
+docker compose -f apps/notes/docker/production/docker-compose.yaml up
 ```
 
 ### Alternative

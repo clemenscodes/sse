@@ -15,6 +15,7 @@
         "skipDefaultLibCheck": true,
         "baseUrl": ".",
         "paths": {
+            "@api": ["libs/api/src/index.ts"],
             "@components": ["libs/components/src/index.ts"],
             "@config": ["libs/config/src/index.ts"],
             "@pages": ["libs/pages/src/index.ts"],

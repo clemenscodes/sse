@@ -3,8 +3,10 @@
     "$schema": "../../../node_modules/nx/schemas/project-schema.json",
     "sourceRoot": "apps/notes/server/src",
     "projectType": "application",
+    "implicitDependencies": ["prisma"],
     "targets": {
         "build": {
+            "dependsOn": ["^generation"],
             "executor": "@nx/webpack:webpack",
             "outputs": ["{options.outputPath}"],
             "defaultConfiguration": "development",
@@ -14,7 +16,6 @@
                 "outputPath": "dist/apps/notes/server",
                 "main": "apps/notes/server/src/main.ts",
                 "tsConfig": "apps/notes/server/tsconfig.app.json",
-                "assets": ["apps/notes/server/src/assets"],
                 "isolatedConfig": true,
                 "webpackConfig": "apps/notes/server/webpack.config.js"
             },
@@ -63,7 +64,6 @@
             }
         },
         "docker": {
-            "dependsOn": ["build"],
             "executor": "@nx-tools/nx-container:build",
             "options": {
                 "engine": "docker"
@@ -71,15 +71,15 @@
             "defaultConfiguration": "development",
             "configurations": {
                 "development": {
-                    "file": "apps/notes/server/docker/Dockerfile.development",
+                    "file": "apps/notes/server/docker/development/Dockerfile",
                     "load": true,
                     "metadata": {
                         "images": ["server-dev"],
                         "tags": ["type=schedule", "type=sha", "latest"]
                     }
                 },
-                "ci": {
-                    "file": "apps/notes/server/docker/Dockerfile.production",
+                "production": {
+                    "file": "apps/notes/server/docker/production/Dockerfile",
                     "load": true,
                     "metadata": {
                         "images": ["server"],

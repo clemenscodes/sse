@@ -1,6 +1,5 @@
 {
     "$schema": "./node_modules/nx/schemas/nx-schema.json",
-    "npmScope": "sse",
     "defaultProject": "notes",
     "tasksRunnerOptions": {
         "default": {
@@ -12,7 +11,10 @@
                     "lint",
                     "test",
                     "e2e",
-                    "docker"
+                    "docker",
+                    "generation",
+                    "migration",
+                    "seed"
                 ],
                 "accessToken": "ZTM5Y2RlNjYtNWZiNC00MGE5LWEyYWItNWI5ZjAwZDE5YzlifHJlYWQtd3JpdGU="
             }
