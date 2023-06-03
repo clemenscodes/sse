@@ -5,7 +5,7 @@ WORKDIR /app
 COPY package.json ./
 COPY yarn.lock ./
 
-RUN yarn install --production && yarn add -D nx nx-cloud prisma
+RUN yarn install --production && yarn add -D nx nx-cloud
 
 FROM node:16.19-alpine as builder
 
@@ -13,12 +13,13 @@ WORKDIR /app
 
 ENV APP server
 ENV APP_DIR apps/notes/$APP
-ENV DATABASE_URL postgresql://postgres:postgres@postgres:5432/postgres?connect_timeout=10
-ENV PRISMA_SKIP_POSTINSTALL_GENERATE 1
+ENV DATABASE_URL postgresql://postgres:postgres@db:5432/postgres?connect_timeout=10
 
 COPY package.json ./
 COPY yarn.lock ./
 COPY $APP_DIR ./$APP_DIR
+COPY apps/notes/db ./apps/notes/db
+COPY apps/notes/prisma ./apps/notes/prisma
 COPY libs/ ./libs
 COPY tsconfig.base.json ./
 COPY nx.json ./
@@ -26,6 +27,7 @@ COPY .git ./.git
 COPY --from=installer /app/node_modules ./node_modules
 
 RUN yarn nx build server --configuration=production
+RUN yarn nx generation prisma
 
 FROM node:16.19-alpine
 

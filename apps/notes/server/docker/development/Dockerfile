@@ -11,8 +11,10 @@ FROM node:16.19-alpine as runner
 
 RUN set -e; \
     apk update && apk add --no-cache --update \
-    yarn \
     tini \
+    openssl \
+    zlib \
+    libgcc \
     && apk del --purge apk-tools \
     && rm -rf /var/cache/apk/*
 

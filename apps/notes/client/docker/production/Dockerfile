@@ -11,8 +11,6 @@ FROM node:16.19-alpine as builder
 
 WORKDIR /app
 
-RUN apk add --no-cache yarn
-
 ENV NEXT_TELEMETRY_DISABLED 1
 
 COPY package.json ./

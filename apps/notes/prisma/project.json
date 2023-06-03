@@ -1,0 +1,41 @@
+{
+    "name": "prisma",
+    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "apps/notes/prisma",
+    "projectType": "application",
+    "implicitDependencies": ["db"],
+    "targets": {
+        "generation": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "PRISMA_DISABLE_WARNINGS=1 yarn prisma generate --schema=apps/notes/prisma/schema.prisma"
+            }
+        },
+        "migration": {
+            "dependsOn": ["generate"],
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "PRISMA_DISABLE_WARNINGS=1 yarn prisma migrate dev --schema=apps/notes/prisma/schema.prisma --name $(git rev-parse --short HEAD) --skip-generate"
+            }
+        },
+        "seed": {
+            "dependsOn": ["migrate"],
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "PRISMA_DISABLE_WARNINGS=1 yarn ts-node apps/notes/server/seed.ts"
+            }
+        },
+        "status": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "PRISMA_DISABLE_WARNINGS=1 yarn prisma migrate status --schema=apps/notes/prisma/schema.prisma"
+            }
+        },
+        "studio": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "PRISMA_DISABLE_WARNINGS=1 yarn prisma studio --schema=apps/notes/server/schema.prisma"
+            }
+        }
+    }
+}

@@ -1,11 +1,11 @@
 version: '3.8'
 name: notes
 services:
-    postgres:
-        container_name: postgres
+    db:
+        container_name: db
         build:
-            context: '../../../'
-            dockerfile: 'apps/notes/docker/db.Dockerfile'
+            context: '../../../../'
+            dockerfile: 'apps/notes/db/Dockerfile'
         ports:
             - '5432:5432'
         networks:
@@ -13,10 +13,10 @@ services:
     prisma:
         container_name: prisma
         depends_on:
-            - postgres
+            - db
         build:
-            context: '../../../'
-            dockerfile: apps/notes/docker/prisma.Dockerfile
+            context: '../../../../'
+            dockerfile: apps/notes/prisma/Dockerfile
         networks:
             - notes
     server:
@@ -25,10 +25,10 @@ services:
             prisma:
                 condition: service_completed_successfully
         build:
-            context: '../../../'
-            dockerfile: apps/notes/server/docker/Dockerfile.production
+            context: '../../../../'
+            dockerfile: apps/notes/server/docker/production/Dockerfile
         environment:
-            - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/postgres?connect_timeout=10
+            - DATABASE_URL=postgresql://postgres:postgres@db:5432/postgres?connect_timeout=10
         ports:
             - '3000:3000'
         networks:
@@ -38,8 +38,8 @@ services:
         depends_on:
             - server
         build:
-            context: '../../../'
-            dockerfile: apps/notes/client/docker/Dockerfile.production
+            context: '../../../../'
+            dockerfile: apps/notes/client/docker/production/Dockerfile
         ports:
             - '4200:4200'
         networks:

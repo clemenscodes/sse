@@ -80,7 +80,7 @@
             "configurations": {
                 "development": {
                     "engine": "docker",
-                    "file": "apps/notes/client/docker/Dockerfile.development",
+                    "file": "apps/notes/client/docker/development/Dockerfile",
                     "load": true,
                     "metadata": {
                         "images": ["client-dev"],
@@ -89,7 +89,7 @@
                 },
                 "ci": {
                     "engine": "docker",
-                    "file": "apps/notes/client/docker/Dockerfile.production",
+                    "file": "apps/notes/client/docker/production/Dockerfile",
                     "load": true,
                     "metadata": {
                         "images": ["client"],
