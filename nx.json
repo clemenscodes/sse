@@ -12,9 +12,9 @@
                     "test",
                     "e2e",
                     "docker",
-                    "prisma-generate",
-                    "prisma-migrate",
-                    "prisma-seed"
+                    "generation",
+                    "migration",
+                    "seed"
                 ],
                 "accessToken": "ZTM5Y2RlNjYtNWZiNC00MGE5LWEyYWItNWI5ZjAwZDE5YzlifHJlYWQtd3JpdGU="
             }

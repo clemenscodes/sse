@@ -76,7 +76,7 @@ jobs:
 
             - name: Prisma Generation
               if: steps.node_cache.outputs.cache-hit != 'true'
-              run: yarn nx generation prisma
+              run: yarn nx affected --nx-bail --base=$NX_BASE --head=$NX_HEAD -t generation
 
     app:
         name: Notes App
