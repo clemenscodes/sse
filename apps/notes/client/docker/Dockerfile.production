@@ -2,14 +2,10 @@ FROM node:16.19-alpine as installer
 
 WORKDIR /app
 
-RUN apk add --no-cache yarn
-
-COPY .yarn ./.yarn
-COPY .yarnrc.yml ./
 COPY package.json ./
 COPY yarn.lock ./
 
-RUN yarn
+RUN yarn install --production && yarn add -D nx nx-cloud
 
 FROM node:16.19-alpine as builder
 
@@ -60,9 +56,6 @@ COPY --from=builder --chown=nextjs:nodejs /app/dist/$APP_DIR/.next/static ./dist
 
 EXPOSE $PORT
 
-# Use tini to manage zombie processes and signal forwarding
-# https://github.com/krallin/tini
 ENTRYPOINT ["/sbin/tini", "--"]
 
-# Pass the startup script as arguments to Tini
 CMD ["node", "/app/apps/notes/client/server.js"]

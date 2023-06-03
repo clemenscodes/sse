@@ -1,27 +1,34 @@
-version: '3.3'
-name: notes
+version: '3.8'
+name: dev-notes
 services:
-    client:
-        depends_on: ['server']
-        container_name: client
+    postgres:
+        container_name: postgres
         build:
             context: '../../../'
-            dockerfile: apps/notes/client/docker/Dockerfile.development
+            dockerfile: 'apps/notes/docker/db.Dockerfile'
         ports:
-            - '4200:4200'
-        command: 'yarn nx serve client'
-        volumes:
-            - '../client:/app/apps/notes/client'
-            - '../server:/app/apps/notes/server'
-            - '../../../libs:/app/libs'
+            - '5432:5432'
+        networks:
+            - notes
+    prisma:
+        container_name: prisma
+        depends_on:
+            - postgres
+        build:
+            context: '../../../'
+            dockerfile: apps/notes/docker/prisma.Dockerfile
         networks:
             - notes
     server:
         container_name: server
-        command: 'yarn nx serve server'
+        depends_on:
+            prisma:
+                condition: service_completed_successfully
         build:
             context: '../../../'
             dockerfile: apps/notes/server/docker/Dockerfile.development
+        environment:
+            - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/postgres?connect_timeout=10
         ports:
             - '3000:3000'
         volumes:
@@ -29,6 +36,23 @@ services:
             - '../../../libs:/app/libs'
         networks:
             - notes
+        command: 'yarn nx serve server'
+    client:
+        container_name: client
+        depends_on:
+            - server
+        build:
+            context: '../../../'
+            dockerfile: apps/notes/client/docker/Dockerfile.development
+        ports:
+            - '4200:4200'
+        volumes:
+            - '../client:/app/apps/notes/client'
+            - '../server:/app/apps/notes/server'
+            - '../../../libs:/app/libs'
+        networks:
+            - notes
+        command: 'yarn nx serve client'
 
 networks:
     notes:

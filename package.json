@@ -12,8 +12,10 @@
     "dependencies": {
         "@nestjs/common": "9.4.2",
         "@nestjs/core": "9.4.1",
+        "@nestjs/mapped-types": "*",
         "@nestjs/platform-express": "9.4.1",
         "@nx/next": "16.2.2",
+        "@prisma/client": "4.15.0",
         "@swc/helpers": "~0.5.0",
         "axios": "^1.0.0",
         "clsx": "^1.2.1",
@@ -80,6 +82,7 @@
         "postcss": "8.4.21",
         "prettier": "^2.6.2",
         "prettier-plugin-tailwindcss": "^0.3.0",
+        "prisma": "^4.15.0",
         "tailwindcss": "3.3.2",
         "ts-jest": "29.1.0",
         "ts-node": "10.9.1",

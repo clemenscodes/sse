@@ -2,10 +2,6 @@ FROM node:16.19-alpine as builder
 
 WORKDIR /app
 
-RUN apk add --no-cache yarn
-
-COPY .yarn ./.yarn
-COPY .yarnrc.yml ./
 COPY package.json ./
 COPY yarn.lock ./
 
