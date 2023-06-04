@@ -4,6 +4,6 @@
     "jsxSingleQuote": true,
     "tabWidth": 4,
     "semi": true,
-    "importOrderParserPlugins": ["typescript", "decorators"],
+    "importOrderParserPlugins": ["typescript", "decorators-legacy"],
     "plugins": ["@ianvs/prettier-plugin-sort-imports"]
 }
