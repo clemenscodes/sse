@@ -17,6 +17,13 @@
                 "command": "PRISMA_DISABLE_WARNINGS=1 yarn prisma migrate dev --schema=apps/notes/prisma/schema.prisma --skip-generate"
             }
         },
+        "seed": {
+            "dependsOn": ["migration"],
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "PRISMA_DISABLE_WARNINGS=1 yarn ts-node apps/notes/server/seed.ts"
+            }
+        },
         "status": {
             "executor": "nx:run-commands",
             "options": {
