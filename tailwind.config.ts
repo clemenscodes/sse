@@ -1,51 +1,76 @@
-import type { Config } from 'tailwindcss';
+import { Config } from 'tailwindcss';
 import { fontFamily } from 'tailwindcss/defaultTheme';
 
 export default {
     content: [],
-    plugins: [require('tailwindcss-animate')],
     darkMode: ['class'],
     theme: {
+        container: {
+            center: true,
+            padding: '2rem',
+            screens: {
+                '2xl': '1400px',
+            },
+        },
         extend: {
             colors: {
-                dimmed: {
-                    font: '#adbac7',
-                    muted: '#768390',
-                    light: '#f4f4f4',
-                    100: '#adbac7',
-                    200: '#909dab',
-                    300: '#768390',
-                    400: '#636e7b',
-                    500: '#545d68',
-                    600: '#444c56',
-                    700: '#373e47',
-                    800: '#2d333b',
-                    900: '#22272e',
+                border: 'hsl(var(--border))',
+                input: 'hsl(var(--input))',
+                ring: 'hsl(var(--ring))',
+                background: 'hsl(var(--background))',
+                foreground: 'hsl(var(--foreground))',
+                primary: {
+                    DEFAULT: 'hsl(var(--primary))',
+                    foreground: 'hsl(var(--primary-foreground))',
+                },
+                secondary: {
+                    DEFAULT: 'hsl(var(--secondary))',
+                    foreground: 'hsl(var(--secondary-foreground))',
+                },
+                destructive: {
+                    DEFAULT: 'hsl(var(--destructive))',
+                    foreground: 'hsl(var(--destructive-foreground))',
+                },
+                muted: {
+                    DEFAULT: 'hsl(var(--muted))',
+                    foreground: 'hsl(var(--muted-foreground))',
+                },
+                accent: {
+                    DEFAULT: 'hsl(var(--accent))',
+                    foreground: 'hsl(var(--accent-foreground))',
+                },
+                popover: {
+                    DEFAULT: 'hsl(var(--popover))',
+                    foreground: 'hsl(var(--popover-foreground))',
+                },
+                card: {
+                    DEFAULT: 'hsl(var(--card))',
+                    foreground: 'hsl(var(--card-foreground))',
                 },
             },
-            boxShadow: {
-                full: '0px 0px 8px 4px rgba(0,0,0,0.2)',
-                'full-xl': '0px 0px 16px 8px rgba(0,0,0,0.2)',
+            borderRadius: {
+                lg: `var(--radius)`,
+                md: `calc(var(--radius) - 2px)`,
+                sm: 'calc(var(--radius) - 4px)',
             },
             fontFamily: {
                 sans: ['var(--font-sans)', ...fontFamily.sans],
-                condensed: ['Roboto Condensed'],
-                agustina: ['Agustina Regular'],
             },
             keyframes: {
-                wave: {
-                    '0%': { transform: 'rotate(0deg)' },
-                    '10%': { transform: 'rotate(-10deg)' },
-                    '20%': { transform: 'rotate(12deg)' },
-                    '30%': { transform: 'rotate(-10deg)' },
-                    '40%': { transform: 'rotate(9deg)' },
-                    '50%': { transform: 'rotate(0deg)' },
-                    '100%': { transform: 'rotate(0deg)' },
+                'accordion-down': {
+                    from: { height: '0' },
+                    to: { height: 'var(--radix-accordion-content-height)' },
+                },
+                'accordion-up': {
+                    from: { height: 'var(--radix-accordion-content-height)' },
+                    to: { height: '0' },
                 },
             },
             animation: {
-                wave: 'wave 1.8s ease-in-out infinite',
+                'accordion-down': 'accordion-down 0.2s ease-out',
+                'accordion-up': 'accordion-up 0.2s ease-out',
             },
         },
     },
+    plugins: [require('tailwindcss-animate')],
 } satisfies Config;
