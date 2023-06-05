@@ -11,7 +11,7 @@
             }
         },
         "migration": {
-            "dependsOn": ["generate"],
+            "dependsOn": ["generation"],
             "executor": "nx:run-commands",
             "options": {
                 "command": "PRISMA_DISABLE_WARNINGS=1 yarn prisma migrate dev --schema=apps/notes/prisma/schema.prisma --skip-generate"

@@ -13,7 +13,8 @@
                     "e2e",
                     "docker",
                     "generation",
-                    "migration"
+                    "migration",
+                    "seed"
                 ],
                 "accessToken": "ZTM5Y2RlNjYtNWZiNC00MGE5LWEyYWItNWI5ZjAwZDE5YzlifHJlYWQtd3JpdGU="
             }
