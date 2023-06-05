@@ -7,6 +7,7 @@ async function main() {
         data: {
             email: 'user@example.com',
             name: 'John Doe',
+            password: 'Random password',
         },
     });
 }
