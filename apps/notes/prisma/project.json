@@ -14,7 +14,7 @@
             "dependsOn": ["generate"],
             "executor": "nx:run-commands",
             "options": {
-                "command": "PRISMA_DISABLE_WARNINGS=1 yarn prisma migrate dev --schema=apps/notes/prisma/schema.prisma --name $(git rev-parse --short HEAD) --skip-generate"
+                "command": "PRISMA_DISABLE_WARNINGS=1 yarn prisma migrate dev --schema=apps/notes/prisma/schema.prisma --skip-generate"
             }
         },
         "status": {

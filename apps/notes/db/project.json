@@ -4,6 +4,13 @@
     "sourceRoot": "apps/notes/db",
     "projectType": "application",
     "targets": {
+        "start": {
+            "dependsOn": ["image"],
+            "command": "docker run --rm -d -p 5432:5432/tcp db:latest"
+        },
+        "image": {
+            "command": "INPUT_TAGS=latest yarn nx docker db"
+        },
         "docker": {
             "executor": "@nx-tools/nx-container:build",
             "options": {
