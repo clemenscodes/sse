@@ -1,3 +1,4 @@
+export * from './lib/login-dialog/login-dialog';
 export * from './lib/input/input';
 export * from './lib/button/button';
 export * from './lib/login/login';
