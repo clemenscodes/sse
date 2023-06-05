@@ -15,7 +15,6 @@ ENV APP_DIR apps/notes/$APP
 ENV DATABASE_URL postgresql://postgres:postgres@db:5432/postgres?connect_timeout=10
 ENV PRISMA_SKIP_POSTINSTALL_GENERATE 1
 
-COPY $APP_DIR ./$APP_DIR
 COPY apps/notes/db ./apps/notes/db
 COPY libs/ ./libs
 COPY tsconfig.base.json ./
