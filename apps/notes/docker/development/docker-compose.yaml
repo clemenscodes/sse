@@ -33,7 +33,6 @@ services:
             - '3000:3000'
         volumes:
             - '../../server:/app/apps/notes/server'
-            - '../../db:/app/apps/notes/db'
             - '../../prisma:/app/apps/notes/prisma'
             - '../../../../libs:/app/libs'
         networks:
@@ -51,7 +50,6 @@ services:
         volumes:
             - '../../client:/app/apps/notes/client'
             - '../../server:/app/apps/notes/server'
-            - '../../db:/app/apps/notes/db'
             - '../../prisma:/app/apps/notes/prisma'
             - '../../../../libs:/app/libs'
         networks:

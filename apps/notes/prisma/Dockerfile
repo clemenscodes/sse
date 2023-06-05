@@ -26,4 +26,4 @@ RUN wget https://github.com/vishnubob/wait-for-it/raw/master/wait-for-it.sh --no
     chmod +x wait-for-it.sh
 
 ENTRYPOINT [ "/bin/bash", "-c" ]
-CMD ["/app/wait-for-it.sh db:5432 --strict --timeout=300 -- npm i -D tslib ts-node @types/node && npx prisma generate --schema=apps/notes/prisma/schema.prisma && npx prisma migrate dev --schema=apps/notes/prisma/schema.prisma --name $(git rev-parse --short HEAD) --skip-generate && npx ts-node apps/notes/prisma/seed.ts"]
+CMD ["/app/wait-for-it.sh db:5432 --strict --timeout=300 -- /app/apps/notes/prisma/setup.sh"]
