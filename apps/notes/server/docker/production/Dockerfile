@@ -27,7 +27,7 @@ COPY .git ./.git
 COPY --from=installer /app/node_modules ./node_modules
 
 RUN yarn nx build server --configuration=production
-RUN yarn nx generation prisma
+RUN yarn nx generation prisma --skip-nx-cache
 
 FROM node:16.19-alpine
 

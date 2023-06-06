@@ -3,7 +3,6 @@
     "$schema": "../../../node_modules/nx/schemas/project-schema.json",
     "sourceRoot": "apps/notes/prisma",
     "projectType": "application",
-    "implicitDependencies": ["db"],
     "targets": {
         "generation": {
             "executor": "nx:run-commands",
@@ -12,14 +11,14 @@
             }
         },
         "migration": {
-            "dependsOn": ["generate"],
+            "dependsOn": ["generation"],
             "executor": "nx:run-commands",
             "options": {
-                "command": "PRISMA_DISABLE_WARNINGS=1 yarn prisma migrate dev --schema=apps/notes/prisma/schema.prisma --name $(git rev-parse --short HEAD) --skip-generate"
+                "command": "PRISMA_DISABLE_WARNINGS=1 yarn prisma migrate dev --schema=apps/notes/prisma/schema.prisma --skip-generate"
             }
         },
         "seed": {
-            "dependsOn": ["migrate"],
+            "dependsOn": ["migration"],
             "executor": "nx:run-commands",
             "options": {
                 "command": "PRISMA_DISABLE_WARNINGS=1 yarn ts-node apps/notes/server/seed.ts"
@@ -35,6 +34,24 @@
             "executor": "nx:run-commands",
             "options": {
                 "command": "PRISMA_DISABLE_WARNINGS=1 yarn prisma studio --schema=apps/notes/server/schema.prisma"
+            }
+        },
+        "start": {
+            "dependsOn": ["image"],
+            "command": "docker run --rm -d -p 4444:4444/tcp prisma:latest"
+        },
+        "image": {
+            "command": "INPUT_TAGS=latest yarn nx docker prisma"
+        },
+        "docker": {
+            "executor": "@nx-tools/nx-container:build",
+            "options": {
+                "engine": "docker",
+                "file": "apps/notes/prisma/Dockerfile",
+                "load": true,
+                "metadata": {
+                    "images": ["prisma"]
+                }
             }
         }
     }
