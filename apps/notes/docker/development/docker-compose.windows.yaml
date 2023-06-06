@@ -1,0 +1,66 @@
+version: '3.8'
+name: dev-notes
+services:
+    db:
+        container_name: db
+        build:
+            context: '..\\..\\..\\..\\'
+            dockerfile: 'apps\\notes\\db\\Dockerfile'
+        ports:
+            - '5432:5432'
+        networks:
+            - notes
+    prisma:
+        container_name: prisma
+        depends_on:
+            - db
+        tty: true
+        volumes:
+            - '..\\..\\prisma\\schema.prisma:/app/apps/notes/prisma/schema.prisma'
+            - '..\\..\\prisma\\seed.ts:/app/apps/notes/prisma/seed.ts'
+            - '..\\..\\prisma\\setup.sh:/app/apps/notes/prisma/setup.sh'
+        build:
+            context: '..\\..\\..\\..\\'
+            dockerfile: 'apps\\notes\\prisma\\docker\\development\\Dockerfile'
+        networks:
+            - notes
+    server:
+        container_name: server
+        depends_on:
+            prisma:
+                condition: service_completed_successfully
+        build:
+            context: '..\\..\\..\\..\\'
+            dockerfile: 'apps\\notes\\server\\docker\\development\\Dockerfile'
+        environment:
+            - DATABASE_URL=postgresql://postgres:postgres@db:5432/postgres?connect_timeout=10
+        ports:
+            - '3000:3000'
+        volumes:
+            - '..\\..\\server:/app/apps/notes/server'
+            - '..\\..\\prisma:/app/apps/notes/prisma'
+            - '..\\..\\..\\..\\libs:/app/libs'
+        networks:
+            - notes
+        command: 'yarn nx serve server'
+    client:
+        container_name: client
+        depends_on:
+            - server
+        build:
+            context: '..\\..\\..\\..\\'
+            dockerfile: 'apps\\notes\\client\\docker\\development\\Dockerfile'
+        ports:
+            - '4200:4200'
+        volumes:
+            - '..\\..\\client:/app/apps/notes/client'
+            - '..\\..\\server:/app/apps/notes/server'
+            - '..\\..\\prisma:/app/apps/notes/prisma'
+            - '..\\..\\..\\..\\libs:/app/libs'
+        networks:
+            - notes
+        command: 'yarn nx serve client'
+
+networks:
+    notes:
+        driver: bridge

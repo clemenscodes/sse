@@ -4,7 +4,7 @@ services:
     db:
         container_name: db
         build:
-            context: '../../../../'
+            context: '.'
             dockerfile: 'apps/notes/db/Dockerfile'
         ports:
             - '5432:5432'
@@ -16,7 +16,7 @@ services:
             - db
         tty: true
         build:
-            context: '../../../../'
+            context: '.'
             dockerfile: apps/notes/prisma/docker/production/Dockerfile
         networks:
             - notes
@@ -26,7 +26,7 @@ services:
             prisma:
                 condition: service_completed_successfully
         build:
-            context: '../../../../'
+            context: '.'
             dockerfile: apps/notes/server/docker/production/Dockerfile
         environment:
             - DATABASE_URL=postgresql://postgres:postgres@db:5432/postgres?connect_timeout=10
@@ -39,7 +39,7 @@ services:
         depends_on:
             - server
         build:
-            context: '../../../../'
+            context: '.'
             dockerfile: apps/notes/client/docker/production/Dockerfile
         ports:
             - '4200:4200'
