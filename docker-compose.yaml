@@ -18,9 +18,9 @@ services:
             context: '.'
             dockerfile: apps/notes/prisma/Dockerfile
         volumes:
-            - '../../prisma/schema.prisma:/app/apps/notes/prisma/schema.prisma'
-            - '../../prisma/seed.ts:/app/apps/notes/prisma/seed.ts'
-            - '../../prisma/setup.sh:/app/apps/notes/prisma/setup.sh'
+            - 'apps/notes/prisma/schema.prisma:/app/apps/notes/prisma/schema.prisma'
+            - 'apps/notes/prisma/seed.ts:/app/apps/notes/prisma/seed.ts'
+            - 'apps/notes/prisma/setup.sh:/app/apps/notes/prisma/setup.sh'
         networks:
             - notes
     server:
