@@ -1,5 +1,4 @@
 version: '3.8'
-name: notes
 services:
     db:
         container_name: db
@@ -17,7 +16,11 @@ services:
         tty: true
         build:
             context: '.'
-            dockerfile: apps/notes/prisma/docker/production/Dockerfile
+            dockerfile: apps/notes/prisma/Dockerfile
+        volumes:
+            - '../../prisma/schema.prisma:/app/apps/notes/prisma/schema.prisma'
+            - '../../prisma/seed.ts:/app/apps/notes/prisma/seed.ts'
+            - '../../prisma/setup.sh:/app/apps/notes/prisma/setup.sh'
         networks:
             - notes
     server:

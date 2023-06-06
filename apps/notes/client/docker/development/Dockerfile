@@ -15,8 +15,6 @@ RUN set -e; \
     && apk del --purge apk-tools \
     && rm -rf /var/cache/apk/*
 
-ENV APP web
-ENV APP_DIR apps/$APP
 ENV PORT 4200
 ENV HOST 0.0.0.0
 ENV HOSTNAME localhost
