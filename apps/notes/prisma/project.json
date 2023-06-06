@@ -35,6 +35,24 @@
             "options": {
                 "command": "PRISMA_DISABLE_WARNINGS=1 yarn prisma studio --schema=apps/notes/server/schema.prisma"
             }
+        },
+        "start": {
+            "dependsOn": ["image"],
+            "command": "docker run --rm -d -p 4444:4444/tcp prisma:latest"
+        },
+        "image": {
+            "command": "INPUT_TAGS=latest yarn nx docker prisma"
+        },
+        "docker": {
+            "executor": "@nx-tools/nx-container:build",
+            "options": {
+                "engine": "docker",
+                "file": "apps/notes/prisma/Dockerfile",
+                "load": true,
+                "metadata": {
+                    "images": ["prisma"]
+                }
+            }
         }
     }
 }

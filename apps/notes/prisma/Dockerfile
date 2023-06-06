@@ -10,8 +10,6 @@ RUN set -e; \
     && apk del --purge apk-tools \
     && rm -rf /var/cache/apk/*
 
-ENV APP prisma
-ENV APP_DIR apps/notes/$APP
 ENV DATABASE_URL postgresql://postgres:postgres@db:5432/postgres?connect_timeout=10
 ENV PRISMA_SKIP_POSTINSTALL_GENERATE 1
 
@@ -25,4 +23,4 @@ RUN wget https://github.com/vishnubob/wait-for-it/raw/master/wait-for-it.sh --no
     chmod +x wait-for-it.sh
 
 ENTRYPOINT [ "/bin/bash", "-c" ]
-CMD ["/app/wait-for-it.sh db:5432 --strict --timeout=300 -- /app/apps/notes/prisma/setup.sh"]
+CMD ["/app/wait-for-it.sh db:5432 --strict --timeout=300 -- npm i -D tslib ts-node @types/node && echo | npx prisma generate --schema=apps/notes/prisma/schema.prisma && npx prisma migrate reset --schema=apps/notes/prisma/schema.prisma --force --skip-generate && npx prisma migrate dev --schema=apps/notes/prisma/schema.prisma --name $(git rev-parse --short HEAD) --skip-generate && npx ts-node apps/notes/prisma/seed.ts"]
