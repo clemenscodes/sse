@@ -1,14 +1,17 @@
-import { type OptionsType, type ZxcvbnResult } from '@zxcvbn-ts/core';
+import {
+    zxcvbn,
+    zxcvbnOptions,
+    type OptionsType,
+    type ZxcvbnResult,
+} from '@zxcvbn-ts/core';
+import * as zxcvbnCommonPackage from '@zxcvbn-ts/language-common';
+import * as zxcvbnDePackage from '@zxcvbn-ts/language-de';
+import * as zxcvbnEnPackage from '@zxcvbn-ts/language-en';
 
-export const checkPassword = async (
+export const checkPassword = (
     pass: string,
     inputs: string[]
-): Promise<Omit<ZxcvbnResult, 'password'>> => {
-    const { zxcvbnAsync, zxcvbnOptions } = await import('@zxcvbn-ts/core');
-    const zxcvbnCommonPackage = await import('@zxcvbn-ts/language-common');
-    const zxcvbnEnPackage = await import('@zxcvbn-ts/language-en');
-    const zxcvbnDePackage = await import('@zxcvbn-ts/language-de');
-
+): Omit<ZxcvbnResult, 'password'> => {
     const options: OptionsType = {
         dictionary: {
             ...zxcvbnCommonPackage.dictionary,
@@ -24,6 +27,6 @@ export const checkPassword = async (
     zxcvbnOptions.setOptions(options);
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password, ...result } = await zxcvbnAsync(pass, inputs);
+    const { password, ...result } = zxcvbn(pass, inputs);
     return result;
 };

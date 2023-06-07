@@ -17,10 +17,7 @@ export class PasswordException extends HttpException {
     ) {
         super(
             {
-                statusCode,
                 message,
-                error,
-                result,
             },
             statusCode
         );
@@ -32,6 +29,12 @@ export class PasswordFilter implements ExceptionFilter {
     catch(exception: PasswordException, host: ArgumentsHost) {
         const ctx = host.switchToHttp();
         const response = ctx.getResponse<Response>();
-        response.status(exception.statusCode).json(exception);
+        const { statusCode, message, error, result } = exception;
+        response.status(exception.statusCode).json({
+            statusCode,
+            message,
+            error,
+            result,
+        });
     }
 }

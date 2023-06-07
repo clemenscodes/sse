@@ -11,11 +11,10 @@ export class ZodFilter implements ExceptionFilter {
     catch(exception: ZodError, host: ArgumentsHost) {
         const ctx = host.switchToHttp();
         const response = ctx.getResponse();
-        const errors = exception.errors.map((error) => error.message);
-        response.status(HttpStatus.BAD_REQUEST).json({
-            statusCode: HttpStatus.BAD_REQUEST,
+        response.status(HttpStatus.NOT_ACCEPTABLE).json({
+            statusCode: HttpStatus.NOT_ACCEPTABLE,
             message: 'Validation failed',
-            errors: errors,
+            errors: exception.errors,
         });
     }
 }
