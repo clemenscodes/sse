@@ -14,7 +14,7 @@ env:
     NEXT_TELEMETRY_DISABLED: 1
     NX_CLOUD_DISTRIBUTED_EXECUTION_AGENT_COUNT: 2
     NX_CLOUD_DISTRIBUTED_EXECUTION: true
-    NX_EXEC: 'yarn nx affected --nx-bail --base=$NX_BASE --head=$NX_HEAD --output-style=stream --exclude=$(cat apps/notes/ignored.txt) --parallel=$NX_CLOUD_DISTRIBUTED_EXECUTION_AGENT_COUNT -t'
+    NX_EXEC: 'yarn nx affected --nx-bail --base=$NX_BASE --head=$NX_HEAD --output-style=stream --exclude=$(cat apps/notes/assets/ignored.txt) --parallel=$NX_CLOUD_DISTRIBUTED_EXECUTION_AGENT_COUNT -t'
 
 jobs:
     set-agents:
@@ -73,6 +73,9 @@ jobs:
             - name: Install Node Dependencies
               if: steps.node_cache.outputs.cache-hit != 'true'
               run: yarn install --immutable
+
+            - name: Format Workspace
+              run: yarn nx format:check --all
 
             - name: Prisma Generation
               if: steps.node_cache.outputs.cache-hit != 'true'

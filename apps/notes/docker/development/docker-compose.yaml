@@ -21,7 +21,7 @@ services:
             - '../../prisma/setup.sh:/app/apps/notes/prisma/setup.sh'
         build:
             context: '../../../../'
-            dockerfile: apps/notes/prisma/Dockerfile
+            dockerfile: apps/notes/prisma/docker/development/Dockerfile
         networks:
             - notes
     server:
@@ -60,6 +60,19 @@ services:
         networks:
             - notes
         command: 'yarn nx serve client'
+    docs:
+        container_name: docs
+        build:
+            context: '../../../../'
+            dockerfile: apps/notes/docs/docker/development/Dockerfile
+        ports:
+            - '8000:8000'
+        volumes:
+            - '../../docs:/app/apps/notes/docs'
+            - '../../../../libs:/app/libs'
+        networks:
+            - notes
+        command: 'yarn nx serve docs'
 
 networks:
     notes:

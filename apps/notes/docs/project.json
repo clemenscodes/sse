@@ -1,0 +1,66 @@
+{
+    "name": "docs",
+    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "apps/notes/docs",
+    "projectType": "application",
+    "targets": {
+        "build": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "yarn docusaurus build --out-dir ../../../dist/apps/notes/docs",
+                "cwd": "./apps/notes/docs"
+            }
+        },
+        "serve": {
+            "executor": "nx:run-commands",
+            "defaultConfiguration": "development",
+            "options": {
+                "cwd": "./apps/notes/docs"
+            },
+            "configurations": {
+                "development": {
+                    "command": "yarn docusaurus start -p 8000 -h 0.0.0.0 --no-open"
+                },
+                "production": {
+                    "command": "yarn docusaurus serve -p 8000 -h 0.0.0.0 --build --dir ../../../dist/apps/note/docs --no-open"
+                }
+            }
+        },
+        "image": {
+            "executor": "nx:run-commands",
+            "defaultConfiguration": "development",
+            "configurations": {
+                "development": {
+                    "command": "INPUT_TAGS=latest yarn nx docker docs"
+                },
+                "production": {
+                    "command": "INPUT_TAGS=latest yarn nx docker docs --configuration=production"
+                }
+            }
+        },
+        "docker": {
+            "executor": "@nx-tools/nx-container:build",
+            "defaultConfiguration": "development",
+            "configurations": {
+                "development": {
+                    "engine": "docker",
+                    "file": "apps/notes/docs/docker/development/Dockerfile",
+                    "load": true,
+                    "metadata": {
+                        "images": ["docs-dev"],
+                        "tags": ["type=schedule", "type=sha", "latest"]
+                    }
+                },
+                "production": {
+                    "engine": "docker",
+                    "file": "apps/notes/docs/docker/production/Dockerfile",
+                    "load": true,
+                    "metadata": {
+                        "images": ["docs"],
+                        "tags": ["type=schedule", "type=sha", "latest"]
+                    }
+                }
+            }
+        }
+    }
+}
