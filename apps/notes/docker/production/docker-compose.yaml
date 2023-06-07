@@ -49,6 +49,15 @@ services:
             - '4200:4200'
         networks:
             - notes
+    docs:
+        container_name: docs
+        build:
+            context: '../../../../'
+            dockerfile: apps/notes/docs/docker/production/Dockerfile
+        ports:
+            - '8000:8000'
+        networks:
+            - notes
 
 networks:
     notes:

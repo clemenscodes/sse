@@ -6,13 +6,13 @@ sidebar_position: 2
 
 Documents are **groups of pages** connected through:
 
--   a **sidebar**
--   **previous/next navigation**
--   **versioning**
+- a **sidebar**
+- **previous/next navigation**
+- **versioning**
 
 ## Create your first Doc
 
-Create a markdown file at `docs/hello.md`:
+Create a Markdown file at `docs/hello.md`:
 
 ```md title="docs/hello.md"
 # Hello
@@ -20,7 +20,7 @@ Create a markdown file at `docs/hello.md`:
 This is my **first Docusaurus document**!
 ```
 
-A new document is now available at `http://localhost:3000/docs/hello`.
+A new document is now available at [http://localhost:3000/docs/hello](http://localhost:3000/docs/hello).
 
 ## Configure the Sidebar
 
@@ -41,14 +41,16 @@ This is my **first Docusaurus document**!
 
 It is also possible to create your sidebar explicitly in `sidebars.js`:
 
-```diff title="sidebars.js"
+```js title="sidebars.js"
 module.exports = {
   tutorialSidebar: [
+    'intro',
+    // highlight-next-line
+    'hello',
     {
       type: 'category',
       label: 'Tutorial',
--     items: [...],
-+     items: ['hello'],
+      items: ['tutorial-basics/create-a-document'],
     },
   ],
 };

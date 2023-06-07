@@ -1,21 +1,33 @@
 {
     "name": "docs",
     "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "apps/notes/docs",
     "projectType": "application",
-    "sourceRoot": "apps/notes/docs/src",
     "targets": {
         "build": {
-            "executor": "@nx-plus/docusaurus:browser",
+            "executor": "nx:run-commands",
             "options": {
-                "outputPath": "dist/apps/notes/docs"
+                "command": "yarn docusaurus build --out-dir ../../../dist/apps/notes/docs",
+                "cwd": "./apps/notes/docs"
             }
         },
         "serve": {
-            "executor": "@nx-plus/docusaurus:dev-server",
+            "executor": "nx:run-commands",
+            "defaultConfiguration": "development",
             "options": {
-                "port": 8000
+                "cwd": "./apps/notes/docs"
+            },
+            "configurations": {
+                "development": {
+                    "command": "yarn docusaurus start -p 8000 -h 0.0.0.0 --no-open"
+                },
+                "production": {
+                    "command": "yarn docusaurus serve -p 8000 -h 0.0.0.0 --build --dir ../../../dist/apps/note/docs --no-open"
+                }
             }
+        },
+        "docker": {
+            "command": "yarn"
         }
-    },
-    "tags": []
+    }
 }
