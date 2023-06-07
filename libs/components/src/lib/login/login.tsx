@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { cn } from '@styles';
+import { loginSchema, type LoginSchema } from '@types';
 import { useForm } from 'react-hook-form';
-import * as z from 'zod';
 import { Button } from '../button/button';
 import {
     Form,
@@ -14,23 +14,17 @@ import {
 } from '../form/form';
 import { Input } from '../input/input';
 
-const formSchema = z.object({
-    username: z.string().min(2, {
-        message: 'Username must be at least 2 characters.',
-    }),
-});
-
 export type LoginProps = React.ComponentPropsWithoutRef<'form'>;
 
 export const Login: React.FC<LoginProps> = ({ ...props }) => {
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
+    const form = useForm<LoginSchema>({
+        resolver: zodResolver(loginSchema),
         defaultValues: {
             username: '',
         },
     });
 
-    const onSubmit = (values: z.infer<typeof formSchema>) => {
+    const onSubmit = (values: LoginSchema) => {
         console.log(values);
     };
 

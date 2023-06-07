@@ -4361,13 +4361,6 @@
   resolved "https://registry.yarnpkg.com/@zxcvbn-ts/language-en/-/language-en-3.0.1.tgz#5d372aeebc74623b32ae3ed879a0db673cecb4c4"
   integrity sha512-GyWxruQzJkIE3yTutCEU9zNnEIWC65gixMYunMTOc/8iInvzUL7h2l4GSylYZL8k7Whk/cyrKVyNVTYvK4Acog==
 
-"@zxcvbn-ts/matcher-pwned@^3.0.2":
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/@zxcvbn-ts/matcher-pwned/-/matcher-pwned-3.0.2.tgz#414c010f11813474e81afa3cedcef59f9a256293"
-  integrity sha512-9iwY0XCCUCY9/GELOp3F4TgpTtNzEORKCv3a+63A1ys+5Y+EhfdTbq9fXYWdoQ0wg5yv2ib4UO5LqI6I2GG/+A==
-  dependencies:
-    "@zxcvbn-ts/core" "^3.0.2"
-
 abab@^2.0.5, abab@^2.0.6:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/abab/-/abab-2.0.6.tgz#41b80f2c871d19686216b82309231cfd3cb3d291"

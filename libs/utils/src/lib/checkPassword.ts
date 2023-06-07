@@ -8,7 +8,6 @@ export const checkPassword = async (
     const zxcvbnCommonPackage = await import('@zxcvbn-ts/language-common');
     const zxcvbnEnPackage = await import('@zxcvbn-ts/language-en');
     const zxcvbnDePackage = await import('@zxcvbn-ts/language-de');
-    const { matcherPwnedFactory } = await import('@zxcvbn-ts/matcher-pwned');
 
     const options: OptionsType = {
         dictionary: {
@@ -23,9 +22,6 @@ export const checkPassword = async (
     };
 
     zxcvbnOptions.setOptions(options);
-
-    const matcherPwned = matcherPwnedFactory(fetch, zxcvbnOptions);
-    zxcvbnOptions.addMatcher('pwned', matcherPwned);
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...result } = await zxcvbnAsync(pass, inputs);
