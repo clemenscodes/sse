@@ -45,12 +45,23 @@
         },
         "docker": {
             "executor": "@nx-tools/nx-container:build",
-            "options": {
-                "engine": "docker",
-                "file": "apps/notes/prisma/Dockerfile",
-                "load": true,
-                "metadata": {
-                    "images": ["prisma"]
+            "defaultConfiguration": "development",
+            "configurations": {
+                "development": {
+                    "engine": "docker",
+                    "file": "apps/notes/prisma/docker/development/Dockerfile",
+                    "load": true,
+                    "metadata": {
+                        "images": ["dev-prisma"]
+                    }
+                },
+                "production": {
+                    "engine": "docker",
+                    "file": "apps/notes/prisma/docker/production/Dockerfile",
+                    "load": true,
+                    "metadata": {
+                        "images": ["prisma"]
+                    }
                 }
             }
         }
