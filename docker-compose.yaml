@@ -16,11 +16,7 @@ services:
         tty: true
         build:
             context: '.'
-            dockerfile: apps/notes/prisma/Dockerfile
-        volumes:
-            - 'apps/notes/prisma/schema.prisma:/app/apps/notes/prisma/schema.prisma'
-            - 'apps/notes/prisma/seed.ts:/app/apps/notes/prisma/seed.ts'
-            - 'apps/notes/prisma/setup.sh:/app/apps/notes/prisma/setup.sh'
+            dockerfile: apps/notes/prisma/docker/production/Dockerfile
         networks:
             - notes
     server:
@@ -46,6 +42,15 @@ services:
             dockerfile: apps/notes/client/docker/production/Dockerfile
         ports:
             - '4200:4200'
+        networks:
+            - notes
+    docs:
+        container_name: docs
+        build:
+            context: '.'
+            dockerfile: apps/notes/docs/docker/production/Dockerfile
+        ports:
+            - '8000:8000'
         networks:
             - notes
 

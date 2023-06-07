@@ -26,8 +26,41 @@
                 }
             }
         },
+        "image": {
+            "executor": "nx:run-commands",
+            "defaultConfiguration": "development",
+            "configurations": {
+                "development": {
+                    "command": "INPUT_TAGS=latest yarn nx docker docs"
+                },
+                "production": {
+                    "command": "INPUT_TAGS=latest yarn nx docker docs --configuration=production"
+                }
+            }
+        },
         "docker": {
-            "command": "yarn"
+            "executor": "@nx-tools/nx-container:build",
+            "defaultConfiguration": "development",
+            "configurations": {
+                "development": {
+                    "engine": "docker",
+                    "file": "apps/notes/docs/docker/development/Dockerfile",
+                    "load": true,
+                    "metadata": {
+                        "images": ["docs-dev"],
+                        "tags": ["type=schedule", "type=sha", "latest"]
+                    }
+                },
+                "production": {
+                    "engine": "docker",
+                    "file": "apps/notes/docs/docker/production/Dockerfile",
+                    "load": true,
+                    "metadata": {
+                        "images": ["docs"],
+                        "tags": ["type=schedule", "type=sha", "latest"]
+                    }
+                }
+            }
         }
     }
 }

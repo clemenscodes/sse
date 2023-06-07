@@ -31,9 +31,6 @@ RUN set -e; \
     && rm -rf /var/cache/apk/* \
     && rm -rf /etc/nginx/conf.d/*
 
-RUN addgroup -g 2000 nginx \
-    && adduser -D -G nginx -u 2000 docs
-
 ENV APP_HOME /app
 ENV APP docs
 ENV APP_DIR apps/notes/$APP
@@ -44,9 +41,8 @@ ENV NODE_ENV production
 
 WORKDIR $APP_HOME
 
-USER docs
-
-COPY --from=builder --chown=docs:nginx /app/dist/$APP_DIR/ /usr/share/nginx/html
+COPY --from=builder /app/dist/$APP_DIR/ /usr/share/nginx/html
+COPY --from=builder /app/$APP_DIR/nginx.conf /etc/nginx/conf.d/nginx.conf
 
 EXPOSE $PORT
 

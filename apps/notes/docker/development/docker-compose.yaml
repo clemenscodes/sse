@@ -21,7 +21,7 @@ services:
             - '../../prisma/setup.sh:/app/apps/notes/prisma/setup.sh'
         build:
             context: '../../../../'
-            dockerfile: apps/notes/prisma/Dockerfile
+            dockerfile: apps/notes/prisma/docker/development/Dockerfile
         networks:
             - notes
     server:
