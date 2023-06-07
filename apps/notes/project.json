@@ -10,10 +10,10 @@
             "defaultConfiguration": "development",
             "configurations": {
                 "development": {
-                    "command": "yarn nx affected -t build --output-style=stream --exclude=$(cat apps/notes/ignored.txt) --parallel"
+                    "command": "yarn nx affected -t build --output-style=stream --exclude=$(cat apps/notes/assets/ignored.txt) --parallel"
                 },
                 "production": {
-                    "command": "yarn nx affected -t build --output-style=stream --exclude=$(cat apps/notes/ignored.txt) --configuration=production --parallel"
+                    "command": "yarn nx affected -t build --output-style=stream --exclude=$(cat apps/notes/assets/ignored.txt) --configuration=production --parallel"
                 }
             }
         },
@@ -30,13 +30,13 @@
             }
         },
         "lint": {
-            "command": "yarn nx affected -t lint --output-style=stream --exclude=$(cat apps/notes/ignored.txt) --parallel"
+            "command": "yarn nx affected -t lint --output-style=stream --exclude=$(cat apps/notes/assets/ignored.txt) --parallel"
         },
         "test": {
-            "command": "yarn nx affected -t test --output-style=stream --exclude=$(cat apps/notes/ignored.txt) --parallel"
+            "command": "yarn nx affected -t test --output-style=stream --exclude=$(cat apps/notes/assets/ignored.txt) --parallel"
         },
         "docker": {
-            "command": "yarn nx affected -t docker --output-style=stream --exclude=$(cat apps/notes/ignored.txt) --parallel"
+            "command": "yarn nx affected -t docker --output-style=stream --exclude=$(cat apps/notes/assets/ignored.txt) --parallel"
         }
     }
 }
