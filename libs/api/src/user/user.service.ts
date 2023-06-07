@@ -12,7 +12,7 @@ export class UserService {
 
     async create(user: User) {
         try {
-            return await this.prismaService.user.create({
+            const createdUser = await this.prismaService.user.create({
                 data: user,
                 select: {
                     id: true,
@@ -21,12 +21,18 @@ export class UserService {
                     password: false,
                 },
             });
+            if (!createdUser) {
+                throw new InternalServerErrorException('Registration failed');
+            }
+            return createdUser;
         } catch (e) {
             if (
                 e instanceof Prisma.PrismaClientKnownRequestError &&
                 e.code === 'P2002'
             ) {
                 throw new InternalServerErrorException('Registration failed');
+            } else if (e instanceof InternalServerErrorException) {
+                throw e;
             } else {
                 throw new InternalServerErrorException('Registration failed');
             }

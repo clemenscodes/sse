@@ -1,6 +1,7 @@
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { ApiModule } from './api.module';
+import { LoggingInterceptor } from './logging.interceptor';
 import { PasswordFilter } from './password.filter';
 import { ZodFilter } from './zod.filter';
 
@@ -13,6 +14,7 @@ export async function bootstrap() {
     app.setGlobalPrefix(globalPrefix);
     app.useGlobalFilters(new ZodFilter());
     app.useGlobalFilters(new PasswordFilter());
+    app.useGlobalInterceptors(new LoggingInterceptor());
     const port = process.env['PORT'] || 3000;
     await app.listen(port);
     Logger.log(
