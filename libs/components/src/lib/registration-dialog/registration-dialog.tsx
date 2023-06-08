@@ -10,7 +10,7 @@ import {
 import Register from '../registration/registration';
 
 /* eslint-disable-next-line */
-export interface RegisterDialogProps { }
+export interface RegisterDialogProps {}
 
 export const RegisterDialog: React.FC<RegisterDialogProps> = ({ ...props }) => {
     return (

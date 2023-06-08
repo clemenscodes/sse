@@ -10,7 +10,7 @@ import {
 import Login from '../login/login';
 
 /* eslint-disable-next-line */
-export interface LoginDialogProps { }
+export interface LoginDialogProps {}
 
 export const LoginDialog: React.FC<LoginDialogProps> = ({ ...props }) => {
     return (

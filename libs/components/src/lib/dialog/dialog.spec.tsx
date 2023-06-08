@@ -1,4 +1,4 @@
-import { render, fireEvent, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { Dialog, DialogContent, DialogTrigger } from './dialog';
 
 describe('Dialog', () => {

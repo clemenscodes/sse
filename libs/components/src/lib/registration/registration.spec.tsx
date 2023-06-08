@@ -1,4 +1,4 @@
-import { render, fireEvent, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import Register from './registration';
 
 describe('Register', () => {
@@ -13,10 +13,20 @@ describe('Register', () => {
         fireEvent.click(screen.getByText('Register'));
 
         await waitFor(() => {
-            expect(screen.getByText('Username must be at least 2 characters.')).toBeInTheDocument();
-            expect(screen.getByText('Please provide a valid email.')).toBeInTheDocument();
-            expect(screen.getByText('Password must be at least 8 characters.')).toBeInTheDocument();
-            expect(screen.getByText('Password confirmation must be at least 8 characters.')).toBeInTheDocument();
+            expect(
+                screen.getByText('Username must be at least 2 characters.')
+            ).toBeInTheDocument();
+            expect(
+                screen.getByText('Please provide a valid email.')
+            ).toBeInTheDocument();
+            expect(
+                screen.getByText('Password must be at least 8 characters.')
+            ).toBeInTheDocument();
+            expect(
+                screen.getByText(
+                    'Password confirmation must be at least 8 characters.'
+                )
+            ).toBeInTheDocument();
         });
     });
 

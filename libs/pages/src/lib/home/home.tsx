@@ -1,4 +1,11 @@
-import { Footer, Header, Login, LoginDialog, Register, RegisterDialog } from '@components';
+import {
+    Footer,
+    Header,
+    Login,
+    LoginDialog,
+    Register,
+    RegisterDialog,
+} from '@components';
 import { cn } from '@styles';
 import { NextPage } from 'next';
 
