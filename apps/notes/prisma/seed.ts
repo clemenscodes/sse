@@ -6,6 +6,7 @@ async function main() {
     const user1 = await prisma.user.create({
         data: {
             email: 'user1@example.com',
+            emailVerified: new Date(),
             username: 'John Doe',
             password: 'Random password',
             notes: {
@@ -20,6 +21,7 @@ async function main() {
     const user2 = await prisma.user.create({
         data: {
             email: 'user2@example.com',
+            emailVerified: new Date(),
             username: 'Jane Smith',
             password: 'Random password',
             notes: {
@@ -34,6 +36,7 @@ async function main() {
     const user3 = await prisma.user.create({
         data: {
             email: 'user3@example.com',
+            emailVerified: new Date(),
             username: 'Mike Johnson',
             password: 'Random password',
             notes: {

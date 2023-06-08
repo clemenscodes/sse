@@ -5,9 +5,7 @@ describe('Dialog', () => {
     it('should render successfully', () => {
         const { baseElement } = render(
             <Dialog>
-                <DialogTrigger>
-                    <button>Open Dialog</button>
-                </DialogTrigger>
+                <DialogTrigger>Open Dialog</DialogTrigger>
                 <DialogContent>
                     <p>Dialog content</p>
                 </DialogContent>
@@ -19,9 +17,7 @@ describe('Dialog', () => {
     it('should open and close the dialog when trigger and close buttons are clicked', () => {
         render(
             <Dialog>
-                <DialogTrigger>
-                    <button>Open Dialog</button>
-                </DialogTrigger>
+                <DialogTrigger>Open Dialog</DialogTrigger>
                 <DialogContent>
                     <p>Dialog content</p>
                 </DialogContent>
@@ -33,7 +29,7 @@ describe('Dialog', () => {
         expect(screen.getByText('Dialog content')).toBeInTheDocument();
 
         // Close the dialog
-        fireEvent.click(screen.getByTitle('Close'));
+        fireEvent.click(screen.getByText('Close'));
         expect(screen.queryByText('Dialog content')).not.toBeInTheDocument();
     });
 });

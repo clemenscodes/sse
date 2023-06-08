@@ -22,11 +22,6 @@ describe('Register', () => {
             expect(
                 screen.getByText('Password must be at least 8 characters.')
             ).toBeInTheDocument();
-            expect(
-                screen.getByText(
-                    'Password confirmation must be at least 8 characters.'
-                )
-            ).toBeInTheDocument();
         });
     });
 
@@ -47,13 +42,13 @@ describe('Register', () => {
 
         fireEvent.input(screen.getByPlaceholderText('Password'), {
             target: {
-                value: 'testPassword123',
+                value: 'testPassword123!',
             },
         });
 
         fireEvent.input(screen.getByPlaceholderText('Confirm Password'), {
             target: {
-                value: 'testPassword123',
+                value: 'testPassword123!',
             },
         });
 
@@ -65,8 +60,8 @@ describe('Register', () => {
             expect(consoleSpy).toHaveBeenCalledWith({
                 username: 'testUser',
                 email: 'testuser@test.com',
-                password: 'testPassword123',
-                passwordConfirm: 'testPassword123',
+                password: 'testPassword123!',
+                passwordConfirm: 'testPassword123!',
             });
         });
     });

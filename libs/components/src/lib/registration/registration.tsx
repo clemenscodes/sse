@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { cn } from '@styles';
+import { RegisterSchema, registerSchema } from '@types';
 import { useForm } from 'react-hook-form';
-import * as z from 'zod';
 import { Button } from '../button/button';
 import {
     Form,
@@ -12,26 +12,11 @@ import {
 } from '../form/form';
 import { Input } from '../input/input';
 
-const formSchema = z.object({
-    username: z.string().min(2, {
-        message: 'Username must be at least 2 characters.',
-    }),
-    email: z.string().email({
-        message: 'Please provide a valid email.',
-    }),
-    password: z.string().min(8, {
-        message: 'Password must be at least 8 characters.',
-    }),
-    passwordConfirm: z.string().min(8, {
-        message: 'Password confirmation must be at least 8 characters.',
-    }),
-});
-
 export type RegisterProps = React.ComponentPropsWithoutRef<'form'>;
 
 export const Register: React.FC<RegisterProps> = ({ ...props }) => {
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
+    const form = useForm<RegisterSchema>({
+        resolver: zodResolver(registerSchema),
         defaultValues: {
             username: '',
             email: '',
@@ -40,7 +25,7 @@ export const Register: React.FC<RegisterProps> = ({ ...props }) => {
         },
     });
 
-    const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    const onSubmit = async (values: RegisterSchema) => {
         try {
             console.log(values);
         } catch (error) {
