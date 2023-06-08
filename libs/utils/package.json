@@ -1,5 +1,6 @@
 {
-    "name": "@utils",
+    "name": "utils",
     "version": "0.0.1",
-    "type": "commonjs"
+    "type": "commonjs",
+    "sideEffects": true
 }

@@ -9,4 +9,5 @@ export default {
         ],
     },
     moduleFileExtensions: ['ts', 'js', 'html'],
+    setupFilesAfterEnv: ['<rootDir>/setupTests.ts'],
 };
