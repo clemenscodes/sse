@@ -12,11 +12,9 @@ import {
 } from '../form/form';
 import { Input } from '../input/input';
 
-export type LoginProps = React.ComponentPropsWithoutRef<'form'> & {
-    onSubmit: (values: LoginSchema) => Promise<void>;
-};
+export type LoginProps = React.ComponentPropsWithoutRef<'form'>;
 
-export const Login: React.FC<LoginProps> = ({ onSubmit, ...props }) => {
+export const Login: React.FC<LoginProps> = ({ ...props }) => {
     const form = useForm<LoginSchema>({
         resolver: zodResolver(loginSchema),
         defaultValues: {
@@ -25,9 +23,9 @@ export const Login: React.FC<LoginProps> = ({ onSubmit, ...props }) => {
         },
     });
 
-    const handleSubmit = async (values: LoginSchema) => {
+    const onSubmit = async (values: LoginSchema) => {
         try {
-            onSubmit(values); // Call the onSubmit prop with the form values
+            console.log(values); // Call the onSubmit prop with the form values
         } catch (error) {
             console.error(error);
         }
@@ -37,7 +35,7 @@ export const Login: React.FC<LoginProps> = ({ onSubmit, ...props }) => {
         <div className='mx-auto w-full max-w-sm'>
             <Form {...form}>
                 <form
-                    onSubmit={form.handleSubmit(handleSubmit)}
+                    onSubmit={form.handleSubmit(onSubmit)}
                     className={cn('space-y-2')}
                     {...props}
                 >
