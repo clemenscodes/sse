@@ -13,9 +13,9 @@ datasource db {
 }
 
 model User {
-    id       Int     @id @default(autoincrement())
-    email    String  @unique
-    name     String?
+    id       Int    @id @default(autoincrement())
+    email    String @unique
+    username String
     password String
     notes    Note[]
 }
@@ -23,7 +23,7 @@ model User {
 model Note {
     id        Int      @id @default(autoincrement())
     content   String
-    isPublic  Boolean  @default(true)
+    isPublic  Boolean  @default(false)
     user      User     @relation(fields: [userId], references: [id])
     userId    Int
     createdAt DateTime @default(now())
