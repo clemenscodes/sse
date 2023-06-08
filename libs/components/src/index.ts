@@ -1,3 +1,5 @@
+export * from './lib/registration-dialog/registration-dialog';
+export * from './lib/registration/registration';
 export * from './lib/login-dialog/login-dialog';
 export * from './lib/input/input';
 export * from './lib/button/button';

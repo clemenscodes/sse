@@ -7,12 +7,12 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '../dialog/dialog';
-import Login from '../login/login';
+import Register from '../registration/registration';
 
 /* eslint-disable-next-line */
-export interface LoginDialogProps { }
+export interface RegisterDialogProps { }
 
-export const LoginDialog: React.FC<LoginDialogProps> = ({ ...props }) => {
+export const RegisterDialog: React.FC<RegisterDialogProps> = ({ ...props }) => {
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -20,15 +20,15 @@ export const LoginDialog: React.FC<LoginDialogProps> = ({ ...props }) => {
             </DialogTrigger>
             <DialogContent className='sm:max-w-[425px]'>
                 <DialogHeader>
-                    <DialogTitle>Login</DialogTitle>
+                    <DialogTitle>Register</DialogTitle>
                     <DialogDescription>
-                        Enter your Username and Password
+                        Enter all the relevant Information.
                     </DialogDescription>
                 </DialogHeader>
-                <Login></Login>
+                <Register></Register>
             </DialogContent>
         </Dialog>
     );
 };
 
-export default LoginDialog;
+export default RegisterDialog;
