@@ -20,9 +20,10 @@ COPY libs ./libs
 COPY tailwind.config.ts ./
 COPY tsconfig.base.json ./
 COPY nx.json ./
+COPY .git ./
 COPY --from=installer /app/node_modules ./node_modules
 
-RUN yarn nx build client --configuration=production
+RUN yarn nx build client --configuration=production --skip-nx-cache
 
 FROM node:16.19-alpine
 

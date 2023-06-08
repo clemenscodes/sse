@@ -9,7 +9,6 @@
             "outputs": ["{options.outputPath}"],
             "defaultConfiguration": "production",
             "options": {
-                "root": "apps/notes/client",
                 "outputPath": "dist/apps/notes/client",
                 "assets": [
                     {
@@ -87,7 +86,7 @@
                         "tags": ["type=schedule", "type=sha", "latest"]
                     }
                 },
-                "ci": {
+                "production": {
                     "engine": "docker",
                     "file": "apps/notes/client/docker/production/Dockerfile",
                     "load": true,

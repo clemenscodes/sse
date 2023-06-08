@@ -59,3 +59,7 @@ apps/nginx/certs/**
 !.yarn/versions
 apps/notes/client/public/*
 !apps/notes/client/public/favicon.ico
+
+# Generated Docusaurus files
+.docusaurus/
+.cache-loader/

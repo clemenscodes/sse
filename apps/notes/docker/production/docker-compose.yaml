@@ -17,7 +17,7 @@ services:
         tty: true
         build:
             context: '../../../../'
-            dockerfile: apps/notes/prisma/Dockerfile
+            dockerfile: apps/notes/prisma/docker/production/Dockerfile
         networks:
             - notes
     server:
@@ -43,6 +43,15 @@ services:
             dockerfile: apps/notes/client/docker/production/Dockerfile
         ports:
             - '4200:4200'
+        networks:
+            - notes
+    docs:
+        container_name: docs
+        build:
+            context: '../../../../'
+            dockerfile: apps/notes/docs/docker/production/Dockerfile
+        ports:
+            - '8000:8000'
         networks:
             - notes
 
