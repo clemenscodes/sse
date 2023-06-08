@@ -55,6 +55,85 @@ export class NoteService {
         }
     }
 
+    async findAllByUserId(userId: number) {
+        try {
+            const notes = await this.prismaService.note.findMany({
+                where: { userId },
+            });
+            if (!(notes && notes.length)) {
+                throw new NotFoundException('No notes found for the user');
+            }
+            return notes;
+        } catch (e) {
+            if (e instanceof Prisma.PrismaClientKnownRequestError) {
+                throw new InternalServerErrorException(
+                    'Failed to retrieve user notes'
+                );
+            } else if (e instanceof NotFoundException) {
+                throw e;
+            } else {
+                throw new InternalServerErrorException(
+                    'Failed to retrieve user notes'
+                );
+            }
+        }
+    }
+
+    async findAllPublicNotes() {
+        try {
+            const notes = await this.prismaService.note.findMany({
+                where: { isPublic: true },
+            });
+            if (!(notes && notes.length)) {
+                throw new NotFoundException('No public notes found');
+            }
+            return notes;
+        } catch (e) {
+            if (e instanceof Prisma.PrismaClientKnownRequestError) {
+                throw new InternalServerErrorException(
+                    'Failed to retrieve public notes'
+                );
+            } else if (e instanceof NotFoundException) {
+                throw e;
+            } else {
+                throw new InternalServerErrorException(
+                    'Failed to retrieve public notes'
+                );
+            }
+        }
+    }
+
+    async searchPublicNotesByContent(content: string) {
+        try {
+            const notes = await this.prismaService.note.findMany({
+                where: {
+                    isPublic: true,
+                    content: {
+                        contains: content,
+                    },
+                },
+            });
+            if (!(notes && notes.length)) {
+                throw new NotFoundException(
+                    `No public notes found matching the search ${content}`
+                );
+            }
+            return notes;
+        } catch (e) {
+            if (e instanceof Prisma.PrismaClientKnownRequestError) {
+                throw new InternalServerErrorException(
+                    'Failed to search public notes'
+                );
+            } else if (e instanceof NotFoundException) {
+                throw e;
+            } else {
+                throw new InternalServerErrorException(
+                    'Failed to search public notes'
+                );
+            }
+        }
+    }
+
     async findOne(id: number) {
         try {
             const note = await this.prismaService.note.findUnique({

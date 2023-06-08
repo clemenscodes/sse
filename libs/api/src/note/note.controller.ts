@@ -8,6 +8,7 @@ import {
     ParseIntPipe,
     Patch,
     Post,
+    Query,
 } from '@nestjs/common';
 import { Note } from '@prisma/api';
 import { NotePipe } from './note.pipe';
@@ -27,6 +28,16 @@ export class NoteController {
         return this.noteService.findAll();
     }
 
+    @Get('public')
+    findAllPublicNotes() {
+        return this.noteService.findAllPublicNotes();
+    }
+
+    @Get('public/search')
+    searchPublicNotesByContent(@Query('content') content: string) {
+        return this.noteService.searchPublicNotesByContent(content);
+    }
+
     @Get(':id')
     findOne(
         @Param(
@@ -36,6 +47,17 @@ export class NoteController {
         id: string
     ) {
         return this.noteService.findOne(+id);
+    }
+
+    @Get('user/:userId')
+    findAllByUserId(
+        @Param(
+            'userId',
+            new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })
+        )
+        userId: string
+    ) {
+        return this.noteService.findAllByUserId(+userId);
     }
 
     @Patch(':id')
