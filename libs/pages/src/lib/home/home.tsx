@@ -1,4 +1,4 @@
-import { Footer, Header, Login } from '@components';
+import { Footer, Header, Login, LoginDialog } from '@components';
 import { cn } from '@styles';
 import { NextPage } from 'next';
 
@@ -12,7 +12,7 @@ export const Home: NextPage<HomeProps> = ({ ...props }) => {
         >
             <Header />
             <main className={cn('mx-6 mb-auto mt-24 md:mx-12 xl:mx-24')}>
-                <Login />
+                <LoginDialog></LoginDialog>
             </main>
             <Footer />
         </div>
