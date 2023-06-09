@@ -38,7 +38,6 @@ export const Register: React.FC<RegisterProps> = ({ submit, ...props }) => {
                 username: values.username,
                 password: values.password,
                 redirect: false,
-                
             });
         } catch (error) {
             console.error(error);
