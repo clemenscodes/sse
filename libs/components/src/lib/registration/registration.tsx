@@ -1,6 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { cn } from '@styles';
 import { RegisterSchema, registerSchema } from '@types';
+import { signIn } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
 import { Button } from '../button/button';
 import {
@@ -29,7 +30,16 @@ export const Register: React.FC<RegisterProps> = ({ submit, ...props }) => {
 
     const onSubmit = async (values: RegisterSchema) => {
         try {
-            submit ? submit(values) : console.log(values);
+            if (submit) {
+                return submit(values);
+            }
+            await signIn('credentials', {
+                email: values.email,
+                username: values.username,
+                password: values.password,
+                redirect: false,
+                
+            });
         } catch (error) {
             console.error(error);
         }

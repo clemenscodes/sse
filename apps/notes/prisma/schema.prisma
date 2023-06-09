@@ -41,7 +41,7 @@ model Session {
 model User {
     id            Int       @id @default(autoincrement())
     email         String    @unique
-    emailVerified DateTime
+    emailVerified DateTime?
     username      String
     password      String
     notes         Note[]

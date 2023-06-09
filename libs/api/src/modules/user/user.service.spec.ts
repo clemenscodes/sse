@@ -30,12 +30,14 @@ describe('UserService', () => {
                 {
                     id: 1,
                     email: 'user1@example.com',
+                    emailVerified: new Date(),
                     username: 'user1',
                     password: 'password1',
                 },
                 {
                     id: 2,
                     email: 'user2@example.com',
+                    emailVerified: new Date(),
                     username: 'user2',
                     password: 'password2',
                 },
