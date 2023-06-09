@@ -132,7 +132,7 @@ jobs:
                   restore-keys: ubuntu-latest-node-
 
             - name: Cache Prisma
-              id: node_cache
+              id: prisma_cache
               uses: actions/cache/restore@v3
               with:
                   path: |
@@ -213,7 +213,7 @@ jobs:
                   restore-keys: ubuntu-latest-node-
 
             - name: Cache Prisma
-              id: node_cache
+              id: prisma_cache
               uses: actions/cache/restore@v3
               with:
                   path: |
