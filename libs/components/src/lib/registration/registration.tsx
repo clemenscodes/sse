@@ -12,9 +12,11 @@ import {
 } from '../form/form';
 import { Input } from '../input/input';
 
-export type RegisterProps = React.ComponentPropsWithoutRef<'form'>;
+export type RegisterProps = React.ComponentPropsWithoutRef<'form'> & {
+    submit?: (values: RegisterSchema) => Promise<void>;
+};
 
-export const Register: React.FC<RegisterProps> = ({ ...props }) => {
+export const Register: React.FC<RegisterProps> = ({ submit, ...props }) => {
     const form = useForm<RegisterSchema>({
         resolver: zodResolver(registerSchema),
         defaultValues: {
@@ -27,7 +29,7 @@ export const Register: React.FC<RegisterProps> = ({ ...props }) => {
 
     const onSubmit = async (values: RegisterSchema) => {
         try {
-            console.log(values);
+            submit ? submit(values) : console.log(values);
         } catch (error) {
             console.error(error);
         }

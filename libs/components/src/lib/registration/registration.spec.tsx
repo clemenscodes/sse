@@ -26,7 +26,8 @@ describe('Register', () => {
     });
 
     it('should submit form when all fields are filled correctly', async () => {
-        render(<Register />);
+        const onSubmitMock = jest.fn();
+        render(<Register submit={onSubmitMock} />);
 
         fireEvent.input(screen.getByPlaceholderText('Username'), {
             target: {
@@ -52,12 +53,10 @@ describe('Register', () => {
             },
         });
 
-        const consoleSpy = jest.spyOn(console, 'log');
-
         fireEvent.click(screen.getByText('Register'));
 
         await waitFor(() => {
-            expect(consoleSpy).toHaveBeenCalledWith({
+            expect(onSubmitMock).toHaveBeenCalledWith({
                 username: 'testUser',
                 email: 'testuser@test.com',
                 password: 'testPassword123!',

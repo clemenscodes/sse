@@ -30,16 +30,17 @@ describe('Login', () => {
 
     it('should handle form submission', async () => {
         const onSubmitMock = jest.fn();
-        render(<Login onSubmit={onSubmitMock} />);
+        render(<Login submit={onSubmitMock} />);
 
         const usernameInput = screen.getByPlaceholderText('Username');
         const passwordInput = screen.getByPlaceholderText('Password');
         const submitButton = screen.getByRole('button', { name: /Submit/i });
 
-        userEvent.type(usernameInput, 'testuser');
-        userEvent.type(passwordInput, 'testPassword1!');
-        fireEvent.click(submitButton);
-        waitFor(() => {
+        await userEvent.type(usernameInput, 'testuser');
+        await userEvent.type(passwordInput, 'testPassword1!');
+        fireEvent.submit(submitButton);
+
+        await waitFor(() => {
             expect(onSubmitMock).toHaveBeenCalledWith({
                 username: 'testuser',
                 password: 'testPassword1!',

@@ -16,7 +16,7 @@ export const RegisterDialog: React.FC<RegisterDialogProps> = ({ ...props }) => {
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button variant='outline'>Edit Profile</Button>
+                <Button variant='outline'>Register</Button>
             </DialogTrigger>
             <DialogContent className='sm:max-w-[425px]'>
                 <DialogHeader>

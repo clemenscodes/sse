@@ -12,9 +12,11 @@ import {
 } from '../form/form';
 import { Input } from '../input/input';
 
-export type LoginProps = React.ComponentPropsWithoutRef<'form'>;
+export type LoginProps = React.ComponentPropsWithoutRef<'form'> & {
+    submit?: (values: LoginSchema) => Promise<void>;
+};
 
-export const Login: React.FC<LoginProps> = ({ ...props }) => {
+export const Login: React.FC<LoginProps> = ({ submit, ...props }) => {
     const form = useForm<LoginSchema>({
         resolver: zodResolver(loginSchema),
         defaultValues: {
@@ -25,7 +27,7 @@ export const Login: React.FC<LoginProps> = ({ ...props }) => {
 
     const onSubmit = async (values: LoginSchema) => {
         try {
-            console.log(values); // Call the onSubmit prop with the form values
+            submit ? submit(values) : console.log(values);
         } catch (error) {
             console.error(error);
         }
