@@ -35,6 +35,8 @@ export const authOptions: NextAuthOptions = {
             },
             from: process.env.EMAIL_FROM,
         }),
+        // Doesnt work with adapters, needs to be manually configured
+        // @see https://github.com/nextauthjs/next-auth/discussions/2248
         CredentialsProvider({
             name: 'Credentials',
             credentials: {
@@ -87,7 +89,6 @@ export const authOptions: NextAuthOptions = {
             }
             return Promise.resolve(url.startsWith(baseUrl) ? url : baseUrl);
         },
-        // Getting the JWT token from API response
         jwt: async ({ token, user }) => {
             console.log({ token, user });
             return Promise.resolve(token);
