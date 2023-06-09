@@ -78,7 +78,6 @@ jobs:
               run: yarn nx format:check --all
 
             - name: Prisma Generation
-              if: steps.node_cache.outputs.cache-hit != 'true'
               run: yarn prisma generate --schema=apps/notes/prisma/schema.prisma
               env:
                   PRISMA_SKIP_POSTINSTALL_GENERATE: 1
