@@ -67,7 +67,7 @@ jobs:
                   path: |
                       dist/**/.next/cache
                       node_modules/
-                  key: ubuntu-latest-node-${{ hashFiles('yarn.lock') }}
+                  key: ubuntu-latest-node-${{ hashFiles('yarn.lock', 'apps/notes/prisma/schema.prisma') }}
                   restore-keys: ubuntu-latest-node-
 
             - name: Install Node Dependencies
