@@ -10,6 +10,8 @@ import GitHubProvider from 'next-auth/providers/github';
 
 const prisma = new PrismaClient();
 
+// To make this work, following this thread might help
+// @see https://github.com/nextauthjs/next-auth/discussions/4394
 export const authOptions: NextAuthOptions = {
     debug: true,
     adapter: PrismaAdapter(prisma) as Adapter,
