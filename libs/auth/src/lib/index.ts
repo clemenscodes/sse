@@ -1,5 +1,4 @@
 export * from './generateSessionToken';
-export * from './getJWTOptions';
 export * from './getCallbacks';
 export * from './session';
 export * from './secure';
@@ -11,5 +10,4 @@ export * from './adapter';
 export * from './secret';
 export * from './debug';
 export * from './options';
-export * from './wrapper';
 export * from './handler';

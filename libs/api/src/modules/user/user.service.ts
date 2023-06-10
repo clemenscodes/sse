@@ -39,6 +39,70 @@ export class UserService {
         }
     }
 
+    async findByEmail(email: string) {
+        try {
+            const user = await this.prismaService.user.findUnique({
+                where: { email },
+                select: {
+                    id: true,
+                    email: true,
+                    username: true,
+                    password: false,
+                },
+            });
+            if (!user) {
+                throw new NotFoundException('User not found');
+            }
+            return user;
+        } catch (e) {
+            if (e instanceof Prisma.PrismaClientKnownRequestError) {
+                throw new InternalServerErrorException(
+                    'Failed to retrieve user'
+                );
+            } else if (e instanceof Prisma.PrismaClientValidationError) {
+                throw new NotFoundException('User not found');
+            } else if (e instanceof NotFoundException) {
+                throw e;
+            } else {
+                throw new InternalServerErrorException(
+                    'Failed to retrieve user'
+                );
+            }
+        }
+    }
+
+    async findByUsername(username: string) {
+        try {
+            const user = await this.prismaService.user.findUnique({
+                where: { username },
+                select: {
+                    id: true,
+                    email: true,
+                    username: true,
+                    password: false,
+                },
+            });
+            if (!user) {
+                throw new NotFoundException('User not found');
+            }
+            return user;
+        } catch (e) {
+            if (e instanceof Prisma.PrismaClientKnownRequestError) {
+                throw new InternalServerErrorException(
+                    'Failed to retrieve user'
+                );
+            } else if (e instanceof Prisma.PrismaClientValidationError) {
+                throw new NotFoundException('User not found');
+            } else if (e instanceof NotFoundException) {
+                throw e;
+            } else {
+                throw new InternalServerErrorException(
+                    'Failed to retrieve user'
+                );
+            }
+        }
+    }
+
     async findAll() {
         try {
             const users = await this.prismaService.user.findMany({

@@ -1,68 +1,52 @@
 import { fromDate } from '@utils';
-import { GetServerSidePropsContext } from 'next';
-import { CallbacksOptions } from 'next-auth';
-import { generateSessionToken } from './generateSessionToken';
+import { CallbacksOptions, Session } from 'next-auth';
 import { prisma } from './prisma';
 import { maxAge } from './session';
 
-export const getCallbacks = (
-    req: GetServerSidePropsContext['req'],
-    query: GetServerSidePropsContext['query'],
-    res: GetServerSidePropsContext['res']
-): CallbacksOptions => {
-    const callbacks: CallbacksOptions = {
-        signIn: async ({ user }) => {
-            // Check if this sign in callback is being called in the credentials authentication flow.
-            // If so, create a session entry in the database
-            // SignIn is called after authorize so we can safely assume the user is valid and already authenticated.
-            if (
-                query['nextauth'] &&
-                query['nextauth'].includes('callback') &&
-                query['nextauth'].includes('credentials') &&
-                req.method === 'POST'
-            ) {
-                if (user) {
-                    console.log({ user });
-                    const sessionToken = generateSessionToken();
-                    const expires = fromDate(maxAge);
-                    const userId = Number(user.id);
-                    const data = { userId, expires, sessionToken };
-                    try {
-                        const session = await prisma.session.create({ data });
-                        res.setHeader(
-                            'Set-Cookie',
-                            `next-auth.session-token=${session.sessionToken}; Expires=${session.expires}; Path=/; HttpOnly; SameSite=lax;`
-                        );
-                    } catch (e) {
-                        console.error(e);
-                        throw e;
-                    }
-                }
-            }
+export const callbacks: CallbacksOptions = {
+    signIn: async ({ user }) => {
+        if (user) {
             return true;
-        },
-        redirect: async ({ url, baseUrl }): Promise<string> => {
-            const params = new URLSearchParams(new URL(url).search);
-            const callbackUrl = params.get('callbackUrl');
-            if (url.startsWith(baseUrl)) {
-                if (callbackUrl?.startsWith('/')) {
-                    return baseUrl + callbackUrl;
-                } else if (callbackUrl?.startsWith(baseUrl)) {
-                    return callbackUrl;
-                }
-            } else {
-                return baseUrl;
+        }
+        return false;
+    },
+    redirect: async ({ url, baseUrl }): Promise<string> => {
+        const params = new URLSearchParams(new URL(url).search);
+        const callbackUrl = params.get('callbackUrl');
+        if (url.startsWith(baseUrl)) {
+            if (callbackUrl?.startsWith('/')) {
+                return baseUrl + callbackUrl;
+            } else if (callbackUrl?.startsWith(baseUrl)) {
+                return callbackUrl;
             }
-            return url.startsWith(baseUrl) ? url : baseUrl;
-        },
-        jwt: async ({ token }) => {
-            return token;
-        },
-        session: async ({ session, token }) => {
-            console.log('Session callback');
-            console.log({ session, token });
+        } else {
+            return baseUrl;
+        }
+        return url.startsWith(baseUrl) ? url : baseUrl;
+    },
+    jwt: async ({ token, user, account, profile, session, trigger }) => {
+        console.log({ token, user, account, profile, session, trigger });
+        if (trigger === 'signUp') {
+            token.name = user.name;
+        }
+        return token;
+    },
+    session: async ({ session, token, trigger }) => {
+        console.log('Session callback');
+        console.log({ session, token, trigger });
+        if (!token) {
             return session;
-        },
-    };
-    return callbacks;
+        }
+        const { jti, sub, iat, exp } = token;
+        const expires = fromDate(maxAge);
+        const data = {
+            userId: Number(sub),
+            expires,
+            sessionToken: jti as string,
+        };
+        const dbSession = (await prisma.session.create({
+            data,
+        })) as unknown as Session;
+        return dbSession;
+    },
 };

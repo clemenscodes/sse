@@ -3,6 +3,7 @@ import { adapter } from './adapter';
 import { cookies } from './cookies';
 import { debug } from './debug';
 import { events } from './events';
+import { callbacks } from './getCallbacks';
 import { pages } from './pages';
 import { providers } from './providers';
 import { secret } from './secret';
@@ -16,5 +17,6 @@ export const options: NextAuthOptions = {
     providers,
     session,
     cookies,
+    callbacks,
     events,
 };

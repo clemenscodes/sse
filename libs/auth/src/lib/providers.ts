@@ -1,6 +1,6 @@
-import { Prisma, User as PrismaUser } from '@prisma/api';
+import { User } from '@prisma/api';
 import axios from 'axios';
-import { User } from 'next-auth';
+import { AdapterUser } from 'next-auth/adapters';
 import { Provider } from 'next-auth/providers';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GitHubProvider from 'next-auth/providers/github';
@@ -17,26 +17,24 @@ export const providers: Provider[] = [
             email: { label: 'Email', type: 'email' },
             password: { label: 'Password', type: 'password' },
         },
-        authorize: async (credentials): Promise<User | null> => {
+        authorize: async (credentials): Promise<AdapterUser | null> => {
             if (!credentials) {
                 return null;
             }
-            const { email, username, password } = credentials;
-            const payload: Prisma.UserCreateInput = {
-                email,
-                username,
-                password,
-            };
+            const { username } = credentials;
             try {
-                const response = await axios.post(
-                    'http://localhost:4200/api/user',
-                    payload
+                const response = await axios.get(
+                    `http://localhost:4200/api/user/username/${username}`
                 );
                 if (!response) {
                     return null;
                 }
-                const data = response.data as PrismaUser;
-                const user = { ...data, id: data.id.toString() };
+                const data = response.data as User;
+                const user = {
+                    ...data,
+                    id: data.id.toString(),
+                    name: data.username,
+                };
                 return user;
             } catch (e) {
                 console.error(e);

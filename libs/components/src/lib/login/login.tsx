@@ -1,6 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { cn } from '@styles';
 import { loginSchema, type LoginSchema } from '@types';
+import { signIn } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
 import { Button } from '../button/button';
 import {
@@ -27,7 +28,15 @@ export const Login: React.FC<LoginProps> = ({ submit, ...props }) => {
 
     const onSubmit = async (values: LoginSchema) => {
         try {
-            submit ? submit(values) : console.log(values);
+            if (submit) {
+                return submit(values);
+            }
+            const { password, username } = values;
+            signIn('credentials', {
+                username,
+                password,
+                redirect: false,
+            });
         } catch (error) {
             console.error(error);
         }

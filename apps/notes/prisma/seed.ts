@@ -7,7 +7,7 @@ async function main() {
         data: {
             email: 'user1@example.com',
             emailVerified: new Date(),
-            username: 'John Doe',
+            username: 'John_Doe',
             password: 'Random password',
             notes: {
                 create: [
@@ -22,7 +22,7 @@ async function main() {
         data: {
             email: 'user2@example.com',
             emailVerified: new Date(),
-            username: 'Jane Smith',
+            username: 'Jane_Smith',
             password: 'Random password',
             notes: {
                 create: [
@@ -37,7 +37,7 @@ async function main() {
         data: {
             email: 'user3@example.com',
             emailVerified: new Date(),
-            username: 'Mike Johnson',
+            username: 'Mike_Johnson',
             password: 'Random password',
             notes: {
                 create: [
