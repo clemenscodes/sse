@@ -1,3 +1,3 @@
-import { secure } from "./secure";
+import { secure } from './secure';
 
 export const debug = !secure;

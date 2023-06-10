@@ -23,4 +23,3 @@ export const session: Partial<SessionOptions> = {
     updateAge,
     generateSessionToken,
 };
-

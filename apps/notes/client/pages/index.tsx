@@ -1,8 +1,7 @@
 import path from 'path';
-// import { authWrapperSSR, options } from '@auth';
-import { options } from '@auth';
-import { GetServerSidePropsContext, NextPage } from 'next';
-import { getServerSession } from 'next-auth';
+import { authWrapper } from '@auth';
+import { GetServerSideProps, GetServerSidePropsContext, NextPage } from 'next';
+import { getServerSession, Session } from 'next-auth';
 import dynamic from 'next/dynamic';
 
 // import next config in any page file to somehow make next aware of correct folder structure (MAGIC)
@@ -16,18 +15,29 @@ export const Index: NextPage = () => {
     return <Home />;
 };
 
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-    console.log('Getting server session');
-    // const { req, res, query } = context;
-    // const [options] = authWrapperSSR(req, query, res);
-    const { req, res } = context;
-    const session = await getServerSession(req, res, options);
+export const getServerSideProps: GetServerSideProps<{
+    session: Session;
+}> = async (context: GetServerSidePropsContext) => {
+    const { req, res, query } = context;
+    const [options] = authWrapper(req, query, res);
+
+    const session: Session = {
+        user: {},
+        expires: new Date().toISOString(),
+    };
+
+    const response = await getServerSession(req, res, options);
+
+    if (response) {
+        session.expires = response.expires;
+        session.user.email = response.user.email;
+    }
 
     return {
         props: {
             session,
         },
     };
-}
+};
 
 export default Index;

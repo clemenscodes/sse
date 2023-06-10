@@ -1,6 +1,6 @@
-import { CookiesOptions } from "next-auth";
-import { sessionCookieName } from "./session";
-import { secure } from "./secure";
+import { CookiesOptions } from 'next-auth';
+import { secure } from './secure';
+import { sessionCookieName } from './session';
 
 export const cookies: Partial<CookiesOptions> = {
     sessionToken: {
@@ -13,4 +13,3 @@ export const cookies: Partial<CookiesOptions> = {
         },
     },
 };
-

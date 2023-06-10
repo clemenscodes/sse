@@ -1,5 +1,4 @@
 export * from './generateSessionToken';
-export * from './fromDate';
 export * from './getJWTOptions';
 export * from './getCallbacks';
 export * from './session';

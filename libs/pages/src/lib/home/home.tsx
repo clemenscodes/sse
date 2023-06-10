@@ -1,13 +1,12 @@
 import { Footer, Header, Login, RegisterDialog } from '@components';
 import { cn } from '@styles';
 import { NextPage } from 'next';
-import { Session } from 'next-auth';
+import { useSession } from 'next-auth/react';
 
-export type HomeProps = React.ComponentPropsWithoutRef<'div'> & {
-    session?: Session;
-};
+export type HomeProps = React.ComponentPropsWithoutRef<'div'>;
 
-export const Home: NextPage<HomeProps> = ({ session, ...props }) => {
+export const Home: NextPage<HomeProps> = ({ ...props }) => {
+    const session = useSession();
     return (
         <div
             className={cn('flex h-screen flex-col justify-between')}
