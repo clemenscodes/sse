@@ -6,7 +6,8 @@ import { useSession } from 'next-auth/react';
 export type HomeProps = React.ComponentPropsWithoutRef<'div'>;
 
 export const Home: NextPage<HomeProps> = ({ ...props }) => {
-    const session = useSession();
+    const { data } = useSession();
+
     return (
         <div
             className={cn('flex h-screen flex-col justify-between')}
@@ -14,7 +15,7 @@ export const Home: NextPage<HomeProps> = ({ ...props }) => {
         >
             <Header />
             <main className={cn('mx-6 mb-auto mt-24 md:mx-12 xl:mx-24')}>
-                {!session && (
+                {!data && (
                     <>
                         <Login />
                         <RegisterDialog />

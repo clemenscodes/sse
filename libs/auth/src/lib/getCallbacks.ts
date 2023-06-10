@@ -13,7 +13,7 @@ export const getCallbacks = (
     const callbacks: CallbacksOptions = {
         signIn: async ({ user }) => {
             // Check if this sign in callback is being called in the credentials authentication flow.
-            // If so, use the next-auth adapter to create a session entry in the database
+            // If so, create a session entry in the database
             // SignIn is called after authorize so we can safely assume the user is valid and already authenticated.
             if (
                 query['nextauth'] &&
@@ -22,6 +22,7 @@ export const getCallbacks = (
                 req.method === 'POST'
             ) {
                 if (user) {
+                    console.log({ user });
                     const sessionToken = generateSessionToken();
                     const expires = fromDate(maxAge);
                     const userId = Number(user.id);
@@ -57,7 +58,9 @@ export const getCallbacks = (
         jwt: async ({ token }) => {
             return token;
         },
-        session: async ({ session }) => {
+        session: async ({ session, token }) => {
+            console.log('Session callback');
+            console.log({ session, token });
             return session;
         },
     };

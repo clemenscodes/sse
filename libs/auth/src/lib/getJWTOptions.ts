@@ -12,6 +12,8 @@ export const getJWTOptions = (
         // Instead we will store the session token reference to the session in the database.
         maxAge,
         encode: async ({ token, secret, maxAge }) => {
+            console.log('Encoding JWT');
+            console.log({ token });
             if (
                 query['nextauth'] &&
                 query['nextauth'].includes('callback') &&
@@ -30,9 +32,18 @@ export const getJWTOptions = (
                 return '';
             }
             // Revert to default behaviour when not in the credentials provider callback flow
-            return encode({ token, secret, maxAge });
+            try {
+                const encoded = await encode({ token, secret, maxAge });
+                console.log({ encoded });
+                return encoded;
+            } catch (e) {
+                console.error(e);
+                throw e;
+            }
         },
         decode: async ({ token, secret }) => {
+            console.log('Decoding JWT');
+            console.log({ token });
             if (
                 query['nextauth'] &&
                 query['nextauth'].includes('callback') &&
@@ -43,10 +54,11 @@ export const getJWTOptions = (
             // Revert to default behaviour when not in the credentials provider callback flow
             try {
                 const decoded = await decode({ token, secret });
+                console.log({ decoded });
                 return decoded;
             } catch (e) {
                 console.error(e);
-                return null;
+                throw e;
             }
         },
     };
