@@ -16,6 +16,8 @@
         "baseUrl": ".",
         "paths": {
             "@api": ["libs/api/src/index.ts"],
+            "@auth": ["libs/auth/src/index.ts"],
+            "@auth/next-auth": ["libs/auth/src/lib/next-auth.d.ts"],
             "@components": ["libs/components/src/index.ts"],
             "@config": ["libs/config/src/index.ts"],
             "@pages": ["libs/pages/src/index.ts"],
