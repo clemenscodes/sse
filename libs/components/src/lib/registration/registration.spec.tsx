@@ -28,6 +28,7 @@ describe('Register', () => {
     it('should submit form when all fields are filled correctly', async () => {
         const onSubmitMock = jest.fn();
         render(<Register submit={onSubmitMock} />);
+        const password = 'testPassword123!ahg';
 
         fireEvent.input(screen.getByPlaceholderText('Username'), {
             target: {
@@ -43,13 +44,13 @@ describe('Register', () => {
 
         fireEvent.input(screen.getByPlaceholderText('Password'), {
             target: {
-                value: 'testPassword123!',
+                value: password,
             },
         });
 
         fireEvent.input(screen.getByPlaceholderText('Confirm Password'), {
             target: {
-                value: 'testPassword123!',
+                value: password,
             },
         });
 
@@ -59,8 +60,8 @@ describe('Register', () => {
             expect(onSubmitMock).toHaveBeenCalledWith({
                 username: 'testUser',
                 email: 'testuser@test.com',
-                password: 'testPassword123!',
-                passwordConfirm: 'testPassword123!',
+                password: password,
+                passwordConfirm: password,
             });
         });
     });
