@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react';
-import Signout from './signout';
 import { useSession } from 'next-auth/react';
+import Signout from './signout';
 
 describe('Signout', () => {
     it('should render successfully', () => {
