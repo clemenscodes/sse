@@ -1,4 +1,3 @@
-import { generateSessionToken } from '@utils';
 import { type SessionOptions, type SessionStrategy } from 'next-auth';
 
 export const sessionCookieName = 'next-auth.session-token';
@@ -21,5 +20,4 @@ export const session: Partial<SessionOptions> = {
     strategy,
     maxAge,
     updateAge,
-    generateSessionToken,
 };

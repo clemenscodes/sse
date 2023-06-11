@@ -17,7 +17,7 @@ export class AuthController {
         @Body(new UserPipe())
         data: Parameters<typeof this.userService.create>[0]
     ) {
-        return await this.userService.create(data);
+        return await this.userService.register(data);
     }
 
     @Post('login')

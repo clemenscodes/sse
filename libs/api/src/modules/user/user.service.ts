@@ -7,13 +7,21 @@ import {
 import { Prisma, User } from '@prisma/api';
 import { AuthService } from '../auth/auth.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { SessionService } from '../session/session.service';
 
 @Injectable()
 export class UserService {
     constructor(
         private readonly prismaService: PrismaService,
-        private readonly authService: AuthService
+        private readonly authService: AuthService,
+        private readonly sessionService: SessionService
     ) {}
+
+    async register(data: Prisma.UserCreateInput) {
+        const { password } = data;
+        const { username } = await this.create(data);
+        await this.login(username, password);
+    }
 
     async create(data: Prisma.UserCreateInput) {
         try {
@@ -61,8 +69,13 @@ export class UserService {
         if (!passwordMatch) {
             throw new UnauthorizedException('Invalid credentials');
         }
-        const { email, username: name } = user;
-        // TODO: create session, refresh token and set cookies
+        const { email, username: name, id } = user;
+        // TODO: create session
+        const session = await this.sessionService.create(id);
+        console.log({ session });
+
+        // TODO: create refresh token
+        // TODO: set cookies
         return { email, name };
     }
 
