@@ -6,6 +6,7 @@ export const fromTimestamp = (timestamp: number) => {
             year: '2-digit',
             month: '2-digit',
             day: '2-digit',
+            timeZone: 'Europe/Berlin',
         })
         .replace(/\./g, '_');
 
@@ -14,6 +15,7 @@ export const fromTimestamp = (timestamp: number) => {
             hour: '2-digit',
             minute: '2-digit',
             second: '2-digit',
+            timeZone: 'Europe/Berlin',
         })
         .replace(/:/g, '_');
 

@@ -1,5 +1,5 @@
+import { generateSessionToken } from '@utils';
 import { type SessionOptions, type SessionStrategy } from 'next-auth';
-import { generateSessionToken } from '../../../utils/src/lib/generateSessionToken';
 
 export const sessionCookieName = 'next-auth.session-token';
 

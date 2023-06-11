@@ -1,4 +1,3 @@
-export * from '../../../utils/src/lib/generateSessionToken';
 export * from './getCallbacks';
 export * from './session';
 export * from './secure';
