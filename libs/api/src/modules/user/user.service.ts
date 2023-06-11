@@ -1,5 +1,4 @@
 import {
-    BadRequestException,
     Injectable,
     InternalServerErrorException,
     NotFoundException,
@@ -26,7 +25,7 @@ export class UserService {
             const createdUser = await this.prismaService.user.create({
                 data,
                 select: {
-                    id: true,
+                    id: false,
                     email: true,
                     username: true,
                     password: false,
@@ -54,21 +53,13 @@ export class UserService {
         username: User['username'],
         password: User['password']
     ): Promise<{ email: User['email']; name: User['username'] }> {
-        if (!username) {
-            throw new BadRequestException('No username given');
-        }
         const user = await this.findByUsername(username);
-        try {
-            const passwordMatch = await this.authService.verifyPassword(
-                user.password,
-                password
-            );
-            if (!passwordMatch) {
-                throw new UnauthorizedException('Invalid credentials');
-            }
-        } catch (e) {
-            console.error(e);
-            throw new InternalServerErrorException(e);
+        const passwordMatch = await this.authService.verifyPassword(
+            user.password,
+            password
+        );
+        if (!passwordMatch) {
+            throw new UnauthorizedException('Invalid credentials');
         }
         const { email, username: name } = user;
         // TODO: create session, refresh token and set cookies
