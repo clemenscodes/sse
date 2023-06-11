@@ -1,7 +1,6 @@
 import * as nodemailer from 'nodemailer';
-
-import Mail = require('nodemailer/lib/mailer');
-import SMTPTransport = require('nodemailer/lib/smtp-transport');
+import * as Mail from 'nodemailer/lib/mailer';
+import * as SMTPTransport from 'nodemailer/lib/smtp-transport';
 
 export async function mail(mail: Mail.Options, smtp: SMTPTransport.Options) {
     const transporter = nodemailer.createTransport({
@@ -15,6 +14,5 @@ export async function mail(mail: Mail.Options, smtp: SMTPTransport.Options) {
         logger: true,
     });
     await transporter.verify();
-    const info = await transporter.sendMail(mail);
-    console.log('Message sent: %s', info.messageId);
+    await transporter.sendMail(mail);
 }

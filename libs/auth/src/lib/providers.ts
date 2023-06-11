@@ -6,6 +6,10 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import GitHubProvider from 'next-auth/providers/github';
 
 export const providers: Provider[] = [
+    GitHubProvider({
+        clientId: process.env['GITHUB_ID'] || '',
+        clientSecret: process.env['GITHUB_SECRET'] || '',
+    }),
     /**
      * Doesnt work with adapters, needs to be manually configured
      * @see https://github.com/nextauthjs/next-auth/discussions/2248
@@ -41,9 +45,5 @@ export const providers: Provider[] = [
                 return null;
             }
         },
-    }),
-    GitHubProvider({
-        clientId: process.env['GITHUB_ID'] || '',
-        clientSecret: process.env['GITHUB_SECRET'] || '',
     }),
 ];

@@ -3,10 +3,10 @@ export default {
     displayName: 'auth',
     preset: '../../jest.preset.js',
     transform: {
-        '^.+\\.[tj]s$': [
-            'ts-jest',
-            { tsconfig: '<rootDir>/tsconfig.spec.json' },
+        '^.+\\.[tj]sx?$': [
+            '@swc/jest',
+            { jsc: { transform: { react: { runtime: 'automatic' } } } },
         ],
     },
-    moduleFileExtensions: ['ts', 'js', 'html'],
+    moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx']
 };

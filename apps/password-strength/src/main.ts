@@ -1,4 +1,4 @@
-import { PasswordStrength, passwordStrength } from '@sse/password-strength-lib';
+import { PasswordStrength, passwordStrength } from '@utils';
 
 const strength = passwordStrength(
     'Max',

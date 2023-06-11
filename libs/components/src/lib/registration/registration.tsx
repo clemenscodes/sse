@@ -3,7 +3,6 @@ import { Prisma } from '@prisma/api';
 import { cn } from '@styles';
 import { RegisterSchema, registerSchema } from '@types';
 import axios from 'axios';
-import { signIn } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
 import { Button } from '../button/button';
 import {
@@ -49,12 +48,6 @@ export const Register: React.FC<RegisterProps> = ({ submit, ...props }) => {
                 if (!response) {
                     return null;
                 }
-                await signIn('credentials', {
-                    email,
-                    username,
-                    password,
-                    redirect: false,
-                });
             } catch (e) {
                 console.error(e);
                 return null;

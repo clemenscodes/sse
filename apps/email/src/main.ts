@@ -1,6 +1,6 @@
-import { mail } from '@sse/nodemailer';
 import * as dotenv from 'dotenv';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
+import { mail } from './nodemailer';
 
 dotenv.config();
 

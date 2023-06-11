@@ -2,7 +2,7 @@ import { fromDate } from './fromDate';
 
 describe('fromDate', () => {
     test('should return a Date object representing the future expiry date', () => {
-        const maxAge = 3600; // 1 hour in seconds
+        const maxAge = 3600;
         const actual = fromDate(maxAge);
         const currentDate = new Date();
         const expected = new Date(currentDate.getTime() + maxAge * 1000);

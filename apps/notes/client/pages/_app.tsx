@@ -1,14 +1,9 @@
 import { site } from '@config';
-import { SessionProvider } from 'next-auth/react';
 import { type AppProps } from 'next/app';
 import Head from 'next/head';
 import '../styles.css';
-import { Session } from 'next-auth';
 
-const App: React.FC<AppProps<{ session: Session }>> = ({
-    Component,
-    pageProps: { session, ...pageProps },
-}) => {
+const App: React.FC<AppProps> = ({ Component, pageProps }) => {
     return (
         <>
             <Head>
@@ -18,9 +13,7 @@ const App: React.FC<AppProps<{ session: Session }>> = ({
                 />
                 <title>{site.title}</title>
             </Head>
-            <SessionProvider session={session}>
-                <Component {...pageProps} />
-            </SessionProvider>
+            <Component {...pageProps} />
         </>
     );
 };

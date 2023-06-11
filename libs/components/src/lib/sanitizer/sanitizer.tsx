@@ -18,18 +18,18 @@ export function Sanitizer({ ...props }: SanitizerProps) {
     return (
         <>
             <input
-                aria-label="xss-input"
-                type="text"
+                aria-label='xss-input'
+                type='text'
                 onChange={(e) => setInput(e.target.value)}
             />
             <button onClick={() => sanitizeInput(input)}>Sanitize</button>
             <p>Custom Sanitization: </p>
             <p
-                data-testid="xss-output"
+                data-testid='xss-output'
                 dangerouslySetInnerHTML={{ __html: output }}
             />
             <p>React Sanitization: </p>
-            <p data-testid="react-sanitized">{input}</p>
+            <p data-testid='react-sanitized'>{input}</p>
         </>
     );
 }

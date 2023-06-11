@@ -17,19 +17,12 @@
         "paths": {
             "@api": ["libs/api/src/index.ts"],
             "@auth": ["libs/auth/src/index.ts"],
-            "@auth/next-auth": ["libs/auth/src/lib/next-auth.d.ts"],
             "@components": ["libs/components/src/index.ts"],
             "@config": ["libs/config/src/index.ts"],
             "@pages": ["libs/pages/src/index.ts"],
-            "@sse/nodemailer": ["libs/nodemailer/src/index.ts"],
-            "@sse/password-strength-lib": [
-                "libs/password-strength-lib/src/index.ts"
-            ],
             "@styles": ["libs/styles/src/index.ts"],
             "@test/*": ["libs/test/src/*"],
             "@types": ["libs/types/src/index.ts"],
-            "@ui": ["libs/ui/src/index.ts"],
-            "@ui/server": ["libs/ui/src/server.ts"],
             "@utils": ["libs/utils/src/index.ts"]
         }
     },
