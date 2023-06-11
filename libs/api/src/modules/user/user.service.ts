@@ -50,7 +50,10 @@ export class UserService {
         }
     }
 
-    async login(username: User['username'], password: User['password']) {
+    async login(
+        username: User['username'],
+        password: User['password']
+    ): Promise<{ email: User['email']; name: User['username'] }> {
         if (!username) {
             throw new BadRequestException('No username given');
         }
@@ -67,8 +70,9 @@ export class UserService {
             console.error(e);
             throw new InternalServerErrorException(e);
         }
+        const { email, username: name } = user;
         // TODO: create session, refresh token and set cookies
-        return user;
+        return { email, name };
     }
 
     async findByEmail(email: User['email']) {
