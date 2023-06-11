@@ -1,19 +1,30 @@
 import {
+    BadRequestException,
     Injectable,
     InternalServerErrorException,
     NotFoundException,
+    UnauthorizedException,
 } from '@nestjs/common';
 import { Prisma, User } from '@prisma/api';
+import { AuthService } from '../auth/auth.service';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class UserService {
-    constructor(private readonly prismaService: PrismaService) {}
+    constructor(
+        private readonly prismaService: PrismaService,
+        private readonly authService: AuthService
+    ) {}
 
-    async create(user: User) {
+    async create(data: Prisma.UserCreateInput) {
         try {
+            const { password } = data;
+            const hashedPassword = await this.authService.hashPassword(
+                password
+            );
+            data.password = hashedPassword;
             const createdUser = await this.prismaService.user.create({
-                data: user,
+                data,
                 select: {
                     id: true,
                     email: true,
@@ -39,7 +50,28 @@ export class UserService {
         }
     }
 
-    async findByEmail(email: string) {
+    async login(username: User['username'], password: User['password']) {
+        if (!username) {
+            throw new BadRequestException('No username given');
+        }
+        const user = await this.findByUsername(username);
+        try {
+            const passwordMatch = await this.authService.verifyPassword(
+                user.password,
+                password
+            );
+            if (!passwordMatch) {
+                throw new UnauthorizedException('Invalid credentials');
+            }
+        } catch (e) {
+            console.error(e);
+            throw new InternalServerErrorException(e);
+        }
+        // TODO: create session, refresh token and set cookies
+        return user;
+    }
+
+    async findByEmail(email: User['email']) {
         try {
             const user = await this.prismaService.user.findUnique({
                 where: { email },
@@ -51,7 +83,7 @@ export class UserService {
                 },
             });
             if (!user) {
-                throw new NotFoundException('User not found');
+                throw new UnauthorizedException('Invalid credentials');
             }
             return user;
         } catch (e) {
@@ -71,34 +103,22 @@ export class UserService {
         }
     }
 
-    async findByUsername(username: string) {
+    async findByUsername(username: User['username']) {
         try {
             const user = await this.prismaService.user.findUnique({
                 where: { username },
-                select: {
-                    id: true,
-                    email: true,
-                    username: true,
-                    password: false,
-                },
             });
             if (!user) {
-                throw new NotFoundException('User not found');
+                throw new UnauthorizedException('Invalid credentials');
             }
             return user;
         } catch (e) {
             if (e instanceof Prisma.PrismaClientKnownRequestError) {
-                throw new InternalServerErrorException(
-                    'Failed to retrieve user'
-                );
+                throw new UnauthorizedException('Invalid credentials');
             } else if (e instanceof Prisma.PrismaClientValidationError) {
-                throw new NotFoundException('User not found');
-            } else if (e instanceof NotFoundException) {
-                throw e;
+                throw new UnauthorizedException('Invalid credentials');
             } else {
-                throw new InternalServerErrorException(
-                    'Failed to retrieve user'
-                );
+                throw new UnauthorizedException('Invalid credentials');
             }
         }
     }
@@ -132,7 +152,7 @@ export class UserService {
         }
     }
 
-    async findOne(id: number) {
+    async findOne(id: User['id']) {
         try {
             const user = await this.prismaService.user.findUnique({
                 where: { id },
@@ -164,11 +184,11 @@ export class UserService {
         }
     }
 
-    async update(id: number, user: User) {
+    async update(id: User['id'], data: Prisma.UserUpdateInput) {
         try {
             const updatedUser = await this.prismaService.user.update({
                 where: { id },
-                data: { ...user },
+                data,
                 select: {
                     id: true,
                     email: true,
@@ -177,7 +197,7 @@ export class UserService {
                 },
             });
             if (!updatedUser) {
-                throw new NotFoundException('User not found');
+                throw new UnauthorizedException('Invalid credentials');
             }
             return updatedUser;
         } catch (e) {
@@ -187,16 +207,14 @@ export class UserService {
             ) {
                 throw new InternalServerErrorException('User update failed');
             } else if (e instanceof Prisma.PrismaClientValidationError) {
-                throw new NotFoundException('User not found');
-            } else if (e instanceof NotFoundException) {
-                throw e;
+                throw new UnauthorizedException('Invalid credentials');
             } else {
                 throw new InternalServerErrorException('User update failed');
             }
         }
     }
 
-    async remove(id: number) {
+    async remove(id: User['id']) {
         try {
             const deletedUser = await this.prismaService.user.delete({
                 where: { id },
@@ -208,16 +226,14 @@ export class UserService {
                 },
             });
             if (!deletedUser) {
-                throw new NotFoundException('User not found');
+                throw new UnauthorizedException('Invalid credentials');
             }
             return deletedUser;
         } catch (e) {
             if (e instanceof Prisma.PrismaClientKnownRequestError) {
                 throw new InternalServerErrorException('Failed to delete user');
             } else if (e instanceof Prisma.PrismaClientValidationError) {
-                throw new NotFoundException('User not found');
-            } else if (e instanceof NotFoundException) {
-                throw e;
+                throw new UnauthorizedException('Invalid credentials');
             } else {
                 throw new InternalServerErrorException('Failed to delete user');
             }

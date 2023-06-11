@@ -1,6 +1,6 @@
 import { UserPipe } from './user.pipe';
 
-describe('ZodPipe', () => {
+describe('UserPipe', () => {
     it('should be defined', () => {
         expect(new UserPipe()).toBeDefined();
     });

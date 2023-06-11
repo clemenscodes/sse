@@ -1,3 +1,4 @@
+import { apiUrl } from '@config';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Prisma } from '@prisma/api';
 import { cn } from '@styles';
@@ -41,10 +42,7 @@ export const Register: React.FC<RegisterProps> = ({ submit, ...props }) => {
                 password,
             };
             try {
-                const response = await axios.post(
-                    'http://localhost:4200/api/user',
-                    payload
-                );
+                const response = await axios.post(`${apiUrl}/user`, payload);
                 if (!response) {
                     return null;
                 }

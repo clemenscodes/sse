@@ -9,7 +9,7 @@ import {
     Patch,
     Post,
 } from '@nestjs/common';
-import { User } from '@prisma/api';
+import { Prisma } from '@prisma/api';
 import { UserPipe } from './user.pipe';
 import { UserService } from './user.service';
 
@@ -18,7 +18,7 @@ export class UserController {
     constructor(private readonly userService: UserService) {}
 
     @Post()
-    create(@Body(new UserPipe()) user: User) {
+    create(@Body(new UserPipe()) user: Prisma.UserCreateInput) {
         return this.userService.create(user);
     }
 
@@ -55,7 +55,7 @@ export class UserController {
             new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })
         )
         id: string,
-        @Body(new UserPipe()) user: User
+        @Body(new UserPipe()) user: Prisma.UserUpdateInput
     ) {
         return this.userService.update(+id, user);
     }
