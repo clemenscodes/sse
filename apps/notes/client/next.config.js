@@ -17,6 +17,14 @@ const nextConfig = {
     async rewrites() {
         return [
             {
+                source: '/api/auth/register',
+                destination: 'http://server:3000/api/auth/register',
+            },
+            {
+                source: '/api/auth/login',
+                destination: 'http://server:3000/api/auth/login',
+            },
+            {
                 source: '/api/auth/',
                 destination: '/api/auth/',
             },

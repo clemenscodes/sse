@@ -1,4 +1,4 @@
-import { Global, Module } from '@nestjs/common';
+import { Global, Module, ModuleMetadata } from '@nestjs/common';
 import { AccountModule } from './account/account.module';
 import { AuthModule } from './auth/auth.module';
 import { NoteModule } from './note/note.module';
@@ -8,27 +8,20 @@ import { SessionModule } from './session/session.module';
 import { UserModule } from './user/user.module';
 import { VerificationTokenModule } from './verification-token/verification-token.module';
 
+const modules: ModuleMetadata['imports'] = [
+    PrismaModule,
+    UserModule,
+    NoteModule,
+    AuthModule,
+    SessionModule,
+    RefreshTokenModule,
+    VerificationTokenModule,
+    AccountModule,
+];
+
 @Global()
 @Module({
-    imports: [
-        PrismaModule,
-        UserModule,
-        NoteModule,
-        AuthModule,
-        SessionModule,
-        RefreshTokenModule,
-        VerificationTokenModule,
-        AccountModule,
-    ],
-    exports: [
-        PrismaModule,
-        UserModule,
-        NoteModule,
-        AuthModule,
-        SessionModule,
-        RefreshTokenModule,
-        VerificationTokenModule,
-        AccountModule,
-    ],
+    imports: [...modules],
+    exports: [...modules],
 })
 export class ApiModule {}
