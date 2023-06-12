@@ -2,7 +2,6 @@ import {
     HttpStatus,
     Injectable,
     InternalServerErrorException,
-    Logger,
     NotFoundException,
     UnauthorizedException,
 } from '@nestjs/common';
@@ -20,8 +19,8 @@ export class UserService {
         private readonly prismaService: PrismaService,
         private readonly authService: AuthService,
         private readonly sessionService: SessionService,
-        private readonly cookieService: CookieService,
-        private readonly refreshTokenService: RefreshTokenService
+        private readonly refreshTokenService: RefreshTokenService,
+        private readonly cookieService: CookieService
     ) {}
 
     async register(data: Prisma.UserCreateInput, res: Response) {
@@ -59,7 +58,6 @@ export class UserService {
             } else if (e instanceof InternalServerErrorException) {
                 throw e;
             } else {
-                Logger.error(e);
                 throw new InternalServerErrorException('Registration failed');
             }
         }
@@ -137,7 +135,6 @@ export class UserService {
             } else if (e instanceof NotFoundException) {
                 throw e;
             } else {
-                Logger.error(e);
                 throw new InternalServerErrorException(
                     'Failed to retrieve user'
                 );
@@ -160,7 +157,6 @@ export class UserService {
             } else if (e instanceof Prisma.PrismaClientValidationError) {
                 throw new UnauthorizedException('Invalid credentials');
             } else {
-                Logger.error(e);
                 throw new UnauthorizedException('Invalid credentials');
             }
         }
@@ -188,7 +184,6 @@ export class UserService {
             } else if (e instanceof NotFoundException) {
                 throw e;
             } else {
-                Logger.error(e);
                 throw new InternalServerErrorException(
                     'Failed to retrieve users'
                 );
@@ -221,7 +216,6 @@ export class UserService {
             } else if (e instanceof NotFoundException) {
                 throw e;
             } else {
-                Logger.error(e);
                 throw new InternalServerErrorException(
                     'Failed to retrieve user'
                 );
@@ -254,7 +248,6 @@ export class UserService {
             } else if (e instanceof Prisma.PrismaClientValidationError) {
                 throw new UnauthorizedException('Invalid credentials');
             } else {
-                Logger.error(e);
                 throw new InternalServerErrorException('User update failed');
             }
         }
@@ -281,7 +274,6 @@ export class UserService {
             } else if (e instanceof Prisma.PrismaClientValidationError) {
                 throw new UnauthorizedException('Invalid credentials');
             } else {
-                Logger.error(e);
                 throw new InternalServerErrorException('Failed to delete user');
             }
         }

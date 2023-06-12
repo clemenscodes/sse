@@ -1,7 +1,6 @@
 import {
     Injectable,
     InternalServerErrorException,
-    Logger,
     NotFoundException,
 } from '@nestjs/common';
 import { Prisma, RefreshToken, User } from '@prisma/api';
@@ -41,7 +40,6 @@ export class RefreshTokenService {
                     );
                 }
             }
-            Logger.error(error);
             throw new InternalServerErrorException(
                 'Failed to create refresh token'
             );
@@ -56,7 +54,6 @@ export class RefreshTokenService {
             const validRefreshToken = tokenTimestamp > currentTimestamp;
             return validRefreshToken;
         } catch (e) {
-            Logger.error(e);
             return false;
         }
     }
@@ -71,7 +68,6 @@ export class RefreshTokenService {
             }
             return token;
         } catch (error) {
-            Logger.error(error);
             throw new InternalServerErrorException(
                 'Failed to retrieve refresh token'
             );
@@ -89,7 +85,6 @@ export class RefreshTokenService {
             }
             return refreshToken;
         } catch (error) {
-            Logger.error(error);
             throw new InternalServerErrorException(
                 'Failed to retrieve refresh token'
             );
@@ -104,7 +99,6 @@ export class RefreshTokenService {
                 });
             return userRefreshTokens;
         } catch (error) {
-            Logger.error(error);
             throw new InternalServerErrorException(
                 'Failed to fetch user refresh tokens'
             );
@@ -122,7 +116,6 @@ export class RefreshTokenService {
             }
             return deletedRefreshToken;
         } catch (error) {
-            Logger.error(error);
             throw new InternalServerErrorException(
                 'Failed to delete refresh token'
             );

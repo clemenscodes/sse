@@ -1,7 +1,6 @@
 import {
     Injectable,
     InternalServerErrorException,
-    Logger,
     NotFoundException,
 } from '@nestjs/common';
 import { Prisma, Session, User } from '@prisma/api';
@@ -39,7 +38,6 @@ export class SessionService {
                     );
                 }
             }
-            Logger.error(error);
             throw new InternalServerErrorException('Failed to create session');
         }
     }
@@ -54,7 +52,6 @@ export class SessionService {
             }
             return session;
         } catch (error) {
-            Logger.error(error);
             throw new InternalServerErrorException(
                 'Failed to retrieve session'
             );
@@ -69,7 +66,6 @@ export class SessionService {
             const validSession = sessionTimestamp > currentTimestamp;
             return validSession;
         } catch (e) {
-            Logger.error(e);
             return false;
         }
     }
@@ -84,7 +80,6 @@ export class SessionService {
             }
             return session;
         } catch (error) {
-            Logger.error(error);
             throw new InternalServerErrorException(
                 'Failed to retrieve session'
             );
@@ -101,7 +96,6 @@ export class SessionService {
             }
             return userSessions;
         } catch (error) {
-            Logger.error(error);
             throw new InternalServerErrorException(
                 'Failed to fetch user sessions'
             );
@@ -118,7 +112,6 @@ export class SessionService {
             }
             return deletedSession;
         } catch (error) {
-            Logger.error(error);
             throw new InternalServerErrorException('Failed to delete session');
         }
     }

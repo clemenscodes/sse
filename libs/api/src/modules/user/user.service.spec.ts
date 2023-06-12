@@ -6,6 +6,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaClient, User } from '@prisma/api';
 import { DeepMockProxy, mockDeep } from 'jest-mock-extended';
 import { AuthService } from '../auth/auth.service';
+import { CookieService } from '../cookie/cookie.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { RefreshTokenService } from '../refresh-token/refresh-token.service';
 import { SessionService } from '../session/session.service';
@@ -15,6 +16,7 @@ describe('UserService', () => {
     let service: UserService;
     let sessionService: SessionService;
     let refreshTokenService: RefreshTokenService;
+    let cookieService: CookieService;
     let prisma: DeepMockProxy<PrismaClient>;
 
     beforeEach(async () => {
@@ -25,6 +27,7 @@ describe('UserService', () => {
                 AuthService,
                 SessionService,
                 RefreshTokenService,
+                CookieService,
             ],
         })
             .overrideProvider(AuthService)
@@ -33,6 +36,8 @@ describe('UserService', () => {
             .useValue(mockDeep<SessionService>())
             .overrideProvider(RefreshTokenService)
             .useValue(mockDeep<RefreshTokenService>())
+            .overrideProvider(CookieService)
+            .useValue(mockDeep<CookieService>())
             .overrideProvider(PrismaService)
             .useValue(mockDeep<PrismaClient>())
             .compile();
@@ -40,6 +45,7 @@ describe('UserService', () => {
         service = module.get<UserService>(UserService);
         sessionService = module.get(SessionService);
         refreshTokenService = module.get(RefreshTokenService);
+        cookieService = module.get(CookieService);
         prisma = module.get(PrismaService);
     });
 
@@ -47,6 +53,7 @@ describe('UserService', () => {
         expect(service).toBeDefined();
         expect(sessionService).toBeDefined();
         expect(refreshTokenService).toBeDefined();
+        expect(cookieService).toBeDefined();
         expect(prisma).toBeDefined();
     });
 
