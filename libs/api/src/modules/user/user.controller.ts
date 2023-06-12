@@ -10,12 +10,16 @@ import {
     Post,
 } from '@nestjs/common';
 import { Prisma } from '@prisma/api';
+import { SessionService } from '../session/session.service';
 import { UserPipe } from './user.pipe';
 import { UserService } from './user.service';
 
 @Controller('user')
 export class UserController {
-    constructor(private readonly userService: UserService) {}
+    constructor(
+        private readonly userService: UserService,
+        private readonly sessionService: SessionService
+    ) {}
 
     @Post()
     create(@Body(new UserPipe()) user: Prisma.UserCreateInput) {
@@ -46,6 +50,17 @@ export class UserController {
         id: string
     ) {
         return this.userService.findOne(+id);
+    }
+
+    @Get(':id/sessions')
+    async getUserSessions(
+        @Param(
+            'id',
+            new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })
+        )
+        id: string
+    ) {
+        return await this.sessionService.getUserSessions(+id);
     }
 
     @Patch(':id')

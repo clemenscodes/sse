@@ -14,7 +14,7 @@ export class SessionService {
         private readonly prismaService: PrismaService,
         private readonly authService: AuthService
     ) {}
-    
+
     private static sessionDefaultTTL: number = 60 * 60; // 1 hour
 
     async create(userId: User['id']) {
@@ -53,6 +53,22 @@ export class SessionService {
         } catch (error) {
             throw new InternalServerErrorException(
                 'Failed to retrieve session'
+            );
+        }
+    }
+
+    async getUserSessions(userId: User['id']) {
+        try {
+            const userSessions = await this.prismaService.session.findMany({
+                where: { userId },
+            });
+            if (!userSessions) {
+                throw new NotFoundException('No user sessions found');
+            }
+            return userSessions;
+        } catch (error) {
+            throw new InternalServerErrorException(
+                'Failed to fetch user sessions'
             );
         }
     }

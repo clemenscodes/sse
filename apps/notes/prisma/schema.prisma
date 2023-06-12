@@ -33,10 +33,11 @@ model Session {
 }
 
 model RefreshToken {
-    id     Int    @id @default(autoincrement())
-    token  String @unique
-    userId Int    @unique
-    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+    id           String   @id @default(cuid())
+    refreshToken String   @unique
+    expires      DateTime
+    userId       Int      @unique
+    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Note {

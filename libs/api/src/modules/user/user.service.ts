@@ -7,6 +7,7 @@ import {
 import { Prisma, User } from '@prisma/api';
 import { AuthService } from '../auth/auth.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { RefreshTokenService } from '../refresh-token/refresh-token.service';
 import { SessionService } from '../session/session.service';
 
 @Injectable()
@@ -14,7 +15,8 @@ export class UserService {
     constructor(
         private readonly prismaService: PrismaService,
         private readonly authService: AuthService,
-        private readonly sessionService: SessionService
+        private readonly sessionService: SessionService,
+        private readonly refreshTokenService: RefreshTokenService
     ) {}
 
     async register(data: Prisma.UserCreateInput) {
@@ -73,8 +75,14 @@ export class UserService {
         // TODO: create session
         const session = await this.sessionService.create(id);
         console.log({ session });
-
         // TODO: create refresh token
+        let refreshToken = await this.refreshTokenService.getUserRefreshToken(
+            id
+        );
+        if (!refreshToken) {
+            refreshToken = await this.refreshTokenService.create(id);
+        }
+        console.log({ refreshToken });
         // TODO: set cookies
         return { email, name };
     }
