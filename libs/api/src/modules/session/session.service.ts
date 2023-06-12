@@ -1,9 +1,10 @@
 import {
     Injectable,
     InternalServerErrorException,
+    Logger,
     NotFoundException,
 } from '@nestjs/common';
-import { Prisma, User } from '@prisma/api';
+import { Prisma, Session, User } from '@prisma/api';
 import { fromDate } from '@utils';
 import { AuthService } from '../auth/auth.service';
 import { PrismaService } from '../prisma/prisma.service';
@@ -38,11 +39,38 @@ export class SessionService {
                     );
                 }
             }
+            Logger.error(error);
             throw new InternalServerErrorException('Failed to create session');
         }
     }
 
-    async findById(sessionId: string) {
+    async findBySessionToken(sessionToken: Session['sessionToken']) {
+        try {
+            const session = await this.prismaService.session.findUnique({
+                where: { sessionToken },
+            });
+            if (!session) {
+                throw new NotFoundException('Session not found');
+            }
+            return session;
+        } catch (error) {
+            Logger.error(error);
+            throw new InternalServerErrorException(
+                'Failed to retrieve session'
+            );
+        }
+    }
+
+    async checkSession(sessionToken: Session['sessionToken']) {
+        const { expires, userId } = await this.findBySessionToken(sessionToken);
+        const sessionTimestamp = expires.getTime();
+        const currentTimestamp = Date.now();
+        console.log({ sessionTimestamp, currentTimestamp });
+        const expired = currentTimestamp > sessionTimestamp;
+        return { expired, userId };
+    }
+
+    async findById(sessionId: Session['id']) {
         try {
             const session = await this.prismaService.session.findUnique({
                 where: { id: sessionId },
@@ -52,6 +80,7 @@ export class SessionService {
             }
             return session;
         } catch (error) {
+            Logger.error(error);
             throw new InternalServerErrorException(
                 'Failed to retrieve session'
             );
@@ -68,6 +97,7 @@ export class SessionService {
             }
             return userSessions;
         } catch (error) {
+            Logger.error(error);
             throw new InternalServerErrorException(
                 'Failed to fetch user sessions'
             );
@@ -84,6 +114,7 @@ export class SessionService {
             }
             return deletedSession;
         } catch (error) {
+            Logger.error(error);
             throw new InternalServerErrorException('Failed to delete session');
         }
     }

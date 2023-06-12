@@ -1,6 +1,7 @@
 import {
     Injectable,
     InternalServerErrorException,
+    Logger,
     NotFoundException,
 } from '@nestjs/common';
 import { Note, Prisma } from '@prisma/api';
@@ -28,6 +29,7 @@ export class NoteService {
             } else if (e instanceof InternalServerErrorException) {
                 throw e;
             } else {
+                Logger.error(e);
                 throw new InternalServerErrorException('Creating note failed');
             }
         }
@@ -48,6 +50,7 @@ export class NoteService {
             } else if (e instanceof NotFoundException) {
                 throw e;
             } else {
+                Logger.error(e);
                 throw new InternalServerErrorException(
                     'Failed to retrieve notes'
                 );
@@ -72,6 +75,7 @@ export class NoteService {
             } else if (e instanceof NotFoundException) {
                 throw e;
             } else {
+                Logger.error(e);
                 throw new InternalServerErrorException(
                     'Failed to retrieve user notes'
                 );
@@ -96,6 +100,7 @@ export class NoteService {
             } else if (e instanceof NotFoundException) {
                 throw e;
             } else {
+                Logger.error(e);
                 throw new InternalServerErrorException(
                     'Failed to retrieve public notes'
                 );
@@ -127,6 +132,7 @@ export class NoteService {
             } else if (e instanceof NotFoundException) {
                 throw e;
             } else {
+                Logger.error(e);
                 throw new InternalServerErrorException(
                     'Failed to search public notes'
                 );
@@ -153,6 +159,7 @@ export class NoteService {
             } else if (e instanceof NotFoundException) {
                 throw e;
             } else {
+                Logger.error(e);
                 throw new InternalServerErrorException(
                     'Failed to retrieve note'
                 );
@@ -181,6 +188,7 @@ export class NoteService {
             } else if (e instanceof NotFoundException) {
                 throw e;
             } else {
+                Logger.error(e);
                 throw new InternalServerErrorException('Note update failed');
             }
         }
@@ -203,6 +211,7 @@ export class NoteService {
             } else if (e instanceof NotFoundException) {
                 throw e;
             } else {
+                Logger.error(e);
                 throw new InternalServerErrorException('Failed to delete note');
             }
         }

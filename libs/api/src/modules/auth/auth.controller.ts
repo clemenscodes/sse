@@ -1,8 +1,6 @@
-import { Body, Controller, HttpStatus, Post, Res } from '@nestjs/common';
-import { CookieOptions, Response } from 'express';
+import { Body, Controller, Post, Res } from '@nestjs/common';
+import { Response } from 'express';
 import { Cookies } from '../../decorator/cookies.decorator';
-import { RefreshTokenService } from '../refresh-token/refresh-token.service';
-import { SessionService } from '../session/session.service';
 import { UserPipe } from '../user/user.pipe';
 import { UserService } from '../user/user.service';
 import { LoginPipe } from './login.pipe';
@@ -19,45 +17,24 @@ export class AuthController {
     @Post('register')
     async signUp(
         @Body(new UserPipe())
-        data: Parameters<typeof this.userService.create>[0]
+        data: Parameters<typeof this.userService.create>[0],
+        @Res({ passthrough: true }) res: Response
     ) {
-        return await this.userService.register(data);
+        return await this.userService.register(data, res);
     }
 
     @Post('login')
     async login(
-        @Cookies() reqCookies: string,
+        @Cookies() cookies: string,
         @Body(new LoginPipe()) { username, password }: LoginPayload,
         @Res({ passthrough: true }) res: Response
     ) {
-        console.log({ reqCookies });
-        const { cookies } = await this.userService.login(username, password);
-        const [sessionToken, refreshToken] = cookies;
-        console.log({ sessionToken, refreshToken });
-        const cookieOptions: CookieOptions = {
-            sameSite: 'lax',
-            httpOnly: true,
-            signed: false,
-            path: '/',
-        };
-        res.cookie(
-            SessionService.sessionCookieName,
-            sessionToken.sessionToken,
-            {
-                ...cookieOptions,
-                expires: new Date(sessionToken.expires),
-                maxAge: SessionService.sessionDefaultTTL * 1000,
-            }
-        ).cookie(
-            RefreshTokenService.refreshCookieName,
-            refreshToken.refreshToken,
-            {
-                ...cookieOptions,
-                expires: new Date(refreshToken.expires),
-                maxAge: RefreshTokenService.refreshTokenDefaultTTL * 1000,
-            }
+        const { message, ...data } = await this.userService.login(
+            username,
+            password,
+            res,
+            cookies
         );
-        res.status(HttpStatus.OK);
-        res.json({ message: 'Successfully logged in!' });
+        res.json({ message, data });
     }
 }

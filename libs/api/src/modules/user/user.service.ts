@@ -1,10 +1,13 @@
 import {
+    HttpStatus,
     Injectable,
     InternalServerErrorException,
+    Logger,
     NotFoundException,
     UnauthorizedException,
 } from '@nestjs/common';
-import { Prisma, RefreshToken, Session, User } from '@prisma/api';
+import { Prisma, User } from '@prisma/api';
+import { CookieOptions, Response } from 'express';
 import { AuthService } from '../auth/auth.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { RefreshTokenService } from '../refresh-token/refresh-token.service';
@@ -19,10 +22,14 @@ export class UserService {
         private readonly refreshTokenService: RefreshTokenService
     ) {}
 
-    async register(data: Prisma.UserCreateInput) {
+    async register(
+        data: Prisma.UserCreateInput,
+
+        res: Response
+    ) {
         const { password } = data;
         const { username } = await this.create(data);
-        await this.login(username, password);
+        await this.login(username, password, res);
     }
 
     async create(data: Prisma.UserCreateInput) {
@@ -54,6 +61,7 @@ export class UserService {
             } else if (e instanceof InternalServerErrorException) {
                 throw e;
             } else {
+                Logger.error(e);
                 throw new InternalServerErrorException('Registration failed');
             }
         }
@@ -61,12 +69,36 @@ export class UserService {
 
     async login(
         username: User['username'],
-        password: User['password']
+        password: User['password'],
+        res: Response,
+        reqCookies?: string
     ): Promise<{
+        message: string;
         email: User['email'];
         name: User['username'];
-        cookies: [Session, RefreshToken];
     }> {
+        if (reqCookies) {
+            const parsedCookies = JSON.parse(reqCookies);
+            if (SessionService.sessionCookieName in parsedCookies) {
+                const reqSessionToken =
+                    parsedCookies[SessionService.sessionCookieName];
+                console.log({ reqSessionToken });
+                const { expired, userId } =
+                    await this.sessionService.checkSession(reqSessionToken);
+                if (!expired) {
+                    res.status(HttpStatus.OK);
+                    const { username: name, email } = await this.findOne(
+                        userId
+                    );
+                    return { message: 'User already logged in', email, name };
+                }
+            }
+            if (RefreshTokenService.refreshCookieName in parsedCookies) {
+                const reqRefreshToken =
+                    parsedCookies[RefreshTokenService.refreshCookieName];
+                console.log({ reqRefreshToken });
+            }
+        }
         const user = await this.findByUsername(username);
         const passwordMatch = await this.authService.verifyPassword(
             user.password,
@@ -83,8 +115,31 @@ export class UserService {
         if (!refreshToken) {
             refreshToken = await this.refreshTokenService.create(id);
         }
-        const cookies: [Session, RefreshToken] = [sessionToken, refreshToken];
-        return { email, name, cookies };
+        const cookieOptions: CookieOptions = {
+            sameSite: 'lax',
+            httpOnly: true,
+            signed: false,
+            path: '/',
+        };
+        res.cookie(
+            SessionService.sessionCookieName,
+            sessionToken.sessionToken,
+            {
+                ...cookieOptions,
+                expires: sessionToken.expires,
+                maxAge: SessionService.sessionDefaultTTL * 1000,
+            }
+        ).cookie(
+            RefreshTokenService.refreshCookieName,
+            refreshToken.refreshToken,
+            {
+                ...cookieOptions,
+                expires: refreshToken.expires,
+                maxAge: RefreshTokenService.refreshTokenDefaultTTL * 1000,
+            }
+        );
+        res.status(HttpStatus.OK);
+        return { message: 'Successfully logged in!', email, name };
     }
 
     async findByEmail(email: User['email']) {
@@ -112,6 +167,7 @@ export class UserService {
             } else if (e instanceof NotFoundException) {
                 throw e;
             } else {
+                Logger.error(e);
                 throw new InternalServerErrorException(
                     'Failed to retrieve user'
                 );
@@ -134,6 +190,7 @@ export class UserService {
             } else if (e instanceof Prisma.PrismaClientValidationError) {
                 throw new UnauthorizedException('Invalid credentials');
             } else {
+                Logger.error(e);
                 throw new UnauthorizedException('Invalid credentials');
             }
         }
@@ -161,6 +218,7 @@ export class UserService {
             } else if (e instanceof NotFoundException) {
                 throw e;
             } else {
+                Logger.error(e);
                 throw new InternalServerErrorException(
                     'Failed to retrieve users'
                 );
@@ -193,6 +251,7 @@ export class UserService {
             } else if (e instanceof NotFoundException) {
                 throw e;
             } else {
+                Logger.error(e);
                 throw new InternalServerErrorException(
                     'Failed to retrieve user'
                 );
@@ -225,6 +284,7 @@ export class UserService {
             } else if (e instanceof Prisma.PrismaClientValidationError) {
                 throw new UnauthorizedException('Invalid credentials');
             } else {
+                Logger.error(e);
                 throw new InternalServerErrorException('User update failed');
             }
         }
@@ -251,6 +311,7 @@ export class UserService {
             } else if (e instanceof Prisma.PrismaClientValidationError) {
                 throw new UnauthorizedException('Invalid credentials');
             } else {
+                Logger.error(e);
                 throw new InternalServerErrorException('Failed to delete user');
             }
         }
