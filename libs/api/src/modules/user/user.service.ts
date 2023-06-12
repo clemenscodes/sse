@@ -105,6 +105,13 @@ export class UserService {
         if (!refreshToken) {
             refreshToken = await this.refreshTokenService.create(id);
         }
+        const valid = await this.refreshTokenService.checkRefreshToken(
+            refreshToken.refreshToken
+        );
+        if (!valid) {
+            await this.refreshTokenService.delete(refreshToken.id);
+            refreshToken = await this.refreshTokenService.create(id);
+        }
         this.cookieService.setCookies(sessionToken, refreshToken, res);
         res.status(HttpStatus.OK);
         return { message: 'Successfully logged in!', email, name };
