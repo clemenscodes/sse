@@ -7,8 +7,9 @@ import {
     UnauthorizedException,
 } from '@nestjs/common';
 import { Prisma, User } from '@prisma/api';
-import { CookieOptions, Response } from 'express';
+import { Response } from 'express';
 import { AuthService } from '../auth/auth.service';
+import { CookieService } from '../cookie/cookie.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { RefreshTokenService } from '../refresh-token/refresh-token.service';
 import { SessionService } from '../session/session.service';
@@ -19,14 +20,11 @@ export class UserService {
         private readonly prismaService: PrismaService,
         private readonly authService: AuthService,
         private readonly sessionService: SessionService,
+        private readonly cookieService: CookieService,
         private readonly refreshTokenService: RefreshTokenService
     ) {}
 
-    async register(
-        data: Prisma.UserCreateInput,
-
-        res: Response
-    ) {
+    async register(data: Prisma.UserCreateInput, res: Response) {
         const { password } = data;
         const { username } = await this.create(data);
         await this.login(username, password, res);
@@ -71,33 +69,27 @@ export class UserService {
         username: User['username'],
         password: User['password'],
         res: Response,
-        reqCookies?: string
+        cookies?: string
     ): Promise<{
         message: string;
-        email: User['email'];
-        name: User['username'];
+        email?: User['email'];
+        name?: User['username'];
     }> {
-        if (reqCookies) {
-            const parsedCookies = JSON.parse(reqCookies);
-            if (SessionService.sessionCookieName in parsedCookies) {
-                const reqSessionToken =
-                    parsedCookies[SessionService.sessionCookieName];
-                console.log({ reqSessionToken });
-                const { expired, userId } =
-                    await this.sessionService.checkSession(reqSessionToken);
-                if (!expired) {
-                    res.status(HttpStatus.OK);
-                    const { username: name, email } = await this.findOne(
-                        userId
-                    );
-                    return { message: 'User already logged in', email, name };
-                }
-            }
-            if (RefreshTokenService.refreshCookieName in parsedCookies) {
-                const reqRefreshToken =
-                    parsedCookies[RefreshTokenService.refreshCookieName];
-                console.log({ reqRefreshToken });
-            }
+        const sessionValid = await this.cookieService.checkSessionCookie(
+            res,
+            cookies
+        );
+        if (sessionValid) {
+            res.status(HttpStatus.OK);
+            return { message: 'User already logged in' };
+        }
+        const refresh = await this.cookieService.checkRefreshTokenCookie(
+            res,
+            cookies
+        );
+        if (refresh) {
+            res.status(HttpStatus.OK);
+            return { message: 'Session expired, but valid refresh token!' };
         }
         const user = await this.findByUsername(username);
         const passwordMatch = await this.authService.verifyPassword(
@@ -115,29 +107,7 @@ export class UserService {
         if (!refreshToken) {
             refreshToken = await this.refreshTokenService.create(id);
         }
-        const cookieOptions: CookieOptions = {
-            sameSite: 'lax',
-            httpOnly: true,
-            signed: false,
-            path: '/',
-        };
-        res.cookie(
-            SessionService.sessionCookieName,
-            sessionToken.sessionToken,
-            {
-                ...cookieOptions,
-                expires: sessionToken.expires,
-                maxAge: SessionService.sessionDefaultTTL * 1000,
-            }
-        ).cookie(
-            RefreshTokenService.refreshCookieName,
-            refreshToken.refreshToken,
-            {
-                ...cookieOptions,
-                expires: refreshToken.expires,
-                maxAge: RefreshTokenService.refreshTokenDefaultTTL * 1000,
-            }
-        );
+        this.cookieService.setCookies(sessionToken, refreshToken, res);
         res.status(HttpStatus.OK);
         return { message: 'Successfully logged in!', email, name };
     }

@@ -4,7 +4,7 @@ import {
     Logger,
     NotFoundException,
 } from '@nestjs/common';
-import { Prisma, User } from '@prisma/api';
+import { Prisma, RefreshToken, User } from '@prisma/api';
 import { fromDate } from '@utils';
 import { AuthService } from '../auth/auth.service';
 import { PrismaService } from '../prisma/prisma.service';
@@ -48,7 +48,37 @@ export class RefreshTokenService {
         }
     }
 
-    async findById(refreshTokenId: string) {
+    async checkRefreshToken(refreshToken: RefreshToken['refreshToken']) {
+        try {
+            const { expires } = await this.findByRefreshToken(refreshToken);
+            const tokenTimestamp = expires.getTime();
+            const currentTimestamp = Date.now();
+            const validRefreshToken = tokenTimestamp > currentTimestamp;
+            return validRefreshToken;
+        } catch (e) {
+            Logger.error(e);
+            return false;
+        }
+    }
+
+    async findByRefreshToken(refreshToken: RefreshToken['refreshToken']) {
+        try {
+            const token = await this.prismaService.refreshToken.findUnique({
+                where: { refreshToken },
+            });
+            if (!token) {
+                throw new NotFoundException('Refresh token not found');
+            }
+            return token;
+        } catch (error) {
+            Logger.error(error);
+            throw new InternalServerErrorException(
+                'Failed to retrieve refresh token'
+            );
+        }
+    }
+
+    async findById(refreshTokenId: RefreshToken['id']) {
         try {
             const refreshToken =
                 await this.prismaService.refreshToken.findUnique({
@@ -81,7 +111,7 @@ export class RefreshTokenService {
         }
     }
 
-    async delete(refreshTokenId: string) {
+    async delete(refreshTokenId: RefreshToken['id']) {
         try {
             const deletedRefreshToken =
                 await this.prismaService.refreshToken.delete({

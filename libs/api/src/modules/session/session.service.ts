@@ -62,12 +62,16 @@ export class SessionService {
     }
 
     async checkSession(sessionToken: Session['sessionToken']) {
-        const { expires, userId } = await this.findBySessionToken(sessionToken);
-        const sessionTimestamp = expires.getTime();
-        const currentTimestamp = Date.now();
-        console.log({ sessionTimestamp, currentTimestamp });
-        const expired = currentTimestamp > sessionTimestamp;
-        return { expired, userId };
+        try {
+            const { expires } = await this.findBySessionToken(sessionToken);
+            const sessionTimestamp = expires.getTime();
+            const currentTimestamp = Date.now();
+            const validSession = sessionTimestamp > currentTimestamp;
+            return validSession;
+        } catch (e) {
+            Logger.error(e);
+            return false;
+        }
     }
 
     async findById(sessionId: Session['id']) {

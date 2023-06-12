@@ -2,6 +2,7 @@ import { Global, Module, ModuleMetadata } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AccountModule } from './account/account.module';
 import { AuthModule } from './auth/auth.module';
+import { CookieModule } from './cookie/cookie.module';
 import { NoteModule } from './note/note.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { RefreshTokenModule } from './refresh-token/refresh-token.module';
@@ -23,6 +24,7 @@ const modules: ModuleMetadata['imports'] = [
     RefreshTokenModule,
     VerificationTokenModule,
     AccountModule,
+    CookieModule,
 ];
 
 @Global()
