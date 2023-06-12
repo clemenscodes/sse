@@ -14,7 +14,8 @@ export class RefreshTokenService {
         private readonly prismaService: PrismaService,
         private readonly authService: AuthService
     ) {}
-    private static refreshTokenDefaultTTL: number = 30 * 24 * 60 * 60; // 30 days
+    public static readonly refreshTokenDefaultTTL: number = 30 * 24 * 60 * 60; // 30 days
+    public static readonly refreshCookieName: string = 'refreshToken';
 
     async create(userId: User['id']) {
         try {

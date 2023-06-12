@@ -1,6 +1,7 @@
 import { type SessionOptions, type SessionStrategy } from 'next-auth';
 
 export const sessionCookieName = 'next-auth.session-token';
+export const refreshCookieName = 'next-auth.refresh-token';
 
 // Choose how you want to save the user session.
 // The default is `"jwt"`, an encrypted JWT (JWE) in the session cookie.

@@ -4,7 +4,7 @@ import {
     NotFoundException,
     UnauthorizedException,
 } from '@nestjs/common';
-import { Prisma, User } from '@prisma/api';
+import { Prisma, RefreshToken, Session, User } from '@prisma/api';
 import { AuthService } from '../auth/auth.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { RefreshTokenService } from '../refresh-token/refresh-token.service';
@@ -62,7 +62,11 @@ export class UserService {
     async login(
         username: User['username'],
         password: User['password']
-    ): Promise<{ email: User['email']; name: User['username'] }> {
+    ): Promise<{
+        email: User['email'];
+        name: User['username'];
+        cookies: [Session, RefreshToken];
+    }> {
         const user = await this.findByUsername(username);
         const passwordMatch = await this.authService.verifyPassword(
             user.password,
@@ -72,19 +76,15 @@ export class UserService {
             throw new UnauthorizedException('Invalid credentials');
         }
         const { email, username: name, id } = user;
-        // TODO: create session
-        const session = await this.sessionService.create(id);
-        console.log({ session });
-        // TODO: create refresh token
+        const sessionToken = await this.sessionService.create(id);
         let refreshToken = await this.refreshTokenService.getUserRefreshToken(
             id
         );
         if (!refreshToken) {
             refreshToken = await this.refreshTokenService.create(id);
         }
-        console.log({ refreshToken });
-        // TODO: set cookies
-        return { email, name };
+        const cookies: [Session, RefreshToken] = [sessionToken, refreshToken];
+        return { email, name, cookies };
     }
 
     async findByEmail(email: User['email']) {

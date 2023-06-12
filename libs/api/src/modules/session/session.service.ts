@@ -15,7 +15,8 @@ export class SessionService {
         private readonly authService: AuthService
     ) {}
 
-    private static sessionDefaultTTL: number = 60 * 60; // 1 hour
+    public static readonly sessionDefaultTTL: number = 60 * 60; // 1 hour
+    public static readonly sessionCookieName: string = 'sessionToken';
 
     async create(userId: User['id']) {
         try {
