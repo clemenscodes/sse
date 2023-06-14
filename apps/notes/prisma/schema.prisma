@@ -13,7 +13,7 @@ datasource db {
 }
 
 model User {
-    id            Int           @id @default(autoincrement())
+    id            String        @id @default(cuid())
     username      String        @unique
     email         String        @unique
     emailVerified DateTime?
@@ -29,7 +29,7 @@ model Session {
     id           String   @id @default(cuid())
     sessionToken String   @unique
     expires      DateTime
-    userId       Int
+    userId       String
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
@@ -37,17 +37,17 @@ model RefreshToken {
     id           String   @id @default(cuid())
     refreshToken String   @unique
     expires      DateTime
-    userId       Int      @unique
+    userId       String   @unique
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Note {
-    id        Int      @id @default(autoincrement())
+    id        String   @id @default(cuid())
     content   String
     isPublic  Boolean  @default(false)
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
-    userId    Int
+    userId    String
     user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
@@ -64,7 +64,7 @@ model Account {
     scope             String?
     id_token          String? @db.Text
     session_state     String?
-    userId            Int
+    userId            String
     user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@unique([provider, providerAccountId])

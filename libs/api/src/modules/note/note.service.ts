@@ -3,17 +3,25 @@ import {
     InternalServerErrorException,
     NotFoundException,
 } from '@nestjs/common';
-import { Note, Prisma } from '@prisma/api';
+import { Note, Prisma, User } from '@prisma/api';
+import { NoteSchema } from '@types';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class NoteService {
     constructor(private readonly prismaService: PrismaService) {}
 
-    async create(note: Note) {
+    async create(note: NoteSchema) {
         try {
+            const { isPublic, content, userId: id } = note;
             const createdNote = await this.prismaService.note.create({
-                data: note,
+                data: {
+                    isPublic,
+                    content,
+                    user: {
+                        connect: { id },
+                    },
+                },
             });
             if (!createdNote) {
                 throw new InternalServerErrorException('Creating note failed');
@@ -33,29 +41,7 @@ export class NoteService {
         }
     }
 
-    async findAll() {
-        try {
-            const notes = await this.prismaService.note.findMany();
-            if (!(notes && notes.length)) {
-                throw new NotFoundException('Notes not found');
-            }
-            return notes;
-        } catch (e) {
-            if (e instanceof Prisma.PrismaClientKnownRequestError) {
-                throw new InternalServerErrorException(
-                    'Failed to retrieve notes'
-                );
-            } else if (e instanceof NotFoundException) {
-                throw e;
-            } else {
-                throw new InternalServerErrorException(
-                    'Failed to retrieve notes'
-                );
-            }
-        }
-    }
-
-    async findAllByUserId(userId: number) {
+    async findAllByUserId(userId: User['id']) {
         try {
             const notes = await this.prismaService.note.findMany({
                 where: { userId },
@@ -103,7 +89,7 @@ export class NoteService {
         }
     }
 
-    async searchPublicNotesByContent(content: string) {
+    async searchPublicNotesByContent(content: Note['content']) {
         try {
             const notes = await this.prismaService.note.findMany({
                 where: {
@@ -134,7 +120,7 @@ export class NoteService {
         }
     }
 
-    async findOne(id: number) {
+    async findOne(id: Note['id']) {
         try {
             const note = await this.prismaService.note.findUnique({
                 where: { id },
@@ -160,11 +146,11 @@ export class NoteService {
         }
     }
 
-    async update(id: number, note: Note) {
+    async update(id: Note['id'], data: Prisma.NoteUpdateInput) {
         try {
             const updatedNote = await this.prismaService.note.update({
                 where: { id },
-                data: { ...note },
+                data,
             });
             if (!updatedNote) {
                 throw new NotFoundException('Note not found');
@@ -186,7 +172,7 @@ export class NoteService {
         }
     }
 
-    async remove(id: number) {
+    async remove(id: Note['id']) {
         try {
             const deletedNote = await this.prismaService.note.delete({
                 where: { id },

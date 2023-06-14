@@ -2,9 +2,7 @@ import {
     Body,
     Controller,
     Get,
-    HttpStatus,
-    Param,
-    ParseIntPipe,
+    NotImplementedException,
     Post,
     Res,
 } from '@nestjs/common';
@@ -53,14 +51,9 @@ export class AuthController {
         res.json({ message, data });
     }
 
-    @Get(':userId/sessions')
-    async getUserSessions(
-        @Param(
-            'userId',
-            new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })
-        )
-        id: string
-    ) {
-        return await this.sessionService.getUserSessions(+id);
+    @Get('session')
+    async getUserSessions() {
+        // TODO: get JWT from request header, verify jwt, get sessions
+        return new NotImplementedException();
     }
 }

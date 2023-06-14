@@ -25,6 +25,14 @@ const nextConfig = {
                 destination: 'http://server:3000/api/auth/login',
             },
             {
+                source: '/api/auth/session/:path*',
+                destination: 'http://server:3000/api/auth/session/:path*',
+            },
+            {
+                source: '/api/auth/session',
+                destination: 'http://server:3000/api/auth/session',
+            },
+            {
                 source: '/api/auth/',
                 destination: '/api/auth/',
             },

@@ -1,5 +1,4 @@
 import * as z from 'zod';
-// import { passwordSchema } from './passwordSchema';
 import { usernameSchema } from './usernameSchema';
 
 export const loginSchema = z.object({
