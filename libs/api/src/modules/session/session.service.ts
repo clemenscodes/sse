@@ -6,14 +6,12 @@ import {
 import { Prisma, Session, User } from '@prisma/api';
 import { fromDate } from '@utils';
 import { v4 as uuidv4 } from 'uuid';
-import { AuthService } from '../auth/auth.service';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class SessionService {
     constructor(
         private readonly prismaService: PrismaService,
-        private readonly authService: AuthService
     ) {}
 
     public static readonly sessionDefaultTTL: number = 60 * 60; // 1 hour

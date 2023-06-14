@@ -3,24 +3,25 @@ import { Response } from 'express';
 import { Cookies } from '../../decorator/cookies.decorator';
 import { UserPipe } from '../user/user.pipe';
 import { UserService } from '../user/user.service';
+import { AuthService } from './auth.service';
 import { LoginPipe } from './login.pipe';
 
 export type LoginPayload = {
-    username: Parameters<typeof UserService.prototype.login>[0];
-    password: Parameters<typeof UserService.prototype.login>[1];
+    username: Parameters<typeof AuthService.prototype.login>[0];
+    password: Parameters<typeof AuthService.prototype.login>[1];
 };
 
 @Controller('auth')
 export class AuthController {
-    constructor(private readonly userService: UserService) {}
+    constructor(private readonly authService: AuthService) {}
 
     @Post('register')
     async signUp(
         @Body(new UserPipe())
-        data: Parameters<typeof this.userService.create>[0],
+        data: Parameters<typeof UserService.prototype.create>[0],
         @Res({ passthrough: true }) res: Response
     ) {
-        return await this.userService.register(data, res);
+        return await this.authService.register(data, res);
     }
 
     @Post('login')
@@ -29,7 +30,7 @@ export class AuthController {
         @Body(new LoginPipe()) { username, password }: LoginPayload,
         @Res({ passthrough: true }) res: Response
     ) {
-        const { message, ...data } = await this.userService.login(
+        const { message, ...data } = await this.authService.login(
             username,
             password,
             res,

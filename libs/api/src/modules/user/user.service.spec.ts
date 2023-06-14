@@ -6,54 +6,32 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaClient, User } from '@prisma/api';
 import { DeepMockProxy, mockDeep } from 'jest-mock-extended';
 import { AuthService } from '../auth/auth.service';
-import { CookieService } from '../cookie/cookie.service';
 import { PrismaService } from '../prisma/prisma.service';
-import { RefreshTokenService } from '../refresh-token/refresh-token.service';
-import { SessionService } from '../session/session.service';
 import { UserService } from './user.service';
 
 describe('UserService', () => {
     let service: UserService;
-    let sessionService: SessionService;
-    let refreshTokenService: RefreshTokenService;
-    let cookieService: CookieService;
+    let authService: DeepMockProxy<AuthService>;
     let prisma: DeepMockProxy<PrismaClient>;
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
-            providers: [
-                UserService,
-                PrismaService,
-                AuthService,
-                SessionService,
-                RefreshTokenService,
-                CookieService,
-            ],
+            providers: [UserService, AuthService, PrismaService],
         })
             .overrideProvider(AuthService)
             .useValue(mockDeep<AuthService>())
-            .overrideProvider(SessionService)
-            .useValue(mockDeep<SessionService>())
-            .overrideProvider(RefreshTokenService)
-            .useValue(mockDeep<RefreshTokenService>())
-            .overrideProvider(CookieService)
-            .useValue(mockDeep<CookieService>())
             .overrideProvider(PrismaService)
             .useValue(mockDeep<PrismaClient>())
             .compile();
 
         service = module.get<UserService>(UserService);
-        sessionService = module.get(SessionService);
-        refreshTokenService = module.get(RefreshTokenService);
-        cookieService = module.get(CookieService);
+        authService = module.get(AuthService);
         prisma = module.get(PrismaService);
     });
 
     it('should be defined', () => {
         expect(service).toBeDefined();
-        expect(sessionService).toBeDefined();
-        expect(refreshTokenService).toBeDefined();
-        expect(cookieService).toBeDefined();
+        expect(authService).toBeDefined();
         expect(prisma).toBeDefined();
     });
 
