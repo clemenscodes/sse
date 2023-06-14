@@ -14,6 +14,7 @@ export class RefreshTokenService {
         private readonly prismaService: PrismaService,
         private readonly sessionService: SessionService
     ) {}
+
     public static readonly refreshTokenDefaultTTL: number = 30 * 24 * 60 * 60; // 30 days
     public static readonly refreshCookieName: string = 'refreshToken';
 

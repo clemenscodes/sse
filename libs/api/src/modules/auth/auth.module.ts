@@ -1,5 +1,6 @@
-import { forwardRef, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { CookieModule } from '../cookie/cookie.module';
+import { HashModule } from '../hash/hash.module';
 import { PrismaModule } from '../prisma/prisma.module';
 import { RefreshTokenModule } from '../refresh-token/refresh-token.module';
 import { SessionModule } from '../session/session.module';
@@ -9,10 +10,11 @@ import { AuthService } from './auth.service';
 
 @Module({
     imports: [
-        forwardRef(() => UserModule),
+        UserModule,
         SessionModule,
         RefreshTokenModule,
         CookieModule,
+        HashModule,
         PrismaModule,
     ],
     providers: [AuthService],

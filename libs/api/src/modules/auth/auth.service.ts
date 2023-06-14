@@ -1,10 +1,4 @@
-import {
-    forwardRef,
-    HttpStatus,
-    Inject,
-    Injectable,
-    UnauthorizedException,
-} from '@nestjs/common';
+import { HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { User } from '@prisma/api';
 import { LoginSchema, UserSchema } from '@types';
 import { Response } from 'express';
@@ -17,16 +11,13 @@ import { UserService } from '../user/user.service';
 @Injectable()
 export class AuthService {
     constructor(
-        @Inject(forwardRef(() => UserService))
         private readonly userService: UserService,
-        @Inject(forwardRef(() => CookieService))
         private readonly cookieService: CookieService,
-        @Inject(forwardRef(() => SessionService))
         private readonly sessionService: SessionService,
-        @Inject(forwardRef(() => RefreshTokenService))
         private readonly refreshTokenService: RefreshTokenService,
         private readonly hashService: HashService
     ) {}
+
     async register(
         data: UserSchema,
         res: Response,
