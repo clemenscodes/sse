@@ -15,11 +15,15 @@ import {
 } from '../form/form';
 import { Input } from '../input/input';
 
+
+
 export type RegisterProps = React.ComponentPropsWithoutRef<'form'> & {
     submit?: (values: RegisterSchema) => Promise<void>;
+    onRegisterSuccess: (success: boolean) => void;
 };
 
-export const Register: React.FC<RegisterProps> = ({ submit, ...props }) => {
+export const Register: React.FC<RegisterProps> = ({ submit, onRegisterSuccess, ...props }) => {
+
     const form = useForm<RegisterSchema>({
         resolver: zodResolver(registerSchema),
         defaultValues: {
@@ -44,8 +48,10 @@ export const Register: React.FC<RegisterProps> = ({ submit, ...props }) => {
             try {
                 const url = `${apiUrl}/auth/register`;
                 const response = await axios.post(url, payload);
-                if (!response) {
-                    return null;
+                if (response && response.status === 200) {
+                    onRegisterSuccess(true);
+                } else {
+                    onRegisterSuccess(false);
                 }
                 console.log({ response });
             } catch (e) {

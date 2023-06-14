@@ -8,26 +8,41 @@ import {
     DialogTrigger,
 } from '../dialog/dialog';
 import Register from '../registration/registration';
+import { useState } from 'react';
 
 /* eslint-disable-next-line */
-export interface RegisterDialogProps {}
+export interface RegisterDialogProps {
+    onRegisterSuccess?: (success: boolean) => void;
+}
 
-export const RegisterDialog: React.FC<RegisterDialogProps> = ({ ...props }) => {
+export const RegisterDialog: React.FC<RegisterDialogProps> = ({ onRegisterSuccess, ...props }) => {
+    const [showDialog, setShowDialog] = useState(false);
+
+
     return (
-        <Dialog>
-            <DialogTrigger asChild>
-                <Button variant='outline'>Register</Button>
-            </DialogTrigger>
-            <DialogContent className='sm:max-w-[425px]'>
-                <DialogHeader>
-                    <DialogTitle>Register</DialogTitle>
-                    <DialogDescription>
-                        Enter all the relevant Information.
-                    </DialogDescription>
-                </DialogHeader>
-                <Register></Register>
-            </DialogContent>
-        </Dialog>
+        <div>
+            <Dialog open={showDialog} onOpenChange={setShowDialog}>
+                <DialogTrigger asChild>
+                    <Button variant='outline' onClick={() => setShowDialog(true)}>Register</Button>
+                </DialogTrigger>
+                <DialogContent className='sm:max-w-[425px]'>
+                    <DialogHeader>
+                        <DialogTitle>Register</DialogTitle>
+                        <DialogDescription>
+                            Enter all the relevant Information.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <Register
+                        onRegisterSuccess={(success) => {
+                            setShowDialog(false);
+                            if (onRegisterSuccess) {
+                                onRegisterSuccess(success);
+                            }
+                        }}
+                    />
+                </DialogContent>
+            </Dialog>
+        </div>
     );
 };
 

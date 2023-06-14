@@ -16,9 +16,10 @@ import { Input } from '../input/input';
 
 export type LoginProps = React.ComponentPropsWithoutRef<'form'> & {
     submit?: (values: LoginSchema) => Promise<void>;
+    onLoginSuccess: (success: boolean) => void;
 };
 
-export const Login: React.FC<LoginProps> = ({ submit, ...props }) => {
+export const Login: React.FC<LoginProps> = ({ submit, onLoginSuccess, ...props }) => {
     const form = useForm<LoginSchema>({
         resolver: zodResolver(loginSchema),
         defaultValues: {
@@ -37,6 +38,12 @@ export const Login: React.FC<LoginProps> = ({ submit, ...props }) => {
             const url = `${apiUrl}/auth/login`;
             const session = await axios.post(url, payload);
             console.log({ session });
+
+            if (session && session.status === 200) {
+                onLoginSuccess(true);
+            } else {
+                onLoginSuccess(false);
+            }
         } catch (error) {
             console.error(error);
         }

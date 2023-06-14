@@ -1,3 +1,4 @@
+export * from './lib/alert/alert';
 export * from './lib/registration-dialog/registration-dialog';
 export * from './lib/registration/registration';
 export * from './lib/login-dialog/login-dialog';
