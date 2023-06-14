@@ -1,22 +1,22 @@
-import { JwtService as Service } from '@nestjs/jwt';
+import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import { mockDeep } from 'jest-mock-extended';
-import { JwtService } from './jwt.service';
+import { JwtService as Service } from './jwt.service';
 
 describe('JwtService', () => {
-    let service: JwtService;
-    let jwtService: Service;
+    let service: Service;
+    let jwtService: JwtService;
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
-            providers: [JwtService, Service],
+            providers: [Service, JwtService],
         })
-            .overrideProvider(Service)
-            .useValue(mockDeep<Service>())
+            .overrideProvider(JwtService)
+            .useValue(mockDeep<JwtService>())
             .compile();
 
-        service = module.get<JwtService>(JwtService);
-        jwtService = module.get(Service);
+        service = module.get<Service>(Service);
+        jwtService = module.get(JwtService);
     });
 
     it('should be defined', () => {

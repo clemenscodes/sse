@@ -47,10 +47,25 @@ export class AuthService {
         raw: false,
     };
 
-    async register(data: Prisma.UserCreateInput, res: Response) {
+    async register(
+        data: Prisma.UserCreateInput,
+        res: Response,
+        cookies?: string
+    ): Promise<{
+        message: string;
+        email?: User['email'];
+        name?: User['username'];
+    }> {
+        const [session, message] = await this.cookieService.checkCookies(
+            res,
+            cookies
+        );
+        if (session) {
+            return { message };
+        }
         const { password } = data;
         const { username } = await this.userService.create(data);
-        await this.login(username, password, res);
+        return await this.login(username, password, res, cookies);
     }
 
     async login(
@@ -63,21 +78,12 @@ export class AuthService {
         email?: User['email'];
         name?: User['username'];
     }> {
-        const sessionValid = await this.cookieService.checkSessionCookie(
+        const [session, message] = await this.cookieService.checkCookies(
             res,
             cookies
         );
-        if (sessionValid) {
-            res.status(HttpStatus.OK);
-            return { message: 'User already logged in' };
-        }
-        const refresh = await this.cookieService.checkRefreshTokenCookie(
-            res,
-            cookies
-        );
-        if (refresh) {
-            res.status(HttpStatus.OK);
-            return { message: 'Session expired, but valid refresh token!' };
+        if (session) {
+            return { message };
         }
         const user = await this.userService.findByUsername(username);
         const passwordMatch = await this.verifyPassword({

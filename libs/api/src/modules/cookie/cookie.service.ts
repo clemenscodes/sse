@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { CookieOptions, Response } from 'express';
 import { RefreshTokenService } from '../refresh-token/refresh-token.service';
@@ -43,6 +43,23 @@ export class CookieService {
             response = this.setCookie(cookie, res);
         });
         return response;
+    }
+
+    async checkCookies(
+        res: Response,
+        cookies?: string
+    ): Promise<[boolean, string]> {
+        const sessionValid = await this.checkSessionCookie(res, cookies);
+        if (sessionValid) {
+            res.status(HttpStatus.OK);
+            return [true, 'User already logged in'];
+        }
+        const refresh = await this.checkRefreshTokenCookie(res, cookies);
+        if (refresh) {
+            res.status(HttpStatus.OK);
+            return [true, 'Session expired, but valid refresh token!'];
+        }
+        return [false, 'No valid session'];
     }
 
     async checkSessionCookie(

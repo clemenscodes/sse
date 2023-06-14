@@ -30,11 +30,12 @@ export class AuthController {
 
     @Post('register')
     async signUp(
+        @Cookies() cookies: string,
         @Body(new UserPipe())
         data: Parameters<typeof UserService.prototype.create>[0],
         @Res({ passthrough: true }) res: Response
     ) {
-        return await this.authService.register(data, res);
+        return await this.authService.register(data, res, cookies);
     }
 
     @Post('login')
