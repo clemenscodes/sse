@@ -17,8 +17,8 @@ export type VerifyPayload = {
 export class AuthService {
     constructor(private readonly configService: ConfigService) {}
 
-    private static readonly saltLength = 128;
-    private static readonly options: Options & { raw: false } = {
+    public static readonly saltLength = 128;
+    public static readonly options: Options & { raw: false } = {
         timeCost: 4,
         memoryCost: 2 ** 16,
         parallelism: 2,
