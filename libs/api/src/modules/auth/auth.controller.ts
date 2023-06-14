@@ -1,6 +1,16 @@
-import { Body, Controller, Post, Res } from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Get,
+    HttpStatus,
+    Param,
+    ParseIntPipe,
+    Post,
+    Res,
+} from '@nestjs/common';
 import { Response } from 'express';
 import { Cookies } from '../../decorator/cookies.decorator';
+import { SessionService } from '../session/session.service';
 import { UserPipe } from '../user/user.pipe';
 import { UserService } from '../user/user.service';
 import { AuthService } from './auth.service';
@@ -13,7 +23,10 @@ export type LoginPayload = {
 
 @Controller('auth')
 export class AuthController {
-    constructor(private readonly authService: AuthService) {}
+    constructor(
+        private readonly authService: AuthService,
+        private readonly sessionService: SessionService
+    ) {}
 
     @Post('register')
     async signUp(
@@ -37,5 +50,16 @@ export class AuthController {
             cookies
         );
         res.json({ message, data });
+    }
+
+    @Get(':userId/sessions')
+    async getUserSessions(
+        @Param(
+            'userId',
+            new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })
+        )
+        id: string
+    ) {
+        return await this.sessionService.getUserSessions(+id);
     }
 }

@@ -10,9 +10,7 @@ import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class SessionService {
-    constructor(
-        private readonly prismaService: PrismaService,
-    ) {}
+    constructor(private readonly prismaService: PrismaService) {}
 
     public static readonly sessionDefaultTTL: number = 60 * 60; // 1 hour
     public static readonly sessionCookieName: string = 'sessionToken';
