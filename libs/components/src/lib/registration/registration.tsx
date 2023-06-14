@@ -1,7 +1,7 @@
 import { apiUrl } from '@config';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { cn } from '@styles';
-import { RegisterSchema, UserSchema, registerSchema } from '@types';
+import { RegisterSchema, registerSchema, UserSchema } from '@types';
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import { Button } from '../button/button';
