@@ -35,7 +35,9 @@ export const Login: React.FC<LoginProps> = ({ submit, ...props }) => {
             const { username, password } = values;
             const payload = { username, password };
             const url = `${apiUrl}/auth/login`;
-            const session = await axios.post(url, payload);
+            const session = await axios.post(url, payload, {
+                withCredentials: true,
+            });
             console.log({ session });
         } catch (error) {
             console.error(error);

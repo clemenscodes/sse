@@ -8,7 +8,7 @@ import {
 import { Prisma, User } from '@prisma/api';
 import { Response } from 'express';
 import { AuthService } from '../auth/auth.service';
-import { CookieService } from '../cookie/cookie.service';
+import { CookiePayload, CookieService } from '../cookie/cookie.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { RefreshTokenService } from '../refresh-token/refresh-token.service';
 import { SessionService } from '../session/session.service';
@@ -115,7 +115,20 @@ export class UserService {
             await this.refreshTokenService.delete(refreshToken.id);
             refreshToken = await this.refreshTokenService.create(id);
         }
-        this.cookieService.setCookies(sessionToken, refreshToken, res);
+        const sessionCookie: CookiePayload = {
+            data: sessionToken.sessionToken,
+            cookieName: SessionService.sessionCookieName,
+            expires: sessionToken.expires,
+            maxAge: SessionService.sessionDefaultTTL * 1000,
+        };
+        const refreshCookie: CookiePayload = {
+            data: refreshToken.refreshToken,
+            cookieName: RefreshTokenService.refreshCookieName,
+            expires: refreshToken.expires,
+            maxAge: RefreshTokenService.refreshTokenDefaultTTL * 1000,
+        };
+        const payloads = [sessionCookie, refreshCookie];
+        this.cookieService.setCookies(payloads, res);
         res.status(HttpStatus.OK);
         return { message: 'Successfully logged in!', email, name };
     }

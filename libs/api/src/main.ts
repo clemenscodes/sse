@@ -13,6 +13,10 @@ export async function bootstrap() {
     const globalPrefix = 'api';
     const host = '0.0.0.0';
     const port = configService.get<number>('PORT') || 3000;
+    const frontend_url = configService.get<string>('FRONTEND_URL');
+    app.enableCors({
+        origin: frontend_url || 'http://localhost:4200',
+    });
     app.setGlobalPrefix(globalPrefix);
     app.useGlobalFilters(new ZodFilter());
     app.useGlobalFilters(new PasswordFilter());

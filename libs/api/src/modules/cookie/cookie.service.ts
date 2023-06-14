@@ -1,14 +1,22 @@
 import { Injectable } from '@nestjs/common';
-import { RefreshToken, Session } from '@prisma/api';
+import { ConfigService } from '@nestjs/config';
 import { CookieOptions, Response } from 'express';
 import { RefreshTokenService } from '../refresh-token/refresh-token.service';
 import { SessionService } from '../session/session.service';
+
+export type CookiePayload = {
+    data: string;
+    cookieName: string;
+    expires: Date;
+    maxAge: number;
+};
 
 @Injectable()
 export class CookieService {
     constructor(
         private readonly sessionService: SessionService,
-        private readonly refreshTokenService: RefreshTokenService
+        private readonly refreshTokenService: RefreshTokenService,
+        private readonly configService: ConfigService
     ) {}
 
     private static readonly cookieOptions: CookieOptions = {
@@ -18,40 +26,23 @@ export class CookieService {
         path: '/',
     };
 
-    setSessionCookie(session: Session, res: Response) {
-        res.cookie(SessionService.sessionCookieName, session.sessionToken, {
+    setCookie(payload: CookiePayload, res: Response): Response {
+        const { cookieName, expires, maxAge, data } = payload;
+        const domain = this.configService.get<string>('FRONTEND_DOMAIN');
+        return res.cookie(cookieName, data, {
             ...CookieService.cookieOptions,
-            expires: session.expires,
-            maxAge: SessionService.sessionDefaultTTL * 1000,
+            expires,
+            maxAge,
+            domain,
         });
     }
 
-    setRefreshTokenCookie(refreshToken: RefreshToken, res: Response) {
-        res.cookie(
-            RefreshTokenService.refreshCookieName,
-            refreshToken.refreshToken,
-            {
-                ...CookieService.cookieOptions,
-                expires: refreshToken.expires,
-                maxAge: RefreshTokenService.refreshTokenDefaultTTL * 1000,
-            }
-        );
-    }
-
-    setCookies(session: Session, refreshToken: RefreshToken, res: Response) {
-        res.cookie(SessionService.sessionCookieName, session.sessionToken, {
-            ...CookieService.cookieOptions,
-            expires: session.expires,
-            maxAge: SessionService.sessionDefaultTTL * 1000,
-        }).cookie(
-            RefreshTokenService.refreshCookieName,
-            refreshToken.refreshToken,
-            {
-                ...CookieService.cookieOptions,
-                expires: refreshToken.expires,
-                maxAge: RefreshTokenService.refreshTokenDefaultTTL * 1000,
-            }
-        );
+    setCookies(cookies: CookiePayload[], res: Response) {
+        let response = res;
+        cookies.forEach((cookie) => {
+            response = this.setCookie(cookie, res);
+        });
+        return response;
     }
 
     async checkSessionCookie(
@@ -72,7 +63,13 @@ export class CookieService {
             return valid;
         }
         const session = await this.sessionService.findBySessionToken(token);
-        this.setSessionCookie(session, res);
+        const cookie: CookiePayload = {
+            data: session.sessionToken,
+            cookieName: sessionTokenName,
+            expires: session.expires,
+            maxAge: SessionService.sessionDefaultTTL * 1000,
+        };
+        this.setCookie(cookie, res);
         return valid;
     }
 
@@ -97,7 +94,20 @@ export class CookieService {
             token
         );
         const session = await this.sessionService.create(refreshToken.userId);
-        this.setCookies(session, refreshToken, res);
+        const sessionCookie: CookiePayload = {
+            data: session.sessionToken,
+            cookieName: SessionService.sessionCookieName,
+            expires: session.expires,
+            maxAge: SessionService.sessionDefaultTTL * 1000,
+        };
+        const refreshCookie: CookiePayload = {
+            data: refreshToken.refreshToken,
+            cookieName: refreshTokenName,
+            expires: refreshToken.expires,
+            maxAge: RefreshTokenService.refreshTokenDefaultTTL * 1000,
+        };
+        const payloads = [sessionCookie, refreshCookie];
+        this.setCookies(payloads, res);
         return valid;
     }
 }

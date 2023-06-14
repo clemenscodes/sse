@@ -42,7 +42,9 @@ export const Register: React.FC<RegisterProps> = ({ submit, ...props }) => {
             };
             try {
                 const url = `${apiUrl}/auth/register`;
-                const response = await axios.post(url, payload);
+                const response = await axios.post(url, payload, {
+                    withCredentials: true,
+                });
                 if (!response) {
                     return null;
                 }

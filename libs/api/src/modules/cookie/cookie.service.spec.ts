@@ -1,3 +1,4 @@
+import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaClient } from '@prisma/api';
 import { DeepMockProxy, mockDeep } from 'jest-mock-extended';
@@ -10,6 +11,7 @@ describe('CookieService', () => {
     let service: CookieService;
     let sessionService: SessionService;
     let refreshTokenService: RefreshTokenService;
+    let configService: ConfigService;
     let prisma: DeepMockProxy<PrismaClient>;
 
     beforeEach(async () => {
@@ -18,6 +20,7 @@ describe('CookieService', () => {
                 CookieService,
                 SessionService,
                 RefreshTokenService,
+                ConfigService,
                 PrismaService,
             ],
         })
@@ -27,6 +30,8 @@ describe('CookieService', () => {
             .useValue(mockDeep<SessionService>())
             .overrideProvider(RefreshTokenService)
             .useValue(mockDeep<RefreshTokenService>())
+            .overrideProvider(ConfigService)
+            .useValue(mockDeep<ConfigService>())
             .overrideProvider(PrismaService)
             .useValue(mockDeep<PrismaClient>())
             .compile();
@@ -34,6 +39,7 @@ describe('CookieService', () => {
         service = module.get<CookieService>(CookieService);
         sessionService = module.get(SessionService);
         refreshTokenService = module.get(RefreshTokenService);
+        configService = module.get(ConfigService);
         prisma = module.get(PrismaService);
     });
 
@@ -41,6 +47,7 @@ describe('CookieService', () => {
         expect(service).toBeDefined();
         expect(sessionService).toBeDefined();
         expect(refreshTokenService).toBeDefined();
+        expect(configService).toBeDefined();
         expect(prisma).toBeDefined();
     });
 });
