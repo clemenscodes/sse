@@ -1,5 +1,10 @@
 import { createHmac, randomBytes } from 'crypto';
-import { Injectable } from '@nestjs/common';
+import {
+    Injectable,
+    InternalServerErrorException,
+    Logger,
+} from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { argon2id, hash, Options, verify } from 'argon2';
 
 export type VerifyPayload = {
@@ -10,6 +15,8 @@ export type VerifyPayload = {
 
 @Injectable()
 export class AuthService {
+    constructor(private readonly configService: ConfigService) {}
+
     private static readonly saltLength = 128;
     private static readonly options: Options & { raw: false } = {
         timeCost: 4,
@@ -21,20 +28,33 @@ export class AuthService {
     };
 
     async hashPassword(password: string): Promise<[string, Buffer]> {
-        const key = process.env['SECRET'] || '';
+        const key = this.configService.get<string>('SECRET') || '';
         const salt = randomBytes(AuthService.saltLength);
         const secret = createHmac('sha512', key).update(salt).digest();
         const options = { ...AuthService.options, salt, secret };
-        const result = await hash(password, options);
-        return [result, salt];
+        try {
+            const result = await hash(password, options);
+            return [result, salt];
+        } catch (e) {
+            Logger.error(JSON.stringify(e));
+            throw new InternalServerErrorException('Failed hashing password');
+        }
     }
 
     async verifyPassword(payload: VerifyPayload): Promise<boolean> {
         const { salt, hash, password } = payload;
-        const key = process.env['SECRET'] || '';
+        if (!hash) {
+            return false;
+        }
+        const key = this.configService.get<string>('SECRET') || '';
         const secret = createHmac('sha512', key).update(salt).digest();
         const options = { ...AuthService.options, salt, secret };
-        const result = await verify(hash, password, options);
-        return result;
+        try {
+            const result = await verify(hash, password, options);
+            return result;
+        } catch (e) {
+            Logger.error(JSON.stringify(e));
+            throw new InternalServerErrorException('Failed verifying password');
+        }
     }
 }

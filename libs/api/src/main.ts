@@ -1,4 +1,5 @@
 import { Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import cookieParser from 'cookie-parser';
 import { PasswordFilter } from './filter/password.filter';
@@ -8,9 +9,10 @@ import { ApiModule } from './modules/api.module';
 
 export async function bootstrap() {
     const app = await NestFactory.create(ApiModule);
+    const configService = app.get(ConfigService);
     const globalPrefix = 'api';
     const host = '0.0.0.0';
-    const port = process.env['PORT'] || 3000;
+    const port = configService.get<number>('PORT') || 3000;
     app.setGlobalPrefix(globalPrefix);
     app.useGlobalFilters(new ZodFilter());
     app.useGlobalFilters(new PasswordFilter());
