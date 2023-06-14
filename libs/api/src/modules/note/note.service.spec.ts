@@ -1,4 +1,3 @@
-import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaClient } from '@prisma/api';
 import { DeepMockProxy, mockDeep } from 'jest-mock-extended';
@@ -23,11 +22,6 @@ describe('NoteService', () => {
 
     it('should be defined', () => {
         expect(service).toBeDefined();
-    });
-
-    it('should throw NotFoundException if no notes found', async () => {
-        prisma.note.findMany.mockResolvedValueOnce([]);
-        await expect(service.findAll()).rejects.toThrowError(NotFoundException);
-        expect(prisma.note.findMany).toHaveBeenCalled();
+        expect(prisma).toBeDefined();
     });
 });

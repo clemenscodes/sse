@@ -1,33 +1,33 @@
 import {
-    forwardRef,
-    Inject,
     Injectable,
     InternalServerErrorException,
     NotFoundException,
     UnauthorizedException,
 } from '@nestjs/common';
 import { Prisma, User } from '@prisma/api';
-import { AuthService } from '../auth/auth.service';
+import { UserSchema } from '@types';
+import { HashService } from '../hash/hash.service';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class UserService {
     constructor(
-        @Inject(forwardRef(() => AuthService))
-        private readonly authService: AuthService,
+        private readonly hashService: HashService,
         private readonly prismaService: PrismaService
     ) {}
 
-    async create(data: Prisma.UserCreateInput) {
+    async create(data: UserSchema) {
         try {
             const { password } = data;
-            const [hashedPassword, salt] = await this.authService.hashPassword(
+            const [hashedPassword, salt] = await this.hashService.hashPassword(
                 password
             );
             data.password = hashedPassword;
-            data.salt = salt;
             const createdUser = await this.prismaService.user.create({
-                data,
+                data: {
+                    ...data,
+                    salt,
+                },
                 select: {
                     id: false,
                     email: true,

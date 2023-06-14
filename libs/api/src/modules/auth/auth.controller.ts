@@ -6,6 +6,7 @@ import {
     Post,
     Res,
 } from '@nestjs/common';
+import { LoginSchema } from '@types';
 import { Response } from 'express';
 import { Cookies } from '../../decorator/cookies.decorator';
 import { SessionService } from '../session/session.service';
@@ -13,11 +14,6 @@ import { UserPipe } from '../user/user.pipe';
 import { UserService } from '../user/user.service';
 import { AuthService } from './auth.service';
 import { LoginPipe } from './login.pipe';
-
-export type LoginPayload = {
-    username: Parameters<typeof AuthService.prototype.login>[0];
-    password: Parameters<typeof AuthService.prototype.login>[1];
-};
 
 @Controller('auth')
 export class AuthController {
@@ -39,12 +35,14 @@ export class AuthController {
     @Post('login')
     async login(
         @Cookies() cookies: string,
-        @Body(new LoginPipe()) { username, password }: LoginPayload,
+        @Body(new LoginPipe()) { username, password }: LoginSchema,
         @Res({ passthrough: true }) res: Response
     ) {
         const { message, ...data } = await this.authService.login(
-            username,
-            password,
+            {
+                username,
+                password,
+            },
             res,
             cookies
         );

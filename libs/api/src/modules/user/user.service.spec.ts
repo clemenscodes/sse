@@ -5,33 +5,33 @@ import {
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaClient, User } from '@prisma/api';
 import { DeepMockProxy, mockDeep } from 'jest-mock-extended';
-import { AuthService } from '../auth/auth.service';
+import { HashService } from '../hash/hash.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { UserService } from './user.service';
 
 describe('UserService', () => {
     let service: UserService;
-    let authService: DeepMockProxy<AuthService>;
+    let hashService: DeepMockProxy<HashService>;
     let prisma: DeepMockProxy<PrismaClient>;
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
-            providers: [UserService, AuthService, PrismaService],
+            providers: [UserService, HashService, PrismaService],
         })
-            .overrideProvider(AuthService)
-            .useValue(mockDeep<AuthService>())
+            .overrideProvider(HashService)
+            .useValue(mockDeep<HashService>())
             .overrideProvider(PrismaService)
             .useValue(mockDeep<PrismaClient>())
             .compile();
 
         service = module.get<UserService>(UserService);
-        authService = module.get(AuthService);
+        hashService = module.get(HashService);
         prisma = module.get(PrismaService);
     });
 
     it('should be defined', () => {
         expect(service).toBeDefined();
-        expect(authService).toBeDefined();
+        expect(hashService).toBeDefined();
         expect(prisma).toBeDefined();
     });
 
@@ -39,7 +39,7 @@ describe('UserService', () => {
         it('should return all users', async () => {
             const testUsers: User[] = [
                 {
-                    id: 1,
+                    id: '1',
                     email: 'user1@example.com',
                     emailVerified: new Date(),
                     salt: Buffer.from('test'),
@@ -47,7 +47,7 @@ describe('UserService', () => {
                     password: 'password1',
                 },
                 {
-                    id: 2,
+                    id: '2',
                     email: 'user2@example.com',
                     emailVerified: new Date(),
                     salt: Buffer.from('test'),

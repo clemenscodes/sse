@@ -1,9 +1,12 @@
-import { AuthService } from '@api';
+import { HashService, PrismaService, UserService } from '@api';
 import { ConfigService } from '@nestjs/config';
 import { PrismaClient } from '@prisma/api';
 
 const prisma = new PrismaClient();
-const authService = new AuthService(new ConfigService());
+const userService = new UserService(
+    new HashService(new ConfigService()),
+    new PrismaService()
+);
 
 async function seed() {
     try {
@@ -22,18 +25,9 @@ async function seed() {
         ];
 
         for (const user of users) {
-            const [hashedPassword, salt] = await authService.hashPassword(
-                user.password
-            );
-            await prisma.user.create({
-                data: {
-                    username: user.username,
-                    email: user.email,
-                    password: hashedPassword,
-                    salt,
-                },
-            });
+            await userService.create(user);
         }
+
         console.log('Seed script executed successfully');
     } catch (error) {
         console.error('Error executing seed script:', error);
