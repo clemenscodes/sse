@@ -32,10 +32,11 @@ export class UserService {
     async create(data: Prisma.UserCreateInput) {
         try {
             const { password } = data;
-            const hashedPassword = await this.authService.hashPassword(
+            const [hashedPassword, salt] = await this.authService.hashPassword(
                 password
             );
             data.password = hashedPassword;
+            data.salt = salt;
             const createdUser = await this.prismaService.user.create({
                 data,
                 select: {
@@ -43,6 +44,7 @@ export class UserService {
                     email: true,
                     username: true,
                     password: false,
+                    salt: false,
                 },
             });
             if (!createdUser) {
@@ -90,10 +92,11 @@ export class UserService {
             return { message: 'Session expired, but valid refresh token!' };
         }
         const user = await this.findByUsername(username);
-        const passwordMatch = await this.authService.verifyPassword(
-            user.password,
-            password
-        );
+        const passwordMatch = await this.authService.verifyPassword({
+            hash: user.password,
+            password,
+            salt: user.salt,
+        });
         if (!passwordMatch) {
             throw new UnauthorizedException('Invalid credentials');
         }

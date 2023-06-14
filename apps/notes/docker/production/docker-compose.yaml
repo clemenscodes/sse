@@ -17,7 +17,7 @@ services:
         tty: true
         build:
             context: '../../../../'
-            dockerfile: apps/notes/prisma/docker/production/Dockerfile
+            dockerfile: apps/notes/prisma/Dockerfile
         networks:
             - notes
     server:

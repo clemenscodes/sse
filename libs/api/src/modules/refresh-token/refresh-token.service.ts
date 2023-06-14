@@ -5,21 +5,21 @@ import {
 } from '@nestjs/common';
 import { Prisma, RefreshToken, User } from '@prisma/api';
 import { fromDate } from '@utils';
-import { AuthService } from '../auth/auth.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { SessionService } from '../session/session.service';
 
 @Injectable()
 export class RefreshTokenService {
     constructor(
         private readonly prismaService: PrismaService,
-        private readonly authService: AuthService
+        private readonly sessionService: SessionService
     ) {}
     public static readonly refreshTokenDefaultTTL: number = 30 * 24 * 60 * 60; // 30 days
     public static readonly refreshCookieName: string = 'refreshToken';
 
     async create(userId: User['id']) {
         try {
-            const refreshToken = this.authService.generateSessionToken();
+            const refreshToken = this.sessionService.generateSessionToken();
             const expires = fromDate(
                 RefreshTokenService.refreshTokenDefaultTTL
             );

@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { Prisma, Session, User } from '@prisma/api';
 import { fromDate } from '@utils';
+import { v4 as uuidv4 } from 'uuid';
 import { AuthService } from '../auth/auth.service';
 import { PrismaService } from '../prisma/prisma.service';
 
@@ -18,9 +19,14 @@ export class SessionService {
     public static readonly sessionDefaultTTL: number = 60 * 60; // 1 hour
     public static readonly sessionCookieName: string = 'sessionToken';
 
+    generateSessionToken() {
+        const sessionToken = uuidv4();
+        return sessionToken;
+    }
+
     async create(userId: User['id']) {
         try {
-            const sessionToken = this.authService.generateSessionToken();
+            const sessionToken = this.generateSessionToken();
             const expires = fromDate(SessionService.sessionDefaultTTL);
             const createdSession = await this.prismaService.session.create({
                 data: {

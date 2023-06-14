@@ -1,8 +1,7 @@
 import { apiUrl } from '@config';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Prisma } from '@prisma/api';
 import { cn } from '@styles';
-import { RegisterSchema, registerSchema } from '@types';
+import { RegisterSchema, UserSchema, registerSchema } from '@types';
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import { Button } from '../button/button';
@@ -36,7 +35,7 @@ export const Register: React.FC<RegisterProps> = ({ submit, ...props }) => {
                 return submit(values);
             }
             const { email, username, password } = values;
-            const payload: Prisma.UserCreateInput = {
+            const payload: UserSchema = {
                 email,
                 username,
                 password,

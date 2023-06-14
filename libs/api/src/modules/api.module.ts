@@ -1,5 +1,4 @@
 import { Global, Module, ModuleMetadata } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
 import { AccountModule } from './account/account.module';
 import { AuthModule } from './auth/auth.module';
 import { CookieModule } from './cookie/cookie.module';
@@ -11,11 +10,6 @@ import { UserModule } from './user/user.module';
 import { VerificationTokenModule } from './verification-token/verification-token.module';
 
 const modules: ModuleMetadata['imports'] = [
-    ConfigModule.forRoot({
-        cache: true,
-        isGlobal: true,
-        envFilePath: ['.env', '.env.skeleton'],
-    }),
     PrismaModule,
     UserModule,
     NoteModule,

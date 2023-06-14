@@ -18,6 +18,7 @@ model User {
     email         String        @unique
     emailVerified DateTime?
     password      String
+    salt          Bytes
     notes         Note[]
     accounts      Account[]
     sessions      Session[]
