@@ -1,8 +1,9 @@
 import { AuthService } from '@api';
+import { ConfigService } from '@nestjs/config';
 import { PrismaClient } from '@prisma/api';
 
 const prisma = new PrismaClient();
-const authService = new AuthService();
+const authService = new AuthService(new ConfigService());
 
 async function seed() {
     try {
