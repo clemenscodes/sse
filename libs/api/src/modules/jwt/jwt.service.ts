@@ -5,8 +5,12 @@ import { JwtService as Service } from '@nestjs/jwt';
 export class JwtService {
     constructor(private readonly jwtService: Service) {}
 
-    generateToken(userId: string): string {
+    async generateToken(userId: string): Promise<string> {
         const payload = { sub: userId };
-        return this.jwtService.sign(payload);
+        return this.jwtService.signAsync(payload);
+    }
+
+    async verifyToken<T extends object>(token: string): Promise<T> {
+        return this.jwtService.verifyAsync<T>(token);
     }
 }

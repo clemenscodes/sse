@@ -22,6 +22,12 @@ export class NoteService {
                         connect: { id },
                     },
                 },
+                select: {
+                    id: false,
+                    content: true,
+                    isPublic: true,
+                    userId: false,
+                },
             });
             if (!createdNote) {
                 throw new InternalServerErrorException('Creating note failed');
@@ -45,6 +51,12 @@ export class NoteService {
         try {
             const notes = await this.prismaService.note.findMany({
                 where: { userId },
+                select: {
+                    id: false,
+                    content: true,
+                    isPublic: true,
+                    userId: false,
+                },
             });
             if (!(notes && notes.length)) {
                 throw new NotFoundException('No notes found for the user');
@@ -69,6 +81,12 @@ export class NoteService {
         try {
             const notes = await this.prismaService.note.findMany({
                 where: { isPublic: true },
+                select: {
+                    id: false,
+                    content: true,
+                    isPublic: true,
+                    userId: false,
+                },
             });
             if (!(notes && notes.length)) {
                 throw new NotFoundException('No public notes found');
@@ -98,6 +116,12 @@ export class NoteService {
                         contains: content,
                     },
                 },
+                select: {
+                    id: false,
+                    content: true,
+                    isPublic: true,
+                    userId: false,
+                },
             });
             if (!(notes && notes.length)) {
                 throw new NotFoundException(
@@ -124,6 +148,12 @@ export class NoteService {
         try {
             const note = await this.prismaService.note.findUnique({
                 where: { id },
+                select: {
+                    id: false,
+                    content: true,
+                    isPublic: true,
+                    userId: false,
+                },
             });
             if (!note) {
                 throw new NotFoundException('Note not found');
@@ -151,6 +181,12 @@ export class NoteService {
             const updatedNote = await this.prismaService.note.update({
                 where: { id },
                 data,
+                select: {
+                    id: false,
+                    content: true,
+                    isPublic: true,
+                    userId: false,
+                },
             });
             if (!updatedNote) {
                 throw new NotFoundException('Note not found');
@@ -176,6 +212,12 @@ export class NoteService {
         try {
             const deletedNote = await this.prismaService.note.delete({
                 where: { id },
+                select: {
+                    id: false,
+                    content: true,
+                    isPublic: true,
+                    userId: false,
+                },
             });
             if (!deletedNote) {
                 throw new NotFoundException('Note not found');

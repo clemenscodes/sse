@@ -1,9 +1,11 @@
 import { Global, Module, ModuleMetadata } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
 import { AccountModule } from './account/account.module';
 import { AuthModule } from './auth/auth.module';
 import { CookieModule } from './cookie/cookie.module';
 import { HashModule } from './hash/hash.module';
+import { JwtGuard } from './jwt/jwt.guard';
 import { JwtModule } from './jwt/jwt.module';
 import { NoteModule } from './note/note.module';
 import { PrismaModule } from './prisma/prisma.module';
@@ -36,5 +38,11 @@ const modules: ModuleMetadata['imports'] = [
 @Module({
     imports: [...modules],
     exports: [...modules],
+    providers: [
+        {
+            provide: APP_GUARD,
+            useClass: JwtGuard,
+        },
+    ],
 })
 export class ApiModule {}

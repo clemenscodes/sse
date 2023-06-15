@@ -15,9 +15,12 @@ services:
         depends_on:
             - db
         tty: true
+        volumes:
+            - '../../prisma:/app/apps/notes/prisma'
+            - '../../../../libs:/app/libs'
         build:
             context: '../../../../'
-            dockerfile: apps/notes/prisma/Dockerfile
+            dockerfile: apps/notes/prisma/docker/development/Dockerfile
         networks:
             - notes
     server:

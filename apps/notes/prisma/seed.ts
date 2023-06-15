@@ -1,4 +1,4 @@
-import { HashService, PrismaService, UserService } from '@api';
+import { HashService, NoteService, PrismaService, UserService } from '@api';
 import { ConfigService } from '@nestjs/config';
 import { PrismaClient } from '@prisma/api';
 
@@ -7,6 +7,8 @@ const userService = new UserService(
     new HashService(new ConfigService()),
     new PrismaService()
 );
+
+const noteService = new NoteService(new PrismaService());
 
 async function seed() {
     try {
@@ -26,6 +28,25 @@ async function seed() {
 
         for (const user of users) {
             await userService.create(user);
+        }
+
+        const user = await userService.findByUsername(users[0].username);
+
+        const notes = [
+            {
+                isPublic: true,
+                content: 'Simple public note',
+                userId: user.id,
+            },
+            {
+                isPublic: false,
+                content: 'Simple private note',
+                userId: user.id,
+            },
+        ];
+
+        for (const note of notes) {
+            await noteService.create(note);
         }
 
         console.log('Seed script executed successfully');

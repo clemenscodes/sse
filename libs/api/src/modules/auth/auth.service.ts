@@ -1,7 +1,14 @@
-import { HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+    ExecutionContext,
+    HttpStatus,
+    Injectable,
+    UnauthorizedException,
+} from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
 import { User } from '@prisma/api';
 import { LoginSchema, UserSchema } from '@types';
 import { Response } from 'express';
+import { IS_PUBLIC_KEY } from '../../decorator/public.decorator';
 import { CookieService } from '../cookie/cookie.service';
 import { HashService } from '../hash/hash.service';
 import { JwtService } from '../jwt/jwt.service';
@@ -17,7 +24,8 @@ export class AuthService {
         private readonly sessionService: SessionService,
         private readonly refreshTokenService: RefreshTokenService,
         private readonly hashService: HashService,
-        private readonly jwtService: JwtService
+        private readonly jwtService: JwtService,
+        private readonly reflector: Reflector
     ) {}
 
     async register(
@@ -88,8 +96,19 @@ export class AuthService {
             this.cookieService.getRefreshTokenPayload(refreshToken),
         ];
         this.cookieService.setCookies(payloads, res);
-        const jwt = this.jwtService.generateToken(id);
+        const jwt = await this.jwtService.generateToken(id);
         res.status(HttpStatus.OK);
         return { message: 'Successfully logged in!', jwt, email, name };
+    }
+
+    publicCheck(context: ExecutionContext) {
+        const isPublic = this.reflector.getAllAndOverride<boolean>(
+            IS_PUBLIC_KEY,
+            [context.getHandler(), context.getClass()]
+        );
+        if (isPublic) {
+            return true;
+        }
+        return false;
     }
 }
