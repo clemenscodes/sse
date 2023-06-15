@@ -1,7 +1,6 @@
-import { LoginReturn } from '@api';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { cn } from '@styles';
-import { loginSchema, type LoginSchema } from '@types';
+import { Auth, loginSchema, type LoginSchema } from '@types';
 import { api, setJWTBearerToken } from '@utils';
 import { useForm } from 'react-hook-form';
 import { Button } from '../button/button';
@@ -32,7 +31,7 @@ export const Login: React.FC<LoginProps> = ({ submit, ...props }) => {
             if (submit) {
                 return submit(values);
             }
-            const { data, status } = await api.post<LoginReturn>(
+            const { data, status } = await api.post<Auth>(
                 '/auth/login',
                 values
             );

@@ -1,7 +1,6 @@
-import { RegisterReturn } from '@api';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { cn } from '@styles';
-import { RegisterSchema, registerSchema } from '@types';
+import { Auth, RegisterSchema, registerSchema } from '@types';
 import { api, setJWTBearerToken } from '@utils';
 import { useForm } from 'react-hook-form';
 import { Button } from '../button/button';
@@ -34,7 +33,7 @@ export const Register: React.FC<RegisterProps> = ({ submit, ...props }) => {
             return submit(values);
         }
         try {
-            const { data, status } = await api.post<RegisterReturn>(
+            const { data, status } = await api.post<Auth>(
                 '/auth/register',
                 values
             );
