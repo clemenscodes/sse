@@ -28,6 +28,7 @@ export class UserService {
                     username,
                     email,
                     salt,
+                    role: 'USER',
                 },
                 select: {
                     id: false,

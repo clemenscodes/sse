@@ -1,7 +1,8 @@
+import { LoginReturn } from '@api';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { cn } from '@styles';
 import { loginSchema, type LoginSchema } from '@types';
-import { api } from '@utils';
+import { api, setJWTBearerToken } from '@utils';
 import { useForm } from 'react-hook-form';
 import { Button } from '../button/button';
 import {
@@ -33,8 +34,22 @@ export const Login: React.FC<LoginProps> = ({ submit, ...props }) => {
             }
             const { username, password } = values;
             const payload = { username, password };
-            const session = await api.post('/auth/login', payload);
-            console.log({ session });
+            const { data, status } = await api.post<LoginReturn>(
+                '/auth/login',
+                payload
+            );
+            if (!data) {
+                return null;
+            }
+            console.log({ data });
+            console.log({ status });
+            const { jwt } = data;
+            if (!jwt) {
+                return null;
+            }
+            console.log('should set jwt now with', jwt);
+            setJWTBearerToken(jwt);
+            console.log('should have set jwt now with', jwt);
         } catch (error) {
             console.error(error);
         }

@@ -4,6 +4,7 @@ import { LoginSchema, UserSchema } from '@types';
 import { Response } from 'express';
 import { CookieService } from '../cookie/cookie.service';
 import { HashService } from '../hash/hash.service';
+import { JwtService } from '../jwt/jwt.service';
 import { RefreshTokenService } from '../refresh-token/refresh-token.service';
 import { SessionService } from '../session/session.service';
 import { UserService } from '../user/user.service';
@@ -15,7 +16,8 @@ export class AuthService {
         private readonly cookieService: CookieService,
         private readonly sessionService: SessionService,
         private readonly refreshTokenService: RefreshTokenService,
-        private readonly hashService: HashService
+        private readonly hashService: HashService,
+        private readonly jwtService: JwtService
     ) {}
 
     async register(
@@ -24,6 +26,7 @@ export class AuthService {
         cookies?: string
     ): Promise<{
         message: string;
+        jwt?: string;
         email?: User['email'];
         name?: User['username'];
     }> {
@@ -45,6 +48,7 @@ export class AuthService {
         cookies?: string
     ): Promise<{
         message: string;
+        jwt?: string;
         email?: User['email'];
         name?: User['username'];
     }> {
@@ -84,7 +88,8 @@ export class AuthService {
             this.cookieService.getRefreshTokenPayload(refreshToken),
         ];
         this.cookieService.setCookies(payloads, res);
+        const jwt = this.jwtService.generateToken(id);
         res.status(HttpStatus.OK);
-        return { message: 'Successfully logged in!', email, name };
+        return { message: 'Successfully logged in!', jwt, email, name };
     }
 }

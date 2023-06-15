@@ -1,6 +1,7 @@
 export * from './main';
 export * from './modules/user/user.service';
 export * from './modules/auth/auth.service';
+export * from './modules/auth/auth.controller';
 export * from './modules/session/session.service';
 export * from './modules/cookie/cookie.service';
 export * from './modules/refresh-token/refresh-token.service';

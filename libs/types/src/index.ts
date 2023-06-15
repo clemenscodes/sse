@@ -6,3 +6,4 @@ export * from './lib/passwordSchema';
 export * from './lib/usernameSchema';
 export * from './lib/emailSchema';
 export * from './lib/registerSchema';
+export * from './lib/unwrapPromise';

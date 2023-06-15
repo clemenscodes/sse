@@ -6,7 +6,7 @@ import {
     Post,
     Res,
 } from '@nestjs/common';
-import { LoginSchema } from '@types';
+import { LoginSchema, UnwrapPromise } from '@types';
 import { Response } from 'express';
 import { SignedCookies } from '../../decorator/cookies.decorator';
 import { SessionService } from '../session/session.service';
@@ -14,6 +14,11 @@ import { UserPipe } from '../user/user.pipe';
 import { UserService } from '../user/user.service';
 import { AuthService } from './auth.service';
 import { LoginPipe } from './login.pipe';
+
+export type RegisterReturn = UnwrapPromise<
+    ReturnType<AuthController['register']>
+>;
+export type LoginReturn = UnwrapPromise<ReturnType<AuthController['login']>>;
 
 @Controller('auth')
 export class AuthController {
@@ -23,7 +28,7 @@ export class AuthController {
     ) {}
 
     @Post('register')
-    async signUp(
+    async register(
         @SignedCookies() cookies: string,
         @Body(new UserPipe())
         data: Parameters<typeof UserService.prototype.create>[0],
@@ -38,7 +43,7 @@ export class AuthController {
         @Body(new LoginPipe()) { username, password }: LoginSchema,
         @Res({ passthrough: true }) res: Response
     ) {
-        const { message, ...data } = await this.authService.login(
+        return await this.authService.login(
             {
                 username,
                 password,
@@ -46,7 +51,6 @@ export class AuthController {
             res,
             cookies
         );
-        res.json({ message, data });
     }
 
     @Get('session')
