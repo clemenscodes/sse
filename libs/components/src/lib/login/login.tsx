@@ -32,24 +32,18 @@ export const Login: React.FC<LoginProps> = ({ submit, ...props }) => {
             if (submit) {
                 return submit(values);
             }
-            const { username, password } = values;
-            const payload = { username, password };
             const { data, status } = await api.post<LoginReturn>(
                 '/auth/login',
-                payload
+                values
             );
-            if (!data) {
+            if (!data || status !== 200) {
                 return null;
             }
-            console.log({ data });
-            console.log({ status });
             const { jwt } = data;
             if (!jwt) {
                 return null;
             }
-            console.log('should set jwt now with', jwt);
             setJWTBearerToken(jwt);
-            console.log('should have set jwt now with', jwt);
         } catch (error) {
             console.error(error);
         }

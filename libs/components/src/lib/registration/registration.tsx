@@ -1,7 +1,7 @@
 import { RegisterReturn } from '@api';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { cn } from '@styles';
-import { RegisterSchema, registerSchema, UserSchema } from '@types';
+import { RegisterSchema, registerSchema } from '@types';
 import { api, setJWTBearerToken } from '@utils';
 import { useForm } from 'react-hook-form';
 import { Button } from '../button/button';
@@ -30,39 +30,25 @@ export const Register: React.FC<RegisterProps> = ({ submit, ...props }) => {
     });
 
     const onSubmit = async (values: RegisterSchema) => {
+        if (submit) {
+            return submit(values);
+        }
         try {
-            if (submit) {
-                return submit(values);
-            }
-            const { email, username, password } = values;
-            const payload: UserSchema = {
-                email,
-                username,
-                password,
-            };
-            try {
-                const { data, status } = await api.post<RegisterReturn>(
-                    '/auth/register',
-                    payload
-                );
-                if (!data) {
-                    return null;
-                }
-                console.log({ data });
-                console.log({ status });
-                const { jwt } = data;
-                if (!jwt) {
-                    return null;
-                }
-                console.log('should set jwt now with', jwt);
-                setJWTBearerToken(jwt);
-                console.log('should have set jwt now with', jwt);
-            } catch (e) {
-                console.error(e);
+            const { data, status } = await api.post<RegisterReturn>(
+                '/auth/register',
+                values
+            );
+            if (!data || status !== 200) {
                 return null;
             }
-        } catch (error) {
-            console.error(error);
+            const { jwt } = data;
+            if (!jwt) {
+                return null;
+            }
+            setJWTBearerToken(jwt);
+        } catch (e) {
+            console.error(e);
+            return null;
         }
     };
 
