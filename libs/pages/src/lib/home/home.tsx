@@ -16,8 +16,10 @@ export const Home: NextPage<HomeProps> = ({ ...props }) => {
             >
                 <Header />
                 <main className={cn('mx-6 mb-auto mt-24 md:mx-12 xl:mx-24')}>
+                    <div className={cn("flex justify-center")}>
                     <Signin></Signin>
                     <Signup></Signup>
+            </div>
                 </main>
                 <Footer />
             </div>

@@ -68,7 +68,7 @@ export const Register: React.FC<RegisterProps> = ({ submit, onRegisterSuccess, .
             <Form {...form}>
                 <form
                     onSubmit={form.handleSubmit(onSubmit)}
-                    className={cn('space-y-2')}
+                    className={cn('space-y-2 bg-white rounded px-8 pt-6 pb-8 mb-4')}
                     {...props}
                 >
                     <FormField
