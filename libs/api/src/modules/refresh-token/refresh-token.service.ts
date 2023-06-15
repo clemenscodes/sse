@@ -15,14 +15,15 @@ export class RefreshTokenService {
         private readonly sessionService: SessionService
     ) {}
 
-    public static readonly refreshTokenDefaultTTL: number = 30 * 24 * 60 * 60; // 30 days
+    public static readonly refreshTokenDefaultTTLms: number =
+        30 * 24 * 60 * 60 * 1000; // 30 days
     public static readonly refreshCookieName: string = 'refreshToken';
 
     async create(userId: User['id']) {
         try {
             const refreshToken = this.sessionService.generateSessionToken();
             const expires = fromDate(
-                RefreshTokenService.refreshTokenDefaultTTL
+                RefreshTokenService.refreshTokenDefaultTTLms
             );
             const createdRefreshToken =
                 await this.prismaService.refreshToken.create({

@@ -12,7 +12,7 @@ import { PrismaService } from '../prisma/prisma.service';
 export class SessionService {
     constructor(private readonly prismaService: PrismaService) {}
 
-    public static readonly sessionDefaultTTL: number = 60 * 60; // 1 hour
+    public static readonly sessionDefaultTTLms: number = 60 * 60 * 1000; // 1 hour
     public static readonly sessionCookieName: string = 'sessionToken';
 
     generateSessionToken() {
@@ -23,7 +23,7 @@ export class SessionService {
     async create(userId: User['id']) {
         try {
             const sessionToken = this.generateSessionToken();
-            const expires = fromDate(SessionService.sessionDefaultTTL);
+            const expires = fromDate(SessionService.sessionDefaultTTLms);
             const createdSession = await this.prismaService.session.create({
                 data: {
                     sessionToken,

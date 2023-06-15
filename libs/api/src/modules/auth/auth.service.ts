@@ -2,7 +2,7 @@ import { HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { User } from '@prisma/api';
 import { LoginSchema, UserSchema } from '@types';
 import { Response } from 'express';
-import { CookiePayload, CookieService } from '../cookie/cookie.service';
+import { CookieService } from '../cookie/cookie.service';
 import { HashService } from '../hash/hash.service';
 import { RefreshTokenService } from '../refresh-token/refresh-token.service';
 import { SessionService } from '../session/session.service';
@@ -79,19 +79,10 @@ export class AuthService {
             await this.refreshTokenService.delete(refreshToken.id);
             refreshToken = await this.refreshTokenService.create(id);
         }
-        const sessionCookie: CookiePayload = {
-            data: sessionToken.sessionToken,
-            cookieName: SessionService.sessionCookieName,
-            expires: sessionToken.expires,
-            maxAge: SessionService.sessionDefaultTTL * 1000,
-        };
-        const refreshCookie: CookiePayload = {
-            data: refreshToken.refreshToken,
-            cookieName: RefreshTokenService.refreshCookieName,
-            expires: refreshToken.expires,
-            maxAge: RefreshTokenService.refreshTokenDefaultTTL * 1000,
-        };
-        const payloads = [sessionCookie, refreshCookie];
+        const payloads = [
+            this.cookieService.getSessionPayload(sessionToken),
+            this.cookieService.getRefreshTokenPayload(refreshToken),
+        ];
         this.cookieService.setCookies(payloads, res);
         res.status(HttpStatus.OK);
         return { message: 'Successfully logged in!', email, name };

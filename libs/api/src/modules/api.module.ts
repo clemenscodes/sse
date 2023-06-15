@@ -29,11 +29,12 @@ const modules: ModuleMetadata['imports'] = [
     AccountModule,
     CookieModule,
     JwtModule,
+    HashModule,
 ];
 
 @Global()
 @Module({
-    imports: [...modules, HashModule],
+    imports: [...modules],
     exports: [...modules],
 })
 export class ApiModule {}

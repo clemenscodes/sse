@@ -107,35 +107,6 @@ export class UserService {
         }
     }
 
-    async findAll() {
-        try {
-            const users = await this.prismaService.user.findMany({
-                select: {
-                    id: true,
-                    email: true,
-                    username: true,
-                    password: false,
-                },
-            });
-            if (!(users && users.length)) {
-                throw new NotFoundException('Users not found');
-            }
-            return users;
-        } catch (e) {
-            if (e instanceof Prisma.PrismaClientKnownRequestError) {
-                throw new InternalServerErrorException(
-                    'Failed to retrieve users'
-                );
-            } else if (e instanceof NotFoundException) {
-                throw e;
-            } else {
-                throw new InternalServerErrorException(
-                    'Failed to retrieve users'
-                );
-            }
-        }
-    }
-
     async findOne(id: User['id']) {
         try {
             const user = await this.prismaService.user.findUnique({

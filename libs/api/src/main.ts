@@ -14,6 +14,7 @@ export async function bootstrap() {
     const host = '0.0.0.0';
     const port = configService.get<number>('PORT') || 3000;
     const frontend_url = configService.get<string>('FRONTEND_URL');
+    const secret = configService.get<string>('SECRET');
     app.enableCors({
         origin: frontend_url || 'http://localhost:4200',
     });
@@ -21,7 +22,7 @@ export async function bootstrap() {
     app.useGlobalFilters(new ZodFilter());
     app.useGlobalFilters(new PasswordFilter());
     app.useGlobalInterceptors(new LoggingInterceptor());
-    app.use(cookieParser());
+    app.use(cookieParser(secret));
     await app.listen(port);
     Logger.log(
         `🚀 Application is running on: http://${host}:${port}/${globalPrefix}`

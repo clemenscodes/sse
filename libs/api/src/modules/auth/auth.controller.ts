@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { LoginSchema } from '@types';
 import { Response } from 'express';
-import { Cookies } from '../../decorator/cookies.decorator';
+import { SignedCookies } from '../../decorator/cookies.decorator';
 import { SessionService } from '../session/session.service';
 import { UserPipe } from '../user/user.pipe';
 import { UserService } from '../user/user.service';
@@ -24,7 +24,7 @@ export class AuthController {
 
     @Post('register')
     async signUp(
-        @Cookies() cookies: string,
+        @SignedCookies() cookies: string,
         @Body(new UserPipe())
         data: Parameters<typeof UserService.prototype.create>[0],
         @Res({ passthrough: true }) res: Response
@@ -34,7 +34,7 @@ export class AuthController {
 
     @Post('login')
     async login(
-        @Cookies() cookies: string,
+        @SignedCookies() cookies: string,
         @Body(new LoginPipe()) { username, password }: LoginSchema,
         @Res({ passthrough: true }) res: Response
     ) {
