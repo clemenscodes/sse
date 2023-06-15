@@ -29,38 +29,42 @@ export class JwtGuard implements CanActivate {
             return true;
         }
         const request = context.switchToHttp().getRequest();
+        const response = context.switchToHttp().getResponse();
         const token = this.extractTokenFromHeader(request);
         if (!token) {
             throw new UnauthorizedException();
         }
         try {
             const payload = await this.jwtService.verifyToken(token);
-            const isExpired = this.isTokenExpired(payload);
-            if (!isExpired) {
-                request['user'] = payload;
-                return true;
+            request['user'] = payload;
+        } catch (e) {
+            if (
+                !(
+                    e instanceof Object &&
+                    'name' in e &&
+                    e.name === 'TokenExpiredError'
+                )
+            ) {
+                throw new UnauthorizedException(e);
             }
             if (!request.signedCookies) {
-                throw new UnauthorizedException();
+                throw new UnauthorizedException('No cookies');
             }
-            const cookies = request.signedCookies;
-            const [valid] = await this.cookieService.checkCookies(
-                request,
-                cookies
-            );
-            if (!valid) {
-                throw new UnauthorizedException();
+            const cookies = JSON.stringify(request.signedCookies);
+            const { sessionValid, refreshValid } =
+                await this.cookieService.checkCookies(response, cookies);
+            if (!sessionValid && !refreshValid) {
+                throw new UnauthorizedException('Sessions expired');
             }
-        } catch (e) {
+            if (!sessionValid && refreshValid) {
+                // TODO: should get userid somehow and generate new jwt
+                // const jwt = await this.jwtService.generateToken(payload.sub);
+                // response.header('X-Refresh-JWT', jwt);
+                return true;
+            }
             throw new UnauthorizedException();
         }
         return true;
-    }
-
-    private isTokenExpired(payload: JWT): boolean {
-        const { exp } = payload;
-        const currentTime = Math.floor(Date.now() / 1000);
-        return currentTime > Number(exp);
     }
 
     private extractTokenFromHeader(request: Request): string | undefined {

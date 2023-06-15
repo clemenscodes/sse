@@ -43,6 +43,9 @@ export const Login: React.FC<LoginProps> = ({ submit, ...props }) => {
                 return null;
             }
             setJWTBearerToken(jwt);
+            setTimeout(async () => {
+                await api.get('/note/public');
+            }, 5000);
         } catch (error) {
             console.error(error);
         }

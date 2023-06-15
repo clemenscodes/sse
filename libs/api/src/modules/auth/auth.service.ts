@@ -38,11 +38,9 @@ export class AuthService {
         email?: User['email'];
         name?: User['username'];
     }> {
-        const [session, message] = await this.cookieService.checkCookies(
-            res,
-            cookies
-        );
-        if (session) {
+        const { sessionValid, refreshValid, message } =
+            await this.cookieService.checkCookies(res, cookies);
+        if (sessionValid || refreshValid) {
             return { message };
         }
         const { password } = data;
@@ -60,11 +58,9 @@ export class AuthService {
         email?: User['email'];
         name?: User['username'];
     }> {
-        const [session, message] = await this.cookieService.checkCookies(
-            res,
-            cookies
-        );
-        if (session) {
+        const { sessionValid, refreshValid, message } =
+            await this.cookieService.checkCookies(res, cookies);
+        if (sessionValid || refreshValid) {
             return { message };
         }
         const user = await this.userService.findByUsername(username);

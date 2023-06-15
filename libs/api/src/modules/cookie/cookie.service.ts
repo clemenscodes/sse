@@ -89,16 +89,32 @@ export class CookieService {
     async checkCookies(
         res: Response,
         cookies?: string
-    ): Promise<[boolean, string]> {
+    ): Promise<{
+        sessionValid: boolean;
+        refreshValid: boolean;
+        message: string;
+    }> {
         const sessionValid = await this.checkSessionCookie(res, cookies);
         if (sessionValid) {
-            return [true, 'User already logged in'];
+            return {
+                sessionValid: true,
+                refreshValid: true,
+                message: 'Session valid',
+            };
         }
         const refresh = await this.checkRefreshTokenCookie(res, cookies);
         if (refresh) {
-            return [true, 'Session refreshed'];
+            return {
+                sessionValid: false,
+                refreshValid: true,
+                message: 'Session refreshed',
+            };
         }
-        return [false, 'No valid session'];
+        return {
+            sessionValid: false,
+            refreshValid: false,
+            message: 'No valid session',
+        };
     }
 
     async checkSessionCookie(
@@ -154,14 +170,11 @@ export class CookieService {
         const refreshToken = await this.refreshTokenService.findByRefreshToken(
             token
         );
-        const jwt = await this.jwtService.generateToken(refreshToken.userId);
         const session = await this.sessionService.create(refreshToken.userId);
-        const jwtCookie = this.getJWTPayload(jwt);
         const sessionCookie = this.getSessionPayload(session);
         const refreshCookie = this.getRefreshTokenPayload(refreshToken);
-        const payloads = [sessionCookie, refreshCookie, jwtCookie];
+        const payloads = [sessionCookie, refreshCookie];
         this.setCookies(payloads, res);
-
         return valid;
     }
 }

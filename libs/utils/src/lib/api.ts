@@ -10,13 +10,20 @@ api.interceptors.request.use((config) => {
     return config;
 });
 
-// TODO: Attach CSRF token to every request
-api.interceptors.request.use((config) => {
-    // TODO: Implement this function to extract the CSRF token from the cookie
-    // const csrfToken = getCsrfTokenFromCookie();
-    // config.headers['csrf-token'] = csrfToken;
-    return config;
-});
+api.interceptors.response.use(
+    (response) => {
+        const jwtRefreshHeader = 'x-refresh-jwt';
+        const cookie = response.headers[jwtRefreshHeader];
+        const { headers } = response;
+        if (jwtRefreshHeader in headers) {
+            setJWTBearerToken(cookie);
+        }
+        return response;
+    },
+    (error) => {
+        return Promise.reject(error);
+    }
+);
 
 export const setJWTBearerToken = (token: string) => {
     api.interceptors.request.use((config) => {

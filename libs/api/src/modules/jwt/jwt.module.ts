@@ -14,7 +14,7 @@ import { JwtService } from './jwt.service';
                 global: true,
                 secret: configService.get<string>('SECRET') || '',
                 signOptions: {
-                    expiresIn: '1h',
+                    expiresIn: '3s',
                     algorithm: 'HS256',
                     header: {
                         alg: 'HS256',
