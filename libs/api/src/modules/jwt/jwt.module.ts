@@ -12,9 +12,9 @@ import { JwtService } from './jwt.service';
                 configService: ConfigService
             ): Promise<JwtModuleOptions> => ({
                 global: true,
-                secret: configService.get<string>('SECRET') || '',
+                secret: configService.get<string>('SECRET'),
                 signOptions: {
-                    expiresIn: '3s',
+                    expiresIn: '1h',
                     algorithm: 'HS256',
                     header: {
                         alg: 'HS256',

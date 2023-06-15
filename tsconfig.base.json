@@ -24,6 +24,7 @@
             "@styles": ["libs/styles/src/index.ts"],
             "@test/*": ["libs/test/src/*"],
             "@types": ["libs/types/src/index.ts"],
+            "@types/express": ["libs/types/src/lib/express.d.ts"],
             "@utils": ["libs/utils/src/index.ts"]
         }
     },
