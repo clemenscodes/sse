@@ -12,8 +12,7 @@ import { PrismaService } from '../prisma/prisma.service';
 export class SessionService {
     constructor(private readonly prismaService: PrismaService) {}
 
-    // public static readonly sessionDefaultTTLms: number = 60 * 60 * 1000; // 1 hour
-    public static readonly sessionDefaultTTLms: number = 3 * 1000; // 1 hour
+    public static readonly sessionDefaultTTLms: number = 60 * 60 * 1000; // 1 hour
     public static readonly sessionCookieName: string = 'sessionToken';
 
     generateSessionToken() {

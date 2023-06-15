@@ -7,6 +7,7 @@ import {
 import { Request } from 'express';
 import { AuthService } from '../auth/auth.service';
 import { CookieService } from '../cookie/cookie.service';
+import { RefreshTokenService } from '../refresh-token/refresh-token.service';
 import { JWT, JwtService } from './jwt.service';
 
 declare module 'express' {
@@ -20,7 +21,8 @@ export class JwtGuard implements CanActivate {
     constructor(
         private readonly jwtService: JwtService,
         private readonly authService: AuthService,
-        private readonly cookieService: CookieService
+        private readonly cookieService: CookieService,
+        private readonly tokenService: RefreshTokenService
     ) {}
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -57,9 +59,14 @@ export class JwtGuard implements CanActivate {
                 throw new UnauthorizedException('Sessions expired');
             }
             if (!sessionValid && refreshValid) {
-                // TODO: should get userid somehow and generate new jwt
-                // const jwt = await this.jwtService.generateToken(payload.sub);
-                // response.header('X-Refresh-JWT', jwt);
+                const parsedCookies = JSON.parse(cookies);
+                const cookieName = RefreshTokenService.refreshCookieName;
+                const token = parsedCookies[cookieName];
+                const { userId } = await this.tokenService.findByRefreshToken(
+                    token
+                );
+                const jwt = await this.jwtService.generateToken(userId);
+                response.header('X-Refresh-JWT', jwt);
                 return true;
             }
             throw new UnauthorizedException();
