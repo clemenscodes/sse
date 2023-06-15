@@ -11,6 +11,7 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { SecurityMiddleware } from '../middleware/security.middleware';
 import { AccountModule } from './account/account.module';
 import { AuthModule } from './auth/auth.module';
+import { RolesGuard } from './auth/roles.guard';
 import { CookieModule } from './cookie/cookie.module';
 import { HashModule } from './hash/hash.module';
 import { JwtGuard } from './jwt/jwt.guard';
@@ -58,6 +59,10 @@ const modules: ModuleMetadata['imports'] = [
         {
             provide: APP_GUARD,
             useClass: JwtGuard,
+        },
+        {
+            provide: APP_GUARD,
+            useClass: RolesGuard,
         },
         {
             provide: APP_GUARD,

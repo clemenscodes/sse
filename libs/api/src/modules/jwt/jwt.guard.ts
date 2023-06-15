@@ -8,13 +8,7 @@ import { Request } from 'express';
 import { AuthService } from '../auth/auth.service';
 import { CookieService } from '../cookie/cookie.service';
 import { RefreshTokenService } from '../refresh-token/refresh-token.service';
-import { JWT, JwtService } from './jwt.service';
-
-declare module 'express' {
-    interface Request {
-        user?: JWT;
-    }
-}
+import { JwtService } from './jwt.service';
 
 @Injectable()
 export class JwtGuard implements CanActivate {
