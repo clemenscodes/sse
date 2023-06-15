@@ -1,24 +1,24 @@
 import {
     Body,
     Controller,
-    Delete,
     Get,
     Param,
-    Patch,
     Post,
     Query,
+    UseGuards,
 } from '@nestjs/common';
-import { Note } from '@prisma/api';
 import { NoteSchema } from '@types';
+import { UserGuard } from '../user/user.guard';
+import { NoteGuard } from './note.guard';
 import { NotePipe } from './note.pipe';
 import { NoteService } from './note.service';
 
-// TODO: secure note endpoints, only authorized users can create and view their notes
 @Controller('note')
 export class NoteController {
     constructor(private readonly noteService: NoteService) {}
 
     @Post()
+    @UseGuards(NoteGuard)
     create(@Body(new NotePipe()) note: NoteSchema) {
         return this.noteService.create(note);
     }
@@ -33,23 +33,9 @@ export class NoteController {
         return this.noteService.searchPublicNotesByContent(content);
     }
 
-    @Get(':id')
-    findOne(@Param('id') id: string) {
-        return this.noteService.findOne(id);
-    }
-
     @Get('user/:userId')
+    @UseGuards(UserGuard)
     findAllByUserId(@Param('userId') userId: string) {
         return this.noteService.findAllByUserId(userId);
-    }
-
-    @Patch(':id')
-    update(@Param('userId') id: string, @Body(new NotePipe()) note: Note) {
-        return this.noteService.update(id, note);
-    }
-
-    @Delete(':id')
-    remove(@Param('userId') id: string) {
-        return this.noteService.remove(id);
     }
 }

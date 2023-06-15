@@ -1,8 +1,10 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { RefreshToken, Session } from '@prisma/api';
+import { fromDate } from '@utils';
 import { signedCookie } from 'cookie-parser';
 import { CookieOptions, Response } from 'express';
+import { JwtService } from '../jwt/jwt.service';
 import { RefreshTokenService } from '../refresh-token/refresh-token.service';
 import { SessionService } from '../session/session.service';
 
@@ -18,7 +20,8 @@ export class CookieService {
     constructor(
         private readonly sessionService: SessionService,
         private readonly refreshTokenService: RefreshTokenService,
-        private readonly configService: ConfigService
+        private readonly configService: ConfigService,
+        private readonly jwtService: JwtService
     ) {}
 
     private static readonly cookieOptions: CookieOptions = {
@@ -54,6 +57,16 @@ export class CookieService {
         return payload;
     }
 
+    getJWTPayload(jwt: string): CookiePayload {
+        const payload = {
+            data: jwt,
+            cookieName: 'jwt',
+            expires: new Date(fromDate(SessionService.sessionDefaultTTLms)),
+            maxAge: SessionService.sessionDefaultTTLms,
+        };
+        return payload;
+    }
+
     setCookie(payload: CookiePayload, res: Response): Response {
         const { cookieName, expires, maxAge, data } = payload;
         const domain = this.configService.get<string>('FRONTEND_DOMAIN');
@@ -79,12 +92,10 @@ export class CookieService {
     ): Promise<[boolean, string]> {
         const sessionValid = await this.checkSessionCookie(res, cookies);
         if (sessionValid) {
-            res.status(HttpStatus.OK);
             return [true, 'User already logged in'];
         }
         const refresh = await this.checkRefreshTokenCookie(res, cookies);
         if (refresh) {
-            res.status(HttpStatus.OK);
             return [true, 'Session refreshed'];
         }
         return [false, 'No valid session'];
@@ -143,11 +154,14 @@ export class CookieService {
         const refreshToken = await this.refreshTokenService.findByRefreshToken(
             token
         );
+        const jwt = await this.jwtService.generateToken(refreshToken.userId);
         const session = await this.sessionService.create(refreshToken.userId);
+        const jwtCookie = this.getJWTPayload(jwt);
         const sessionCookie = this.getSessionPayload(session);
         const refreshCookie = this.getRefreshTokenPayload(refreshToken);
-        const payloads = [sessionCookie, refreshCookie];
+        const payloads = [sessionCookie, refreshCookie, jwtCookie];
         this.setCookies(payloads, res);
+
         return valid;
     }
 }

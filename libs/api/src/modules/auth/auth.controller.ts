@@ -1,8 +1,8 @@
 import {
     Body,
     Controller,
-    Get,
-    NotImplementedException,
+    HttpCode,
+    HttpStatus,
     Post,
     Res,
 } from '@nestjs/common';
@@ -24,6 +24,7 @@ export class AuthController {
     ) {}
 
     @Public()
+    @HttpCode(HttpStatus.OK)
     @Post('register')
     async register(
         @SignedCookies() cookies: string,
@@ -35,6 +36,7 @@ export class AuthController {
     }
 
     @Public()
+    @HttpCode(HttpStatus.OK)
     @Post('login')
     async login(
         @SignedCookies() cookies: string,
@@ -49,11 +51,5 @@ export class AuthController {
             res,
             cookies
         );
-    }
-
-    @Get('session')
-    async getUserSessions() {
-        // TODO: get JWT from request header, verify jwt, get sessions
-        return new NotImplementedException();
     }
 }
