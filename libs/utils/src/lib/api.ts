@@ -18,12 +18,9 @@ api.interceptors.request.use((config) => {
     return config;
 });
 
-// TODO: call this function in login or register as soon as JWT is implemented
 export const setJWTBearerToken = (token: string) => {
-    console.log('Setting auth header', token);
     api.interceptors.request.use((config) => {
         const header = `Bearer ${token}`;
-        console.log('Setting auth header', header);
         config.headers['Authorization'] = header;
         return config;
     });
