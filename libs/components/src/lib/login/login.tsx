@@ -1,8 +1,7 @@
-import { apiUrl } from '@config';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { cn } from '@styles';
 import { loginSchema, type LoginSchema } from '@types';
-import axios from 'axios';
+import { api } from '@utils';
 import { useForm } from 'react-hook-form';
 import { Button } from '../button/button';
 import {
@@ -34,10 +33,7 @@ export const Login: React.FC<LoginProps> = ({ submit, ...props }) => {
             }
             const { username, password } = values;
             const payload = { username, password };
-            const url = `${apiUrl}/auth/login`;
-            const session = await axios.post(url, payload, {
-                withCredentials: true,
-            });
+            const session = await api.post('/auth/login', payload);
             console.log({ session });
         } catch (error) {
             console.error(error);

@@ -16,6 +16,7 @@ export async function bootstrap() {
     const frontend_url = configService.get<string>('FRONTEND_URL');
     const secret = configService.get<string>('SECRET');
     app.enableCors({
+        credentials: true,
         origin: frontend_url || 'http://localhost:4200',
     });
     app.setGlobalPrefix(globalPrefix);

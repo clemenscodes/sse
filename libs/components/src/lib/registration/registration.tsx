@@ -1,8 +1,7 @@
-import { apiUrl } from '@config';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { cn } from '@styles';
 import { RegisterSchema, registerSchema, UserSchema } from '@types';
-import axios from 'axios';
+import { api } from '@utils';
 import { useForm } from 'react-hook-form';
 import { Button } from '../button/button';
 import {
@@ -41,10 +40,7 @@ export const Register: React.FC<RegisterProps> = ({ submit, ...props }) => {
                 password,
             };
             try {
-                const url = `${apiUrl}/auth/register`;
-                const response = await axios.post(url, payload, {
-                    withCredentials: true,
-                });
+                const response = await api.post('/auth/register', payload);
                 if (!response) {
                     return null;
                 }
