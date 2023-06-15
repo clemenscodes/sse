@@ -10,11 +10,18 @@ api.interceptors.request.use((config) => {
     return config;
 });
 
+// TODO: Attach CSRF token to every request
+api.interceptors.request.use((config) => {
+    // TODO: Implement this function to extract the CSRF token from the cookie
+    // const csrfToken = getCsrfTokenFromCookie();
+    // config.headers['csrf-token'] = csrfToken;
+    return config;
+});
+
 // TODO: call this function in login or register as soon as JWT is implemented
 export const setJWTBearerToken = (token: string) => {
     api.interceptors.request.use((config) => {
         config.headers['Authorization'] = `Bearer ${token}`;
-        config.withCredentials = true;
         return config;
     });
 };
