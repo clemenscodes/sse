@@ -6,11 +6,15 @@ export const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-    // TODO: implement functionality to send jwt bearer token
-    // const token = getJWTBearerToken();
-    // if (token) {
-    //     config.headers['Authorization'] = `Bearer ${token}`;
-    // }
     config.withCredentials = true;
     return config;
 });
+
+// TODO: call this function in login or register as soon as JWT is implemented
+export const setJWTBearerToken = (token: string) => {
+    api.interceptors.request.use((config) => {
+        config.headers['Authorization'] = `Bearer ${token}`;
+        config.withCredentials = true;
+        return config;
+    });
+};
