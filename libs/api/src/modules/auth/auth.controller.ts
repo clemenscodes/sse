@@ -6,11 +6,12 @@ import {
     Post,
     Res,
 } from '@nestjs/common';
+import { User } from '@prisma/api';
 import { Auth, LoginSchema } from '@types';
 import { Response } from 'express';
 import { SignedCookies } from '../../decorator/cookies.decorator';
 import { Public } from '../../decorator/public.decorator';
-import { SessionService } from '../session/session.service';
+import { UserId } from '../../decorator/userId.decorator';
 import { UserPipe } from '../user/user.pipe';
 import { UserService } from '../user/user.service';
 import { AuthService } from './auth.service';
@@ -18,10 +19,7 @@ import { LoginPipe } from './login.pipe';
 
 @Controller('auth')
 export class AuthController {
-    constructor(
-        private readonly authService: AuthService,
-        private readonly sessionService: SessionService
-    ) {}
+    constructor(private readonly authService: AuthService) {}
 
     @Public()
     @HttpCode(HttpStatus.OK)
@@ -51,5 +49,15 @@ export class AuthController {
             res,
             cookies
         );
+    }
+
+    @Post('logout')
+    @HttpCode(HttpStatus.NO_CONTENT)
+    async logout(
+        @SignedCookies() cookies: string,
+        @UserId() userId: User['id'],
+        @Res({ passthrough: true }) res: Response
+    ) {
+        return await this.authService.logout(userId, cookies, res);
     }
 }

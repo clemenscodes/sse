@@ -11,15 +11,15 @@ import { PrismaService } from '../prisma/prisma.service';
 export class NoteService {
     constructor(private readonly prismaService: PrismaService) {}
 
-    async create(note: NoteSchema) {
+    async create(note: NoteSchema, userId: User['id']) {
         try {
-            const { isPublic, content, userId: id } = note;
+            const { isPublic, content } = note;
             const createdNote = await this.prismaService.note.create({
                 data: {
                     isPublic,
                     content,
                     user: {
-                        connect: { id },
+                        connect: { id: userId },
                     },
                 },
                 select: {
@@ -77,36 +77,6 @@ export class NoteService {
         }
     }
 
-    async findAllPublicNotes() {
-        try {
-            const notes = await this.prismaService.note.findMany({
-                where: { isPublic: true },
-                select: {
-                    id: false,
-                    content: true,
-                    isPublic: true,
-                    userId: false,
-                },
-            });
-            if (!(notes && notes.length)) {
-                throw new NotFoundException('No public notes found');
-            }
-            return notes;
-        } catch (e) {
-            if (e instanceof Prisma.PrismaClientKnownRequestError) {
-                throw new InternalServerErrorException(
-                    'Failed to retrieve public notes'
-                );
-            } else if (e instanceof NotFoundException) {
-                throw e;
-            } else {
-                throw new InternalServerErrorException(
-                    'Failed to retrieve public notes'
-                );
-            }
-        }
-    }
-
     async searchPublicNotesByContent(content: Note['content']) {
         try {
             const notes = await this.prismaService.note.findMany({
@@ -125,7 +95,7 @@ export class NoteService {
             });
             if (!(notes && notes.length)) {
                 throw new NotFoundException(
-                    `No public notes found matching the search ${content}`
+                    `No notes found matching the search criteria`
                 );
             }
             return notes;

@@ -123,4 +123,18 @@ export class RefreshTokenService {
             );
         }
     }
+
+    async deleteUserRefreshToken(userId: User['id']) {
+        try {
+            const deletedRefreshTokens =
+                await this.prismaService.refreshToken.deleteMany({
+                    where: { userId },
+                });
+            return deletedRefreshTokens;
+        } catch (error) {
+            throw new InternalServerErrorException(
+                'Failed to delete user refresh tokens'
+            );
+        }
+    }
 }

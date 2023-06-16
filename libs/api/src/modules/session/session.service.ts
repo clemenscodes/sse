@@ -117,4 +117,19 @@ export class SessionService {
             throw new InternalServerErrorException('Failed to delete session');
         }
     }
+
+    async deleteAllUserSessions(userId: User['id']) {
+        try {
+            const deletedSessions = await this.prismaService.session.deleteMany(
+                {
+                    where: { userId },
+                }
+            );
+            return deletedSessions;
+        } catch (error) {
+            throw new InternalServerErrorException(
+                'Failed to delete user sessions'
+            );
+        }
+    }
 }

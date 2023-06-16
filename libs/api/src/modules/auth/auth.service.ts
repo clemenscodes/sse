@@ -2,6 +2,7 @@ import {
     ExecutionContext,
     HttpStatus,
     Injectable,
+    InternalServerErrorException,
     UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
@@ -95,6 +96,21 @@ export class AuthService {
         const jwt = await this.jwtService.generateToken(id);
         res.status(HttpStatus.OK);
         return { message: 'Successfully logged in!', jwt, email, name };
+    }
+
+    async logout(userId: User['id'], cookies: string, res: Response) {
+        const deletedSessions = await this.sessionService.deleteAllUserSessions(
+            userId
+        );
+        const token = await this.refreshTokenService.deleteUserRefreshToken(
+            userId
+        );
+        if (!(token && deletedSessions)) {
+            throw new InternalServerErrorException(
+                'Failed clearing user sessions'
+            );
+        }
+        this.cookieService.clearCookies(cookies, res);
     }
 
     publicCheck(context: ExecutionContext) {

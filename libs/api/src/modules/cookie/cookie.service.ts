@@ -1,10 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { RefreshToken, Session } from '@prisma/api';
 import { fromDate } from '@utils';
 import { signedCookie } from 'cookie-parser';
 import { CookieOptions, Response } from 'express';
-import { JwtService } from '../jwt/jwt.service';
 import { RefreshTokenService } from '../refresh-token/refresh-token.service';
 import { SessionService } from '../session/session.service';
 
@@ -20,8 +19,7 @@ export class CookieService {
     constructor(
         private readonly sessionService: SessionService,
         private readonly refreshTokenService: RefreshTokenService,
-        private readonly configService: ConfigService,
-        private readonly jwtService: JwtService
+        private readonly configService: ConfigService
     ) {}
 
     private static readonly cookieOptions: CookieOptions = {
@@ -176,5 +174,16 @@ export class CookieService {
         const payloads = [sessionCookie, refreshCookie];
         this.setCookies(payloads, res);
         return valid;
+    }
+
+    clearCookies(cookies: string, res: Response) {
+        if (!cookies) {
+            throw new UnauthorizedException();
+        }
+        const parsedCookies = JSON.parse(cookies);
+        const keys = Object.keys(parsedCookies);
+        keys.forEach((cookie) => {
+            res.clearCookie(cookie);
+        });
     }
 }

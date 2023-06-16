@@ -1,16 +1,8 @@
-import {
-    Body,
-    Controller,
-    Get,
-    Param,
-    Post,
-    Query,
-    UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { User } from '@prisma/api';
 import { NoteSchema } from '@types';
 import { Roles } from '../../decorator/roles.decorator';
-import { UserGuard } from '../user/user.guard';
-import { NoteGuard } from './note.guard';
+import { UserId } from '../../decorator/userId.decorator';
 import { NotePipe } from './note.pipe';
 import { NoteService } from './note.service';
 
@@ -20,27 +12,22 @@ export class NoteController {
 
     @Post()
     @Roles('USER')
-    @UseGuards(NoteGuard)
-    create(@Body(new NotePipe()) note: NoteSchema) {
-        return this.noteService.create(note);
+    create(
+        @UserId() userId: User['id'],
+        @Body(new NotePipe()) note: NoteSchema
+    ) {
+        return this.noteService.create(note, userId);
     }
 
-    @Get('public')
-    @Roles('USER')
-    findAllPublicNotes() {
-        return this.noteService.findAllPublicNotes();
-    }
-
-    @Get('public/search')
+    @Get('search')
     @Roles('USER')
     searchPublicNotesByContent(@Query('content') content: string) {
         return this.noteService.searchPublicNotesByContent(content);
     }
 
-    @Get('user/:userId')
+    @Get('user')
     @Roles('USER')
-    @UseGuards(UserGuard)
-    findAllByUserId(@Param('userId') userId: string) {
+    findAllByUserId(@UserId() userId: User['id']) {
         return this.noteService.findAllByUserId(userId);
     }
 }

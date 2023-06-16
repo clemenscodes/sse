@@ -46,7 +46,7 @@ async function seed() {
         ];
 
         for (const note of notes) {
-            await noteService.create(note);
+            await noteService.create(note, user.id);
         }
 
         console.log('Seed script executed successfully');
