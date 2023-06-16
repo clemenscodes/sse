@@ -20,9 +20,11 @@
             "@components": ["libs/components/src/index.ts"],
             "@config": ["libs/config/src/index.ts"],
             "@pages": ["libs/pages/src/index.ts"],
+            "@prisma": ["libs/ts-prisma/src/index.ts"],
             "@styles": ["libs/styles/src/index.ts"],
             "@test/*": ["libs/test/src/*"],
             "@types": ["libs/types/src/index.ts"],
+            "@types/express": ["libs/types/src/lib/express.d.ts"],
             "@utils": ["libs/utils/src/index.ts"]
         }
     },

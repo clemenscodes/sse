@@ -1,9 +1,7 @@
-import { apiUrl } from '@config';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Prisma } from '@prisma/api';
 import { cn } from '@styles';
-import { RegisterSchema, registerSchema } from '@types';
-import axios from 'axios';
+import { Auth, RegisterSchema, registerSchema } from '@types';
+import { post, setJWTBearerToken } from '@utils';
 import { useForm } from 'react-hook-form';
 import { Button } from '../button/button';
 import {
@@ -15,15 +13,16 @@ import {
 } from '../form/form';
 import { Input } from '../input/input';
 
-
-
 export type RegisterProps = React.ComponentPropsWithoutRef<'form'> & {
     submit?: (values: RegisterSchema) => Promise<void>;
     onRegisterSuccess: (success: boolean) => void;
 };
 
-export const Register: React.FC<RegisterProps> = ({ submit, onRegisterSuccess, ...props }) => {
-
+export const Register: React.FC<RegisterProps> = ({
+    submit,
+    onRegisterSuccess,
+    ...props
+}) => {
     const form = useForm<RegisterSchema>({
         resolver: zodResolver(registerSchema),
         defaultValues: {
@@ -35,31 +34,26 @@ export const Register: React.FC<RegisterProps> = ({ submit, onRegisterSuccess, .
     });
 
     const onSubmit = async (values: RegisterSchema) => {
+        if (submit) {
+            return submit(values);
+        }
         try {
-            if (submit) {
-                return submit(values);
+            const { data, status } = await post<Auth, RegisterSchema>(
+                '/auth/register',
+                values
+            );
+            if (!data || status !== 200) {
+                return onRegisterSuccess(false);
             }
-            const { email, username, password } = values;
-            const payload: Prisma.UserCreateInput = {
-                email,
-                username,
-                password,
-            };
-            try {
-                const url = `${apiUrl}/auth/register`;
-                const response = await axios.post(url, payload);
-                if (response && response.status === 200) {
-                    onRegisterSuccess(true);
-                } else {
-                    onRegisterSuccess(false);
-                }
-                console.log({ response });
-            } catch (e) {
-                console.error(e);
+            onRegisterSuccess(true);
+            const { jwt } = data;
+            if (!jwt) {
                 return null;
             }
-        } catch (error) {
-            console.error(error);
+            setJWTBearerToken(jwt);
+        } catch (e) {
+            console.error(e);
+            return null;
         }
     };
 
@@ -68,7 +62,9 @@ export const Register: React.FC<RegisterProps> = ({ submit, onRegisterSuccess, .
             <Form {...form}>
                 <form
                     onSubmit={form.handleSubmit(onSubmit)}
-                    className={cn('space-y-2 bg-white rounded px-8 pt-6 pb-8 mb-4')}
+                    className={cn(
+                        'mb-4 space-y-2 rounded bg-white px-8 pb-8 pt-6'
+                    )}
                     {...props}
                 >
                     <FormField

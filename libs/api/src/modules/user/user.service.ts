@@ -1,48 +1,41 @@
 import {
-    HttpStatus,
     Injectable,
     InternalServerErrorException,
     NotFoundException,
     UnauthorizedException,
 } from '@nestjs/common';
 import { Prisma, User } from '@prisma/api';
-import { Response } from 'express';
-import { AuthService } from '../auth/auth.service';
-import { CookieService } from '../cookie/cookie.service';
+import { UserSchema } from '@types';
+import { HashService } from '../hash/hash.service';
 import { PrismaService } from '../prisma/prisma.service';
-import { RefreshTokenService } from '../refresh-token/refresh-token.service';
-import { SessionService } from '../session/session.service';
 
 @Injectable()
 export class UserService {
     constructor(
-        private readonly prismaService: PrismaService,
-        private readonly authService: AuthService,
-        private readonly sessionService: SessionService,
-        private readonly refreshTokenService: RefreshTokenService,
-        private readonly cookieService: CookieService
+        private readonly hashService: HashService,
+        private readonly prismaService: PrismaService
     ) {}
 
-    async register(data: Prisma.UserCreateInput, res: Response) {
-        const { password } = data;
-        const { username } = await this.create(data);
-        await this.login(username, password, res);
-    }
-
-    async create(data: Prisma.UserCreateInput) {
+    async create(data: UserSchema) {
         try {
-            const { password } = data;
-            const hashedPassword = await this.authService.hashPassword(
+            const { password, username, email } = data;
+            const [hashedPassword, salt] = await this.hashService.hashPassword(
                 password
             );
-            data.password = hashedPassword;
             const createdUser = await this.prismaService.user.create({
-                data,
+                data: {
+                    password: hashedPassword,
+                    username,
+                    email,
+                    salt,
+                    role: 'USER',
+                },
                 select: {
                     id: false,
                     email: true,
                     username: true,
                     password: false,
+                    salt: false,
                 },
             });
             if (!createdUser) {
@@ -61,60 +54,6 @@ export class UserService {
                 throw new InternalServerErrorException('Registration failed');
             }
         }
-    }
-
-    async login(
-        username: User['username'],
-        password: User['password'],
-        res: Response,
-        cookies?: string
-    ): Promise<{
-        message: string;
-        email?: User['email'];
-        name?: User['username'];
-    }> {
-        const sessionValid = await this.cookieService.checkSessionCookie(
-            res,
-            cookies
-        );
-        if (sessionValid) {
-            res.status(HttpStatus.OK);
-            return { message: 'User already logged in' };
-        }
-        const refresh = await this.cookieService.checkRefreshTokenCookie(
-            res,
-            cookies
-        );
-        if (refresh) {
-            res.status(HttpStatus.OK);
-            return { message: 'Session expired, but valid refresh token!' };
-        }
-        const user = await this.findByUsername(username);
-        const passwordMatch = await this.authService.verifyPassword(
-            user.password,
-            password
-        );
-        if (!passwordMatch) {
-            throw new UnauthorizedException('Invalid credentials');
-        }
-        const { email, username: name, id } = user;
-        const sessionToken = await this.sessionService.create(id);
-        let refreshToken = await this.refreshTokenService.getUserRefreshToken(
-            id
-        );
-        if (!refreshToken) {
-            refreshToken = await this.refreshTokenService.create(id);
-        }
-        const valid = await this.refreshTokenService.checkRefreshToken(
-            refreshToken.refreshToken
-        );
-        if (!valid) {
-            await this.refreshTokenService.delete(refreshToken.id);
-            refreshToken = await this.refreshTokenService.create(id);
-        }
-        this.cookieService.setCookies(sessionToken, refreshToken, res);
-        res.status(HttpStatus.OK);
-        return { message: 'Successfully logged in!', email, name };
     }
 
     async findByEmail(email: User['email']) {
@@ -169,36 +108,7 @@ export class UserService {
         }
     }
 
-    async findAll() {
-        try {
-            const users = await this.prismaService.user.findMany({
-                select: {
-                    id: true,
-                    email: true,
-                    username: true,
-                    password: false,
-                },
-            });
-            if (!(users && users.length)) {
-                throw new NotFoundException('Users not found');
-            }
-            return users;
-        } catch (e) {
-            if (e instanceof Prisma.PrismaClientKnownRequestError) {
-                throw new InternalServerErrorException(
-                    'Failed to retrieve users'
-                );
-            } else if (e instanceof NotFoundException) {
-                throw e;
-            } else {
-                throw new InternalServerErrorException(
-                    'Failed to retrieve users'
-                );
-            }
-        }
-    }
-
-    async findOne(id: User['id']) {
+    async findById(id: User['id']) {
         try {
             const user = await this.prismaService.user.findUnique({
                 where: { id },
@@ -207,6 +117,7 @@ export class UserService {
                     email: true,
                     username: true,
                     password: false,
+                    role: true,
                 },
             });
             if (!user) {

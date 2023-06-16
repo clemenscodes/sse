@@ -5,23 +5,25 @@ import {
 } from '@nestjs/common';
 import { Prisma, Session, User } from '@prisma/api';
 import { fromDate } from '@utils';
-import { AuthService } from '../auth/auth.service';
+import { v4 as uuidv4 } from 'uuid';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class SessionService {
-    constructor(
-        private readonly prismaService: PrismaService,
-        private readonly authService: AuthService
-    ) {}
+    constructor(private readonly prismaService: PrismaService) {}
 
-    public static readonly sessionDefaultTTL: number = 60 * 60; // 1 hour
+    public static readonly sessionDefaultTTLms: number = 60 * 60 * 1000; // 1 hour
     public static readonly sessionCookieName: string = 'sessionToken';
+
+    generateSessionToken() {
+        const sessionToken = uuidv4();
+        return sessionToken;
+    }
 
     async create(userId: User['id']) {
         try {
-            const sessionToken = this.authService.generateSessionToken();
-            const expires = fromDate(SessionService.sessionDefaultTTL);
+            const sessionToken = this.generateSessionToken();
+            const expires = fromDate(SessionService.sessionDefaultTTLms);
             const createdSession = await this.prismaService.session.create({
                 data: {
                     sessionToken,
@@ -113,6 +115,21 @@ export class SessionService {
             return deletedSession;
         } catch (error) {
             throw new InternalServerErrorException('Failed to delete session');
+        }
+    }
+
+    async deleteAllUserSessions(userId: User['id']) {
+        try {
+            const deletedSessions = await this.prismaService.session.deleteMany(
+                {
+                    where: { userId },
+                }
+            );
+            return deletedSessions;
+        } catch (error) {
+            throw new InternalServerErrorException(
+                'Failed to delete user sessions'
+            );
         }
     }
 }

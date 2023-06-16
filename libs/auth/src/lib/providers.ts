@@ -1,6 +1,5 @@
-import { apiUrl } from '@config';
 import { User } from '@prisma/api';
-import axios from 'axios';
+import { api } from '@utils';
 import { AdapterUser } from 'next-auth/adapters';
 import { Provider } from 'next-auth/providers';
 import CredentialsProvider from 'next-auth/providers/credentials';
@@ -28,8 +27,7 @@ export const providers: Provider[] = [
             }
             const { username } = credentials;
             try {
-                const url = `${apiUrl}/user/username/${username}`;
-                const response = await axios.get(url);
+                const response = await api.get(`/user/username/${username}`);
                 if (!response) {
                     return null;
                 }

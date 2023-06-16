@@ -1,69 +1,79 @@
+import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaClient } from '@prisma/api';
 import { DeepMockProxy, mockDeep } from 'jest-mock-extended';
+import { CookieService } from '../cookie/cookie.service';
+import { HashService } from '../hash/hash.service';
+import { JwtService } from '../jwt/jwt.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { RefreshTokenService } from '../refresh-token/refresh-token.service';
+import { SessionService } from '../session/session.service';
+import { UserService } from '../user/user.service';
 import { AuthService } from './auth.service';
 
 describe('AuthService', () => {
     let service: AuthService;
+    let sessionService: SessionService;
+    let refreshTokenService: RefreshTokenService;
+    let cookieService: CookieService;
+    let configService: ConfigService;
+    let userService: UserService;
+    let hashService: HashService;
+    let jwtService: JwtService;
     let prisma: DeepMockProxy<PrismaClient>;
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
-            providers: [AuthService, PrismaService],
+            providers: [
+                AuthService,
+                UserService,
+                ConfigService,
+                PrismaService,
+                CookieService,
+                RefreshTokenService,
+                SessionService,
+                HashService,
+                JwtService,
+            ],
         })
+            .overrideProvider(ConfigService)
+            .useValue(mockDeep<ConfigService>())
+            .overrideProvider(UserService)
+            .useValue(mockDeep<UserService>())
+            .overrideProvider(SessionService)
+            .useValue(mockDeep<SessionService>())
+            .overrideProvider(RefreshTokenService)
+            .useValue(mockDeep<RefreshTokenService>())
+            .overrideProvider(CookieService)
+            .useValue(mockDeep<CookieService>())
+            .overrideProvider(HashService)
+            .useValue(mockDeep<HashService>())
+            .overrideProvider(JwtService)
+            .useValue(mockDeep<JwtService>())
             .overrideProvider(PrismaService)
             .useValue(mockDeep<PrismaClient>())
             .compile();
 
         service = module.get<AuthService>(AuthService);
+        configService = module.get(ConfigService);
+        sessionService = module.get(SessionService);
+        refreshTokenService = module.get(RefreshTokenService);
+        cookieService = module.get(CookieService);
+        userService = module.get(UserService);
+        hashService = module.get(HashService);
+        jwtService = module.get(JwtService);
         prisma = module.get(PrismaService);
     });
 
     it('should be defined', () => {
         expect(service).toBeDefined();
+        expect(configService).toBeDefined();
+        expect(sessionService).toBeDefined();
+        expect(refreshTokenService).toBeDefined();
+        expect(cookieService).toBeDefined();
+        expect(userService).toBeDefined();
+        expect(hashService).toBeDefined();
+        expect(jwtService).toBeDefined();
         expect(prisma).toBeDefined();
-    });
-
-    describe('hashPassword', () => {
-        it('should hash the password', async () => {
-            const password = 'password';
-            const result = await service.hashPassword(password);
-            expect(result).toBeDefined();
-            expect(typeof result).toBe('string');
-            expect(result.length).toBeGreaterThan(0);
-        });
-    });
-
-    describe('verifyPassword', () => {
-        it('should verify the correct password', async () => {
-            const password = 'password';
-            const hashedPassword = await service.hashPassword(password);
-            const result = await service.verifyPassword(
-                hashedPassword,
-                password
-            );
-            expect(result).toBe(true);
-        });
-
-        it('should not verify the incorrect password', async () => {
-            const password = 'password';
-            const incorrectPassword = 'incorrectPassword';
-            const hashedPassword = await service.hashPassword(password);
-            const result = await service.verifyPassword(
-                hashedPassword,
-                incorrectPassword
-            );
-            expect(result).toBe(false);
-        });
-    });
-
-    describe('generateSessionToken', () => {
-        test('should return a UUID without throwing errors', () => {
-            const sessionToken = service.generateSessionToken();
-            expect(sessionToken).toMatch(
-                /[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}/i
-            );
-        });
     });
 });

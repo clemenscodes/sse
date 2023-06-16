@@ -10,18 +10,53 @@
                 "command": "PRISMA_DISABLE_WARNINGS=1 yarn prisma generate --schema=apps/notes/prisma/schema.prisma"
             }
         },
-        "migration": {
+        "build": {
             "dependsOn": ["generation"],
+            "executor": "@nx/esbuild:esbuild",
+            "outputs": ["{options.outputPath}"],
+            "options": {
+                "platform": "node",
+                "outputPath": "dist/apps/notes/prisma",
+                "format": ["cjs"],
+                "bundle": true,
+                "main": "apps/notes/prisma/seed.ts",
+                "tsConfig": "apps/notes/prisma/tsconfig.app.json",
+                "generatePackageJson": true,
+                "generateLockfile": true,
+                "esbuildOptions": {
+                    "sourcemap": false,
+                    "outExtension": {
+                        ".js": ".js"
+                    }
+                }
+            }
+        },
+        "reset": {
+            "dependsOn": ["build"],
             "executor": "nx:run-commands",
             "options": {
-                "command": "PRISMA_DISABLE_WARNINGS=1 yarn prisma migrate dev --schema=apps/notes/prisma/schema.prisma --skip-generate"
+                "command": "PRISMA_DISABLE_WARNINGS=1 yarn prisma migrate reset --schema=apps/notes/prisma/schema.prisma --skip-generate --force"
+            }
+        },
+        "migration": {
+            "dependsOn": ["reset"],
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "PRISMA_DISABLE_WARNINGS=1 yarn prisma migrate dev --schema=apps/notes/prisma/schema.prisma --skip-generate --name $(git rev-parse --short HEAD)"
             }
         },
         "seed": {
             "dependsOn": ["migration"],
             "executor": "nx:run-commands",
             "options": {
-                "command": "PRISMA_DISABLE_WARNINGS=1 yarn ts-node apps/notes/server/seed.ts"
+                "command": "PRISMA_DISABLE_WARNINGS=1 yarn node dist/apps/notes/prisma/seed.js"
+            }
+        },
+        "lint": {
+            "executor": "@nx/linter:eslint",
+            "outputs": ["{options.outputFile}"],
+            "options": {
+                "lintFilePatterns": ["apps/notes/prisma/**/*.ts"]
             }
         },
         "status": {
@@ -45,10 +80,12 @@
         },
         "docker": {
             "executor": "@nx-tools/nx-container:build",
+            "options": {
+                "engine": "docker"
+            },
             "defaultConfiguration": "development",
             "configurations": {
                 "development": {
-                    "engine": "docker",
                     "file": "apps/notes/prisma/docker/development/Dockerfile",
                     "load": true,
                     "metadata": {
@@ -56,7 +93,6 @@
                     }
                 },
                 "production": {
-                    "engine": "docker",
                     "file": "apps/notes/prisma/docker/production/Dockerfile",
                     "load": true,
                     "metadata": {

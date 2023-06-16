@@ -1,40 +1,63 @@
-import { Body, Controller, Post, Res } from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    HttpCode,
+    HttpStatus,
+    Post,
+    Res,
+} from '@nestjs/common';
+import { User } from '@prisma/api';
+import { Auth, LoginSchema } from '@types';
 import { Response } from 'express';
-import { Cookies } from '../../decorator/cookies.decorator';
+import { SignedCookies } from '../../decorator/cookies.decorator';
+import { Public } from '../../decorator/public.decorator';
+import { UserId } from '../../decorator/userId.decorator';
 import { UserPipe } from '../user/user.pipe';
 import { UserService } from '../user/user.service';
+import { AuthService } from './auth.service';
 import { LoginPipe } from './login.pipe';
-
-export type LoginPayload = {
-    username: Parameters<typeof UserService.prototype.login>[0];
-    password: Parameters<typeof UserService.prototype.login>[1];
-};
 
 @Controller('auth')
 export class AuthController {
-    constructor(private readonly userService: UserService) {}
+    constructor(private readonly authService: AuthService) {}
 
+    @Public()
+    @HttpCode(HttpStatus.OK)
     @Post('register')
-    async signUp(
+    async register(
+        @SignedCookies() cookies: string,
         @Body(new UserPipe())
-        data: Parameters<typeof this.userService.create>[0],
+        data: Parameters<typeof UserService.prototype.create>[0],
         @Res({ passthrough: true }) res: Response
-    ) {
-        return await this.userService.register(data, res);
+    ): Promise<Auth> {
+        return await this.authService.register(data, res, cookies);
     }
 
+    @Public()
+    @HttpCode(HttpStatus.OK)
     @Post('login')
     async login(
-        @Cookies() cookies: string,
-        @Body(new LoginPipe()) { username, password }: LoginPayload,
+        @SignedCookies() cookies: string,
+        @Body(new LoginPipe()) { username, password }: LoginSchema,
         @Res({ passthrough: true }) res: Response
-    ) {
-        const { message, ...data } = await this.userService.login(
-            username,
-            password,
+    ): Promise<Auth> {
+        return await this.authService.login(
+            {
+                username,
+                password,
+            },
             res,
             cookies
         );
-        res.json({ message, data });
+    }
+
+    @Post('logout')
+    @HttpCode(HttpStatus.NO_CONTENT)
+    async logout(
+        @SignedCookies() cookies: string,
+        @UserId() userId: User['id'],
+        @Res({ passthrough: true }) res: Response
+    ) {
+        return await this.authService.logout(userId, cookies, res);
     }
 }

@@ -38,9 +38,12 @@ export const callbacks: CallbacksOptions = {
             return session;
         }
         const { jti, sub } = token;
+        if (!sub) {
+            return session;
+        }
         const expires = fromDate(maxAge);
         const data = {
-            userId: Number(sub),
+            userId: sub,
             expires,
             sessionToken: jti as string,
         };

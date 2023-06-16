@@ -5,23 +5,25 @@ import {
 } from '@nestjs/common';
 import { Prisma, RefreshToken, User } from '@prisma/api';
 import { fromDate } from '@utils';
-import { AuthService } from '../auth/auth.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { SessionService } from '../session/session.service';
 
 @Injectable()
 export class RefreshTokenService {
     constructor(
         private readonly prismaService: PrismaService,
-        private readonly authService: AuthService
+        private readonly sessionService: SessionService
     ) {}
-    public static readonly refreshTokenDefaultTTL: number = 30 * 24 * 60 * 60; // 30 days
+
+    public static readonly refreshTokenDefaultTTLms: number =
+        30 * 24 * 60 * 60 * 1000; // 30 days
     public static readonly refreshCookieName: string = 'refreshToken';
 
     async create(userId: User['id']) {
         try {
-            const refreshToken = this.authService.generateSessionToken();
+            const refreshToken = this.sessionService.generateSessionToken();
             const expires = fromDate(
-                RefreshTokenService.refreshTokenDefaultTTL
+                RefreshTokenService.refreshTokenDefaultTTLms
             );
             const createdRefreshToken =
                 await this.prismaService.refreshToken.create({
@@ -118,6 +120,20 @@ export class RefreshTokenService {
         } catch (error) {
             throw new InternalServerErrorException(
                 'Failed to delete refresh token'
+            );
+        }
+    }
+
+    async deleteUserRefreshToken(userId: User['id']) {
+        try {
+            const deletedRefreshTokens =
+                await this.prismaService.refreshToken.deleteMany({
+                    where: { userId },
+                });
+            return deletedRefreshTokens;
+        } catch (error) {
+            throw new InternalServerErrorException(
+                'Failed to delete user refresh tokens'
             );
         }
     }

@@ -1,16 +1,8 @@
-import {
-    Body,
-    Controller,
-    Delete,
-    Get,
-    HttpStatus,
-    Param,
-    ParseIntPipe,
-    Patch,
-    Post,
-    Query,
-} from '@nestjs/common';
-import { Note } from '@prisma/api';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { User } from '@prisma/api';
+import { NoteSchema } from '@types';
+import { Roles } from '../../decorator/roles.decorator';
+import { UserId } from '../../decorator/userId.decorator';
 import { NotePipe } from './note.pipe';
 import { NoteService } from './note.service';
 
@@ -19,68 +11,23 @@ export class NoteController {
     constructor(private readonly noteService: NoteService) {}
 
     @Post()
-    create(@Body(new NotePipe()) note: Note) {
-        return this.noteService.create(note);
+    @Roles('USER')
+    create(
+        @UserId() userId: User['id'],
+        @Body(new NotePipe()) note: NoteSchema
+    ) {
+        return this.noteService.create(note, userId);
     }
 
-    @Get()
-    findAll() {
-        return this.noteService.findAll();
-    }
-
-    @Get('public')
-    findAllPublicNotes() {
-        return this.noteService.findAllPublicNotes();
-    }
-
-    @Get('public/search')
+    @Get('search')
+    @Roles('USER')
     searchPublicNotesByContent(@Query('content') content: string) {
         return this.noteService.searchPublicNotesByContent(content);
     }
 
-    @Get(':id')
-    findOne(
-        @Param(
-            'id',
-            new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })
-        )
-        id: string
-    ) {
-        return this.noteService.findOne(+id);
-    }
-
-    @Get('user/:userId')
-    findAllByUserId(
-        @Param(
-            'userId',
-            new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })
-        )
-        userId: string
-    ) {
-        return this.noteService.findAllByUserId(+userId);
-    }
-
-    @Patch(':id')
-    update(
-        @Param(
-            'id',
-            new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })
-        )
-        id: string,
-
-        @Body(new NotePipe()) note: Note
-    ) {
-        return this.noteService.update(+id, note);
-    }
-
-    @Delete(':id')
-    remove(
-        @Param(
-            'id',
-            new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })
-        )
-        id: string
-    ) {
-        return this.noteService.remove(+id);
+    @Get('user')
+    @Roles('USER')
+    findAllByUserId(@UserId() userId: User['id']) {
+        return this.noteService.findAllByUserId(userId);
     }
 }

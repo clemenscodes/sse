@@ -1,8 +1,7 @@
-import { apiUrl } from '@config';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { cn } from '@styles';
-import { loginSchema, type LoginSchema } from '@types';
-import axios from 'axios';
+import { Auth, loginSchema, type LoginSchema } from '@types';
+import { post, setJWTBearerToken } from '@utils';
 import { useForm } from 'react-hook-form';
 import { Button } from '../button/button';
 import {
@@ -19,7 +18,11 @@ export type LoginProps = React.ComponentPropsWithoutRef<'form'> & {
     onLoginSuccess: (success: boolean) => void;
 };
 
-export const Login: React.FC<LoginProps> = ({ submit, onLoginSuccess, ...props }) => {
+export const Login: React.FC<LoginProps> = ({
+    submit,
+    onLoginSuccess,
+    ...props
+}) => {
     const form = useForm<LoginSchema>({
         resolver: zodResolver(loginSchema),
         defaultValues: {
@@ -33,17 +36,19 @@ export const Login: React.FC<LoginProps> = ({ submit, onLoginSuccess, ...props }
             if (submit) {
                 return submit(values);
             }
-            const { username, password } = values;
-            const payload = { username, password };
-            const url = `${apiUrl}/auth/login`;
-            const session = await axios.post(url, payload);
-            console.log({ session });
-
-            if (session && session.status === 200) {
-                onLoginSuccess(true);
-            } else {
-                onLoginSuccess(false);
+            const { data, status } = await post<Auth, LoginSchema>(
+                '/auth/login',
+                values
+            );
+            if (!data || status !== 200) {
+                return onLoginSuccess(false);
             }
+            onLoginSuccess(true);
+            const { jwt } = data;
+            if (!jwt) {
+                return null;
+            }
+            setJWTBearerToken(jwt);
         } catch (error) {
             console.error(error);
         }
@@ -54,7 +59,9 @@ export const Login: React.FC<LoginProps> = ({ submit, onLoginSuccess, ...props }
             <Form {...form}>
                 <form
                     onSubmit={form.handleSubmit(onSubmit)}
-                    className={cn('space-y-2 bg-white rounded px-8 pt-6 pb-8 mb-4')}
+                    className={cn(
+                        'mb-4 space-y-2 rounded bg-white px-8 pb-8 pt-6'
+                    )}
                     {...props}
                 >
                     <FormField

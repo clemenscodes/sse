@@ -16,9 +16,8 @@ services:
             - db
         tty: true
         volumes:
-            - '../../prisma/schema.prisma:/app/apps/notes/prisma/schema.prisma'
-            - '../../prisma/seed.ts:/app/apps/notes/prisma/seed.ts'
-            - '../../prisma/setup.sh:/app/apps/notes/prisma/setup.sh'
+            - '../../prisma:/app/apps/notes/prisma'
+            - '../../../../libs:/app/libs'
         build:
             context: '../../../../'
             dockerfile: apps/notes/prisma/docker/development/Dockerfile
