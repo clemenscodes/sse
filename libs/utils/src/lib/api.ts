@@ -33,6 +33,7 @@ api.interceptors.response.use(
 );
 
 export const setJWTBearerToken = (token: string) => {
+    console.log({ token });
     jwtBearerToken = token;
 };
 
@@ -42,7 +43,7 @@ export const get = async <T = unknown>(endpoint: string) => {
         return { data, status, error: null };
     } catch (e) {
         if (axios.isAxiosError(e)) {
-            return { data: e.message, status: e.status };
+            return { data: null, status: e.status, error: e };
         }
         console.error(e);
         throw e;
@@ -51,7 +52,7 @@ export const get = async <T = unknown>(endpoint: string) => {
 
 export const post = async <T = unknown, K = unknown>(
     endpoint: string,
-    payload: K
+    payload?: K
 ) => {
     try {
         const { data, status } = await api.post<T>(endpoint, payload);

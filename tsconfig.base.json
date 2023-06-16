@@ -19,6 +19,8 @@
             "@auth": ["libs/auth/src/index.ts"],
             "@components": ["libs/components/src/index.ts"],
             "@config": ["libs/config/src/index.ts"],
+            "@hooks": ["libs/hooks/src/index.ts"],
+            "@hooks/server": ["libs/hooks/src/server.ts"],
             "@pages": ["libs/pages/src/index.ts"],
             "@prisma": ["libs/ts-prisma/src/index.ts"],
             "@styles": ["libs/styles/src/index.ts"],

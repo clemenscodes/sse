@@ -1,6 +1,7 @@
 import {
     Body,
     Controller,
+    Get,
     HttpCode,
     HttpStatus,
     Post,
@@ -59,5 +60,10 @@ export class AuthController {
         @Res({ passthrough: true }) res: Response
     ) {
         return await this.authService.logout(userId, cookies, res);
+    }
+
+    @Get('session')
+    async getUserBySession(@UserId() userId: User['id']) {
+        return await this.authService.getUserBySession(userId);
     }
 }

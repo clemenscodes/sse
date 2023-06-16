@@ -14,7 +14,7 @@ export const Header: React.FC<HeaderProps> = ({ ...props }) => {
                 <div className={cn('text-2xl font-bold')}>Notes</div>
                 <nav className={cn('space-x-4')}>
                     <a
-                        href='#'
+                        href='/'
                         className={cn('text-gray-300 hover:text-white')}
                     >
                         Home

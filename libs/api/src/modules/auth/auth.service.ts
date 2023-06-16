@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { User } from '@prisma/api';
-import { LoginSchema, UserSchema } from '@types';
+import { LoginSchema, UserSchema, UserSession } from '@types';
 import { Response } from 'express';
 import { IS_PUBLIC_KEY } from '../../decorator/public.decorator';
 import { CookieService } from '../cookie/cookie.service';
@@ -122,5 +122,16 @@ export class AuthService {
             return true;
         }
         return false;
+    }
+
+    async getUserBySession(userId: User['id']): Promise<UserSession> {
+        const { id, username } = await this.userService.findByIdCustom(userId, {
+            id: true,
+            username: true,
+        });
+        if (!(id && username)) {
+            throw new InternalServerErrorException('Failed getting user');
+        }
+        return { id, username };
     }
 }
