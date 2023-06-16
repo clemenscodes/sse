@@ -5,7 +5,7 @@ export const api = axios.create({
     baseURL: apiUrl,
 });
 
-let jwtBearerToken: string | null = null;
+export let jwtBearerToken: string | null = null;
 
 api.interceptors.request.use((config) => {
     config.withCredentials = true;

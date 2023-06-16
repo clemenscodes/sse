@@ -1,5 +1,5 @@
 import { UserSession } from '@types';
-import { get } from '@utils';
+import { get, jwtBearerToken } from '@utils';
 import { useEffect, useState } from 'react';
 
 export const useSession = () => {
@@ -7,6 +7,10 @@ export const useSession = () => {
 
     useEffect(() => {
         const getSession = async () => {
+            if (!jwtBearerToken) {
+                setUser(null);
+                return user
+            }
             const { data, status, error } = await get<UserSession>(
                 '/auth/session'
             );

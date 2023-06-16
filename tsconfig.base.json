@@ -23,6 +23,8 @@
             "@hooks/server": ["libs/hooks/src/server.ts"],
             "@pages": ["libs/pages/src/index.ts"],
             "@prisma": ["libs/ts-prisma/src/index.ts"],
+            "@redux": ["libs/redux/src/index.ts"],
+            "@redux/server": ["libs/redux/src/server.ts"],
             "@styles": ["libs/styles/src/index.ts"],
             "@test/*": ["libs/test/src/*"],
             "@types": ["libs/types/src/index.ts"],

@@ -10,7 +10,6 @@ import {
 } from '../dialog/dialog';
 import Login from '../login/login';
 
-/* eslint-disable-next-line */
 export interface LoginDialogProps {
     onLoginSuccess?: (success: boolean) => void;
 }
@@ -22,7 +21,7 @@ export const LoginDialog: React.FC<LoginDialogProps> = ({
     const [showDialog, setShowDialog] = useState(false);
 
     return (
-        <div>
+        <div {...props}>
             <Dialog open={showDialog} onOpenChange={setShowDialog}>
                 <DialogTrigger asChild>
                     <Button

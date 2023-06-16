@@ -1,6 +1,6 @@
 /* eslint-disable */
 export default {
-    displayName: 'hooks',
+    displayName: 'redux',
     preset: '../../jest.preset.js',
     transform: {
         '^.+\\.[tj]sx?$': [
