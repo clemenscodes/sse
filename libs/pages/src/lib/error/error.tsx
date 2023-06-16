@@ -6,7 +6,7 @@ export type ErrorProps = React.ComponentPropsWithoutRef<'div'> & {
     error: string;
 };
 
-export const Error: NextPage<ErrorProps> = ({ error, ...props }) => {
+export const Error: NextPage<ErrorProps> = ({ children, error, ...props }) => {
     const router = useRouter();
     return (
         <div
@@ -17,6 +17,7 @@ export const Error: NextPage<ErrorProps> = ({ error, ...props }) => {
             {...props}
         >
             <h1 className={cn('text-9xl')}>{error}</h1>
+            {children}
         </div>
     );
 };

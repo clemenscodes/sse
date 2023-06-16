@@ -70,6 +70,15 @@ jobs:
                   key: ubuntu-latest-node-${{ hashFiles('yarn.lock') }}
                   restore-keys: ubuntu-latest-node-
 
+            - name: Cache Prisma
+              id: prisma_cache
+              uses: actions/cache@v3
+              with:
+                  path: |
+                      node_modules/@prisma
+                  key: ubuntu-latest-prisma-${{ hashFiles('apps/notes/prisma/schema.prisma') }}
+                  restore-keys: ubuntu-latest-node-
+
             - name: Install Node Dependencies
               if: steps.node_cache.outputs.cache-hit != 'true'
               run: yarn install --immutable
@@ -78,7 +87,7 @@ jobs:
               run: yarn nx format:check --all
 
             - name: Prisma Generation
-              if: steps.node_cache.outputs.cache-hit != 'true'
+              if: steps.prisma_cache.outputs.cache-hit != 'true'
               run: yarn prisma generate --schema=apps/notes/prisma/schema.prisma
               env:
                   PRISMA_SKIP_POSTINSTALL_GENERATE: 1
@@ -120,6 +129,15 @@ jobs:
                       dist/**/.next/cache
                       node_modules/
                   key: ubuntu-latest-node-${{ hashFiles('yarn.lock') }}
+                  restore-keys: ubuntu-latest-node-
+
+            - name: Cache Prisma
+              id: prisma_cache
+              uses: actions/cache/restore@v3
+              with:
+                  path: |
+                      node_modules/@prisma
+                  key: ubuntu-latest-prisma-${{ hashFiles('apps/notes/prisma/schema.prisma') }}
                   restore-keys: ubuntu-latest-node-
 
             - name: Start Agents
@@ -192,6 +210,15 @@ jobs:
                       dist/**/.next/cache
                       node_modules/
                   key: ubuntu-latest-node-${{ hashFiles('yarn.lock') }}
+                  restore-keys: ubuntu-latest-node-
+
+            - name: Cache Prisma
+              id: prisma_cache
+              uses: actions/cache/restore@v3
+              with:
+                  path: |
+                      node_modules/@prisma
+                  key: ubuntu-latest-prisma-${{ hashFiles('apps/notes/prisma/schema.prisma') }}
                   restore-keys: ubuntu-latest-node-
 
             - name: Run Agent

@@ -17,6 +17,34 @@ const nextConfig = {
     async rewrites() {
         return [
             {
+                source: '/api/auth/register',
+                destination: 'http://server:3000/api/auth/register',
+            },
+            {
+                source: '/api/auth/login',
+                destination: 'http://server:3000/api/auth/login',
+            },
+            {
+                source: '/api/auth/logout',
+                destination: 'http://server:3000/api/auth/logout',
+            },
+            {
+                source: '/api/auth/session/:path*',
+                destination: 'http://server:3000/api/auth/session/:path*',
+            },
+            {
+                source: '/api/auth/session',
+                destination: 'http://server:3000/api/auth/session',
+            },
+            {
+                source: '/api/auth/',
+                destination: '/api/auth/',
+            },
+            {
+                source: '/api/auth/:path*',
+                destination: '/api/auth/:path*',
+            },
+            {
                 source: '/api/:path*',
                 destination: 'http://server:3000/api/:path*',
             },

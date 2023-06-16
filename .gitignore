@@ -63,3 +63,6 @@ apps/notes/client/public/*
 # Generated Docusaurus files
 .docusaurus/
 .cache-loader/
+
+# Prisma
+apps/notes/prisma/migrations

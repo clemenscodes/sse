@@ -1,61 +1,60 @@
+import { HashService, NoteService, PrismaService, UserService } from '@api';
+import { ConfigService } from '@nestjs/config';
 import { PrismaClient } from '@prisma/api';
 
 const prisma = new PrismaClient();
+const userService = new UserService(
+    new HashService(new ConfigService()),
+    new PrismaService()
+);
 
-async function main() {
-    const user1 = await prisma.user.create({
-        data: {
-            email: 'user1@example.com',
-            username: 'John Doe',
-            password: 'Random password',
-            notes: {
-                create: [
-                    { content: 'Note 1 for User 1' },
-                    { content: 'Note 2 for User 1' },
-                ],
+const noteService = new NoteService(new PrismaService());
+
+async function seed() {
+    try {
+        await prisma.user.deleteMany();
+        const users = [
+            {
+                username: 'test',
+                email: 'test@example.com',
+                password: 'test',
             },
-        },
-    });
-
-    const user2 = await prisma.user.create({
-        data: {
-            email: 'user2@example.com',
-            username: 'Jane Smith',
-            password: 'Random password',
-            notes: {
-                create: [
-                    { content: 'Note 1 for User 2' },
-                    { content: 'Note 2 for User 2' },
-                ],
+            {
+                username: 'john',
+                email: 'john@example.com',
+                password: 'test',
             },
-        },
-    });
+        ];
 
-    const user3 = await prisma.user.create({
-        data: {
-            email: 'user3@example.com',
-            username: 'Mike Johnson',
-            password: 'Random password',
-            notes: {
-                create: [
-                    { content: 'Note 1 for User 3' },
-                    { content: 'Note 2 for User 3' },
-                ],
+        for (const user of users) {
+            await userService.create(user);
+        }
+
+        const user = await userService.findByUsername(users[0].username);
+
+        const notes = [
+            {
+                isPublic: true,
+                content: 'Simple public note',
+                userId: user.id,
             },
-        },
-    });
+            {
+                isPublic: false,
+                content: 'Simple private note',
+                userId: user.id,
+            },
+        ];
 
-    console.log('Users and notes created:');
-    console.log(user1);
-    console.log(user2);
-    console.log(user3);
+        for (const note of notes) {
+            await noteService.create(note, user.id);
+        }
+
+        console.log('Seed script executed successfully');
+    } catch (error) {
+        console.error('Error executing seed script:', error);
+    } finally {
+        await prisma.$disconnect();
+    }
 }
 
-main()
-    .catch((e) => {
-        console.error(e);
-        process.exit(1);
-    })
-    .finally(async () => {
-        await prisma.$disconnect();
-    });
+seed();

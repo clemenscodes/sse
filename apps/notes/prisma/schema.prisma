@@ -12,20 +12,75 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
+enum Role {
+    USER
+    ADMIN
+}
+
 model User {
-    id       Int    @id @default(autoincrement())
-    email    String @unique
-    username String
-    password String
-    notes    Note[]
+    id            String        @id @default(cuid())
+    username      String        @unique
+    email         String        @unique
+    emailVerified DateTime?
+    password      String
+    salt          Bytes
+    role          Role
+    notes         Note[]
+    accounts      Account[]
+    sessions      Session[]
+    refreshToken  RefreshToken?
+}
+
+model Session {
+    id           String   @id @default(cuid())
+    sessionToken String   @unique
+    expires      DateTime
+    userId       String
+    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model RefreshToken {
+    id           String   @id @default(cuid())
+    refreshToken String   @unique
+    expires      DateTime
+    userId       String   @unique
+    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Note {
-    id        Int      @id @default(autoincrement())
+    id        String   @id @default(cuid())
     content   String
     isPublic  Boolean  @default(false)
-    user      User     @relation(fields: [userId], references: [id])
-    userId    Int
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
+    userId    String
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// Required Next-Auth OAuth schemas
+model Account {
+    id                String  @id @default(cuid())
+    type              String
+    provider          String
+    providerAccountId String
+    refresh_token     String? @db.Text
+    access_token      String? @db.Text
+    expires_at        Int?
+    token_type        String?
+    scope             String?
+    id_token          String? @db.Text
+    session_state     String?
+    userId            String
+    user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@unique([provider, providerAccountId])
+}
+
+// Used with email verification
+model VerificationToken {
+    identifier String
+    token      String   @unique
+    expires    DateTime
+
+    @@unique([identifier, token])
 }
