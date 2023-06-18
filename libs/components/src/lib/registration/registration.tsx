@@ -37,109 +37,102 @@ export const Register: React.FC<RegisterProps> = ({
         if (submit) {
             return submit(values);
         }
-        try {
-            const { data, status } = await post<Auth, RegisterSchema>(
-                '/auth/register',
-                values
-            );
-            if (!data || status !== 200) {
-                return onRegisterSuccess(false);
-            }
-            onRegisterSuccess(true);
-            const { jwt } = data;
-            if (!jwt) {
-                return null;
-            }
-            setJWTBearerToken(jwt);
-        } catch (e) {
-            console.error(e);
+        const { data, status } = await post<Auth, RegisterSchema>(
+            '/auth/register',
+            values
+        );
+        if (!data || status !== 200) {
+            return onRegisterSuccess(false);
+        }
+        onRegisterSuccess(true);
+        const { jwt } = data;
+        if (!jwt) {
             return null;
         }
+        setJWTBearerToken(jwt);
     };
 
     return (
-        <div className='mx-auto w-full max-w-sm'>
-            <Form {...form}>
-                <form
-                    onSubmit={form.handleSubmit(onSubmit)}
-                    className={cn(
-                        'mb-4 space-y-2 rounded bg-white px-8 pb-8 pt-6'
+        <Form {...form}>
+            <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className={cn(
+                    'mx-auto mb-4 w-full max-w-sm space-y-2 rounded bg-white px-8 pb-8 pt-6'
+                )}
+                {...props}
+            >
+                <FormField
+                    control={form.control}
+                    name='username'
+                    render={({ field }) => (
+                        <FormItem className='w-full'>
+                            <FormControl>
+                                <Input
+                                    placeholder='Username'
+                                    {...field}
+                                    className='w-full border-2 border-gray-300'
+                                />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
                     )}
-                    {...props}
-                >
-                    <FormField
-                        control={form.control}
-                        name='username'
-                        render={({ field }) => (
-                            <FormItem className='w-full'>
-                                <FormControl>
-                                    <Input
-                                        placeholder='Username'
-                                        {...field}
-                                        className='w-full border-2 border-gray-300'
-                                    />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                        control={form.control}
-                        name='email'
-                        render={({ field }) => (
-                            <FormItem className='w-full'>
-                                <FormControl>
-                                    <Input
-                                        type='email'
-                                        placeholder='Email'
-                                        {...field}
-                                        className='w-full border-2 border-gray-300'
-                                    />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                        control={form.control}
-                        name='password'
-                        render={({ field }) => (
-                            <FormItem className='w-full'>
-                                <FormControl>
-                                    <Input
-                                        type='password'
-                                        placeholder='Password'
-                                        {...field}
-                                        className='w-full border-2 border-gray-300'
-                                    />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                        control={form.control}
-                        name='passwordConfirm'
-                        render={({ field }) => (
-                            <FormItem className='w-full'>
-                                <FormControl>
-                                    <Input
-                                        type='password'
-                                        placeholder='Confirm Password'
-                                        {...field}
-                                        className='w-full border-2 border-gray-300'
-                                    />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <Button type='submit' className='w-full'>
-                        Register
-                    </Button>
-                </form>
-            </Form>
-        </div>
+                />
+                <FormField
+                    control={form.control}
+                    name='email'
+                    render={({ field }) => (
+                        <FormItem className='w-full'>
+                            <FormControl>
+                                <Input
+                                    type='email'
+                                    placeholder='Email'
+                                    {...field}
+                                    className='w-full border-2 border-gray-300'
+                                />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name='password'
+                    render={({ field }) => (
+                        <FormItem className='w-full'>
+                            <FormControl>
+                                <Input
+                                    type='password'
+                                    placeholder='Password'
+                                    {...field}
+                                    className='w-full border-2 border-gray-300'
+                                />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name='passwordConfirm'
+                    render={({ field }) => (
+                        <FormItem className='w-full'>
+                            <FormControl>
+                                <Input
+                                    type='password'
+                                    placeholder='Confirm Password'
+                                    {...field}
+                                    className='w-full border-2 border-gray-300'
+                                />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <Button type='submit' className='w-full'>
+                    Register
+                </Button>
+            </form>
+        </Form>
     );
 };
 

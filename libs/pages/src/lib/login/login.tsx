@@ -1,18 +1,17 @@
 import { Alert, AlertDescription, AlertTitle, LoginDialog } from '@components';
+import { cn } from '@styles';
 import { CheckCircle, XCircle } from 'lucide-react';
 import { NextPage } from 'next';
 import { useEffect, useState } from 'react';
 
-/* eslint-disable-next-line */
-export interface LoginProps {}
+export type LoginProps = React.ComponentPropsWithoutRef<'div'>;
 
-export const Signin: NextPage<LoginProps> = ({ ...props }) => {
+export const Login: NextPage<LoginProps> = ({ ...props }) => {
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
     const [showFailureAlert, setShowFailureAlert] = useState(false);
     const [isLoginSuccessful, setIsLoginSuccessful] = useState(false);
 
     const handleLoginSuccess = (success: boolean) => {
-        console.log({ success });
         setIsLoginSuccessful(success);
         if (success) {
             setShowSuccessAlert(true);
@@ -28,33 +27,28 @@ export const Signin: NextPage<LoginProps> = ({ ...props }) => {
     }, [isLoginSuccessful]);
 
     return (
-        <>
+        <div className={cn('flex flex-col items-center')} {...props}>
             <LoginDialog onLoginSuccess={handleLoginSuccess} />
             {showSuccessAlert && (
                 <Alert style={{ backgroundColor: 'lightgreen' }}>
-                    <div>
-                        <CheckCircle className="h-4 w-4 text-green-500" />
-                        <AlertTitle>Login Successful!</AlertTitle>
-                        <AlertDescription>
-                            You have successfully logged in.
-                        </AlertDescription>
-                    </div>
+                    <CheckCircle className={cn('h-4 w-4 text-green-500')} />
+                    <AlertTitle>Login Successful!</AlertTitle>
+                    <AlertDescription>
+                        You have successfully logged in.
+                    </AlertDescription>
                 </Alert>
             )}
             {showFailureAlert && (
                 <Alert style={{ backgroundColor: 'lightcoral' }}>
-                    <div>
-                        <XCircle className="h-4 w-4 text-red-500" />
-                        <AlertTitle>Login Failed!</AlertTitle>
-                        <AlertDescription>
-                            The login attempt was unsuccessful. Please try
-                            again.
-                        </AlertDescription>
-                    </div>
+                    <XCircle className={cn('h-4 w-4 text-red-500')} />
+                    <AlertTitle>Login Failed!</AlertTitle>
+                    <AlertDescription>
+                        The login attempt was unsuccessful. Please try again.
+                    </AlertDescription>
                 </Alert>
             )}
-        </>
+        </div>
     );
 };
 
-export default Signin;
+export default Login;

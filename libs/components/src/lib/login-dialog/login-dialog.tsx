@@ -1,3 +1,4 @@
+import { cn } from '@styles';
 import { useState } from 'react';
 import { Button } from '../button/button';
 import {
@@ -21,34 +22,29 @@ export const LoginDialog: React.FC<LoginDialogProps> = ({
     const [showDialog, setShowDialog] = useState(false);
 
     return (
-        <div {...props}>
-            <Dialog open={showDialog} onOpenChange={setShowDialog}>
-                <DialogTrigger asChild>
-                    <Button
-                        variant='outline'
-                        onClick={() => setShowDialog(true)}
-                    >
-                        Login
-                    </Button>
-                </DialogTrigger>
-                <DialogContent className='sm:max-w-[425px]'>
-                    <DialogHeader>
-                        <DialogTitle>Login</DialogTitle>
-                        <DialogDescription>
-                            Enter your username and password
-                        </DialogDescription>
-                    </DialogHeader>
-                    <Login
-                        onLoginSuccess={(success) => {
-                            setShowDialog(false);
-                            if (onLoginSuccess) {
-                                onLoginSuccess(success);
-                            }
-                        }}
-                    />
-                </DialogContent>
-            </Dialog>
-        </div>
+        <Dialog open={showDialog} onOpenChange={setShowDialog} {...props}>
+            <DialogTrigger asChild>
+                <Button variant='outline' onClick={() => setShowDialog(true)}>
+                    Login
+                </Button>
+            </DialogTrigger>
+            <DialogContent className={cn('sm:max-w-sm')}>
+                <DialogHeader>
+                    <DialogTitle>Login</DialogTitle>
+                    <DialogDescription>
+                        Enter your username and password
+                    </DialogDescription>
+                </DialogHeader>
+                <Login
+                    onLoginSuccess={(success) => {
+                        setShowDialog(false);
+                        if (onLoginSuccess) {
+                            onLoginSuccess(success);
+                        }
+                    }}
+                />
+            </DialogContent>
+        </Dialog>
     );
 };
 

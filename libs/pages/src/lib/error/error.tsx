@@ -12,7 +12,7 @@ export const Error: NextPage<ErrorProps> = ({ children, error, ...props }) => {
         <div
             onClick={() => router.push('/')}
             className={cn(
-                'm-0 flex h-screen w-screen cursor-pointer flex-col items-center justify-center p-0'
+                'm-0 flex cursor-pointer flex-col items-center justify-center p-0'
             )}
             {...props}
         >

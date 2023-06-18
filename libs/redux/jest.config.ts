@@ -8,5 +8,5 @@ export default {
             { jsc: { transform: { react: { runtime: 'automatic' } } } },
         ],
     },
-    moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx']
+    moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
 };

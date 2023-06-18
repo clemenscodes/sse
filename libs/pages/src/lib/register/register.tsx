@@ -4,14 +4,14 @@ import {
     AlertTitle,
     RegisterDialog,
 } from '@components';
+import { cn } from '@styles';
 import { CheckCircle, XCircle } from 'lucide-react';
 import { NextPage } from 'next';
 import { useEffect, useState } from 'react';
 
-/* eslint-disable-next-line */
-export interface SignupProps {}
+export type RegisterProps = React.ComponentPropsWithoutRef<'div'>;
 
-export const Signup: NextPage<SignupProps> = ({ ...props }) => {
+export const Register: NextPage<RegisterProps> = ({ ...props }) => {
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
     const [showFailureAlert, setShowFailureAlert] = useState(false);
     const [isRegistrationSuccessful, setIsRegistrationSuccessful] =
@@ -35,34 +35,29 @@ export const Signup: NextPage<SignupProps> = ({ ...props }) => {
     }, [isRegistrationSuccessful]);
 
     return (
-        <>
+        <div className={cn('flex flex-col items-center')} {...props}>
             <RegisterDialog onRegisterSuccess={handleRegisterSuccess} />
             {showSuccessAlert && (
                 <Alert style={{ backgroundColor: 'lightgreen' }}>
-                    <div>
-                        <CheckCircle className="h-4 w-4 text-green-500" />
-                        <AlertTitle>Registration Successful!</AlertTitle>
-                        <AlertDescription>
-                            You have successfully registered. You can now log
-                            in.
-                        </AlertDescription>
-                    </div>
+                    <CheckCircle className={cn('h-4 w-4 text-green-500')} />
+                    <AlertTitle>Registration Successful!</AlertTitle>
+                    <AlertDescription>
+                        You have successfully registered. You can now log in.
+                    </AlertDescription>
                 </Alert>
             )}
             {showFailureAlert && (
                 <Alert style={{ backgroundColor: 'lightcoral' }}>
-                    <div>
-                        <XCircle className="h-4 w-4 text-red-500" />
-                        <AlertTitle>Registration Failed!</AlertTitle>
-                        <AlertDescription>
-                            The registration attempt was unsuccessful. Please
-                            try again.
-                        </AlertDescription>
-                    </div>
+                    <XCircle className="h-4 w-4 text-red-500" />
+                    <AlertTitle>Registration Failed!</AlertTitle>
+                    <AlertDescription>
+                        The registration attempt was unsuccessful. Please try
+                        again.
+                    </AlertDescription>
                 </Alert>
             )}
-        </>
+        </div>
     );
 };
 
-export default Signup;
+export default Register;

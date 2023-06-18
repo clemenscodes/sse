@@ -5,13 +5,17 @@ import Login from './login';
 describe('Login', () => {
     it('should render successfully', () => {
         const onSubmitMock = jest.fn();
-        const { baseElement } = render(<Login onSubmit={onSubmitMock} />);
+        const onSuccessMock = jest.fn();
+        const { baseElement } = render(
+            <Login submit={onSubmitMock} onLoginSuccess={onSuccessMock} />
+        );
         expect(baseElement).toBeTruthy();
     });
 
     it('should render username and password fields', () => {
         const onSubmitMock = jest.fn();
-        render(<Login onSubmit={onSubmitMock} />);
+        const onSuccessMock = jest.fn();
+        render(<Login submit={onSubmitMock} onLoginSuccess={onSuccessMock} />);
 
         const usernameInput = screen.getByPlaceholderText('Username');
         expect(usernameInput).toBeInTheDocument();
@@ -22,7 +26,8 @@ describe('Login', () => {
 
     it('should render the submit button', () => {
         const onSubmitMock = jest.fn();
-        render(<Login onSubmit={onSubmitMock} />);
+        const onSuccessMock = jest.fn();
+        render(<Login submit={onSubmitMock} onLoginSuccess={onSuccessMock} />);
 
         const submitButton = screen.getByRole('button', { name: /Submit/i });
         expect(submitButton).toBeInTheDocument();
@@ -30,20 +35,21 @@ describe('Login', () => {
 
     it('should handle form submission', async () => {
         const onSubmitMock = jest.fn();
-        render(<Login submit={onSubmitMock} />);
+        const onSuccessMock = jest.fn();
+        render(<Login submit={onSubmitMock} onLoginSuccess={onSuccessMock} />);
 
         const usernameInput = screen.getByPlaceholderText('Username');
         const passwordInput = screen.getByPlaceholderText('Password');
         const submitButton = screen.getByRole('button', { name: /Submit/i });
 
         await userEvent.type(usernameInput, 'testuser');
-        await userEvent.type(passwordInput, 'testPassword1!');
+        await userEvent.type(passwordInput, 'testPassword1');
         fireEvent.submit(submitButton);
 
         await waitFor(() => {
             expect(onSubmitMock).toHaveBeenCalledWith({
                 username: 'testuser',
-                password: 'testPassword1!',
+                password: 'testPassword1',
             });
         });
     });

@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react';
 import { useSession } from 'next-auth/react';
-import Signin from './signin';
+import Login from './login';
 
 describe('Signin', () => {
     it('should render successfully', () => {
@@ -8,7 +8,7 @@ describe('Signin', () => {
             data: {},
             status: 'unauthenticated',
         });
-        const { baseElement } = render(<Signin />);
+        const { baseElement } = render(<Login />);
         expect(baseElement).toBeTruthy();
     });
 });

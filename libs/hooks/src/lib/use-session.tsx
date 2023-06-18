@@ -9,7 +9,7 @@ export const useSession = () => {
         const getSession = async () => {
             if (!jwtBearerToken) {
                 setUser(null);
-                return user
+                return user;
             }
             const { data, status, error } = await get<UserSession>(
                 '/auth/session'
