@@ -9,9 +9,9 @@ import { toast } from '../toast/useToast';
 export type HeaderProps = React.ComponentPropsWithoutRef<'header'>;
 
 export const Header: React.FC<HeaderProps> = ({ ...props }) => {
-    const [hasMounted, setHasMounted] = useState(false);
     const session = useSessionStore((state) => state.session);
     const router = useRouter();
+    const [hasMounted, setHasMounted] = useState(false);
 
     useEffect(() => {
         setHasMounted(true);

@@ -3,7 +3,7 @@ import { usernameSchema } from './usernameSchema';
 
 export const loginSchema = z.object({
     username: usernameSchema,
-    password: z.string().min(2),
+    password: z.string(),
 });
 
 export type LoginSchema = z.infer<typeof loginSchema>;
