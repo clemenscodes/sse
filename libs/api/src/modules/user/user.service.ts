@@ -5,7 +5,7 @@ import {
     UnauthorizedException,
 } from '@nestjs/common';
 import { Prisma, User } from '@prisma/api';
-import { UserSchema } from '@types';
+import { type UserSchema } from '@utils';
 import { HashService } from '../hash/hash.service';
 import { PrismaService } from '../prisma/prisma.service';
 

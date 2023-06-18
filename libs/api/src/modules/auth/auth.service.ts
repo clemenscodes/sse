@@ -6,8 +6,9 @@ import {
     UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { User } from '@prisma/api';
-import { LoginSchema, UserSchema, UserSession } from '@types';
+import { type User } from '@prisma/api';
+import { type UserSession } from '@types';
+import type { LoginSchema, UserSchema } from '@utils';
 import { Response } from 'express';
 import { IS_PUBLIC_KEY } from '../../decorator/public.decorator';
 import { CookieService } from '../cookie/cookie.service';

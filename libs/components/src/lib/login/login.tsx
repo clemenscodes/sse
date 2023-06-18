@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { cn } from '@styles';
-import { Auth, loginSchema, type LoginSchema } from '@types';
-import { post, setJWTBearerToken } from '@utils';
+import { type Auth } from '@types';
+import { loginSchema, post, setJWTBearerToken, type LoginSchema } from '@utils';
 import { useForm } from 'react-hook-form';
 import { Button } from '../button/button';
 import {

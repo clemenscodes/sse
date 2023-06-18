@@ -1,5 +1,5 @@
 import { Injectable, PipeTransform } from '@nestjs/common';
-import { LoginSchema, loginSchema } from '@types';
+import { loginSchema, type LoginSchema } from '@utils';
 
 @Injectable()
 export class LoginPipe<T extends LoginSchema> implements PipeTransform<T> {

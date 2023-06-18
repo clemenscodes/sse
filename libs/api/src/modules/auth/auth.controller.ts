@@ -8,7 +8,8 @@ import {
     Res,
 } from '@nestjs/common';
 import { User } from '@prisma/api';
-import { Auth, LoginSchema } from '@types';
+import type { Auth } from '@types';
+import { type LoginSchema } from '@utils';
 import { Response } from 'express';
 import { SignedCookies } from '../../decorator/cookies.decorator';
 import { Public } from '../../decorator/public.decorator';

@@ -1,12 +1,12 @@
 import { UserSession } from '@types';
-import { createStore } from 'zustand';
+import { create } from 'zustand';
 
-type SessionStore = {
-    user: UserSession | null;
-    setUser: (user: UserSession | null) => void;
+export type SessionStore = {
+    session: UserSession | null;
+    setSession: (user: UserSession | null) => void;
 };
 
-export const useSessionStore = createStore<SessionStore>((set) => ({
-    user: null,
-    setUser: (user) => set({ user }),
+export const useSessionStore = create<SessionStore>((set) => ({
+    session: null,
+    setSession: (session) => set({ session }),
 }));

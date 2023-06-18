@@ -1,6 +1,5 @@
 import { HttpStatus, Injectable, Logger, PipeTransform } from '@nestjs/common';
-import { UserSchema, userSchema } from '@types';
-import { checkPassword } from '@utils';
+import { checkPassword, userSchema, type UserSchema } from '@utils';
 import { PasswordException } from '../../filter/password.filter';
 
 @Injectable()
