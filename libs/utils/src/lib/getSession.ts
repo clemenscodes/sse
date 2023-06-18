@@ -1,4 +1,3 @@
-import { useSessionStore } from '@redux';
 import { UserSession } from '@types';
 import { get } from './api';
 
@@ -7,11 +6,8 @@ export const getSession = async (): Promise<UserSession | null> => {
     if (error || status !== 200 || !data) {
         return null;
     }
-    if (data) {
-        useSessionStore((state) => {
-            state.session = data;
-            return state;
-        });
+    if (!data) {
+        return null;
     }
     return data;
 };

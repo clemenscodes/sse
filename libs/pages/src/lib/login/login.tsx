@@ -1,8 +1,6 @@
 import { Alert, AlertDescription, AlertTitle, LoginDialog } from '@components';
-import { useSessionStore } from '@redux';
 import { cn } from '@styles';
 import { type UserSession } from '@types';
-import { getSession } from '@utils';
 import { CheckCircle, XCircle } from 'lucide-react';
 import { NextPage } from 'next';
 import { useEffect, useState } from 'react';
@@ -12,8 +10,6 @@ export type LoginProps = React.ComponentPropsWithoutRef<'div'> & {
 };
 
 export const Login: NextPage<LoginProps> = ({ ...props }) => {
-    const session = useSessionStore((state) => state.session);
-    console.log({ session });
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
     const [showFailureAlert, setShowFailureAlert] = useState(false);
     const [isLoginSuccessful, setIsLoginSuccessful] = useState(false);
@@ -30,7 +26,6 @@ export const Login: NextPage<LoginProps> = ({ ...props }) => {
     };
 
     useEffect(() => {
-        getSession();
         setIsLoginSuccessful(isLoginSuccessful);
     }, [isLoginSuccessful]);
 
