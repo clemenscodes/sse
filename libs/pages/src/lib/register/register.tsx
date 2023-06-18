@@ -25,21 +25,17 @@ export const RegisterPage: NextPage<RegisterProps> = ({ ...props }) => {
         router.push('/note');
     }
 
-    if (!session) {
-        return (
-            <div className={cn('flex flex-col items-center')} {...props}>
-                <h1>Register</h1>
-                <p>Enter all the relevant information.</p>
-                <Register />
-                <p>Already registered?</p>
-                <Link href={'/login'} className={cn('m-8')}>
-                    <Button>Login</Button>
-                </Link>
-            </div>
-        );
-    }
-
-    return null;
+    return (
+        <div className={cn('flex flex-col items-center')} {...props}>
+            <h1>Register</h1>
+            <p>Enter all the relevant information.</p>
+            <Register />
+            <p>Already registered?</p>
+            <Link href={'/login'} className={cn('m-8')}>
+                <Button>Login</Button>
+            </Link>
+        </div>
+    );
 };
 
 export default RegisterPage;

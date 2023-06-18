@@ -1,13 +1,12 @@
+import { Redirect } from '@components';
 import { cn } from '@styles';
 import { useSessionStore } from '@utils';
 import { NextPage } from 'next';
-import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
 export type NoteProps = React.ComponentPropsWithoutRef<'div'>;
 
 export const Note: NextPage<NoteProps> = ({ ...props }) => {
-    const router = useRouter();
     const session = useSessionStore((state) => state.session);
     const [hasMounted, setHasMounted] = useState(false);
 
@@ -15,14 +14,12 @@ export const Note: NextPage<NoteProps> = ({ ...props }) => {
         setHasMounted(true);
     }, []);
 
-    useEffect(() => {
-        if (hasMounted && !session) {
-            router.push('/login');
-        }
-    }, [hasMounted, router, session]);
-
-    if (!hasMounted || !session) {
+    if (!hasMounted) {
         return null;
+    }
+
+    if (!session) {
+        return <Redirect href={'/login'} />;
     }
 
     return (

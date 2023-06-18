@@ -24,21 +24,17 @@ export const LoginPage: NextPage<LoginProps> = ({ ...props }) => {
         router.push('/note');
     }
 
-    if (!session) {
-        return (
-            <div className={cn('flex flex-col items-center')} {...props}>
-                <h1>Login</h1>
-                <p>Enter your username and password</p>
-                <Login />
-                <p>Not registered yet?</p>
-                <Link href={'/register'} className={cn('m-8')}>
-                    <Button>Register</Button>
-                </Link>
-            </div>
-        );
-    }
-
-    return null;
+    return (
+        <div className={cn('flex flex-col items-center')} {...props}>
+            <h1>Login</h1>
+            <p>Enter your username and password</p>
+            <Login />
+            <p>Not registered yet?</p>
+            <Link href={'/register'} className={cn('m-8')}>
+                <Button>Register</Button>
+            </Link>
+        </div>
+    );
 };
 
 export default Login;

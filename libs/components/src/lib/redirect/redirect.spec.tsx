@@ -1,9 +1,9 @@
 import { render } from '@testing-library/react';
-import Login from './login';
+import Redirect from './redirect';
 
-describe('Signin', () => {
+describe('Redirect', () => {
     it('should render successfully', () => {
-        const { baseElement } = render(<Login />);
+        const { baseElement } = render(<Redirect />);
         expect(baseElement).toBeTruthy();
     });
 });
