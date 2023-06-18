@@ -19,17 +19,13 @@ import {
     FormMessage,
 } from '../form/form';
 import { Input } from '../input/input';
+import { toast } from '../toast/useToast';
 
 export type LoginProps = React.ComponentPropsWithoutRef<'form'> & {
     submit?: (values: LoginSchema) => Promise<void>;
-    onLoginSuccess: (success: boolean) => void;
 };
 
-export const Login: React.FC<LoginProps> = ({
-    submit,
-    onLoginSuccess,
-    ...props
-}) => {
+export const Login: React.FC<LoginProps> = ({ submit, ...props }) => {
     const router = useRouter();
     const form = useForm<LoginSchema>({
         resolver: zodResolver(loginSchema),
@@ -48,10 +44,18 @@ export const Login: React.FC<LoginProps> = ({
             values
         );
         if (!data || status !== 200) {
-            return onLoginSuccess(false);
+            toast({
+                title: 'Failed logging in',
+                variant: 'destructive',
+            });
+            return null;
         }
         const { jwt } = data;
         if (!jwt) {
+            toast({
+                title: 'Failed logging in',
+                variant: 'destructive',
+            });
             return null;
         }
         useSessionStore.setState((state) => {
@@ -64,8 +68,11 @@ export const Login: React.FC<LoginProps> = ({
         useSessionStore.setState((state) => {
             return { ...state, session };
         });
-        onLoginSuccess(true);
-        router.push('/');
+        router.push('/note');
+        toast({
+            title: 'Successfully logged in',
+            description: `Welcome to notes, ${session?.username}`,
+        });
     };
 
     return (

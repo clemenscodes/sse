@@ -1,5 +1,8 @@
+import { withoutAuth } from '@composer';
 import dynamic from 'next/dynamic';
 
-const Register = dynamic(() => import('@pages').then((mod) => mod.Register));
+const RegisterPage = dynamic(() =>
+    import('@pages').then((mod) => mod.RegisterPage)
+);
 
-export default Register;
+export default withoutAuth(RegisterPage);

@@ -3,6 +3,7 @@
     "files": [],
     "include": [],
     "compilerOptions": {
+        "jsx": "react-jsx",
         "esModuleInterop": true
     },
     "ts-node": {

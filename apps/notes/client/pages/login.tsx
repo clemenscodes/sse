@@ -1,16 +1,6 @@
-// import { getSession } from '@utils';
-// import { GetServerSideProps } from 'next';
+import { withoutAuth } from '@composer';
 import dynamic from 'next/dynamic';
 
-const Login = dynamic(() => import('@pages').then((mod) => mod.LoginPage));
+const LoginPage = dynamic(() => import('@pages').then((mod) => mod.LoginPage));
 
-// export const getServerSideProps: GetServerSideProps = async () => {
-//     const session = await getSession();
-//     return {
-//         props: {
-//             session,
-//         },
-//     };
-// };
-
-export default Login;
+export default withoutAuth(LoginPage);

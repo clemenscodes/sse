@@ -10,46 +10,28 @@ import {
 } from '../dialog/dialog';
 import Register from '../registration/registration';
 
-/* eslint-disable-next-line */
-export interface RegisterDialogProps {
-    onRegisterSuccess?: (success: boolean) => void;
-}
+export type RegisterDialogProps = React.ComponentPropsWithoutRef<'div'>;
 
-export const RegisterDialog: React.FC<RegisterDialogProps> = ({
-    onRegisterSuccess,
-    ...props
-}) => {
+export const RegisterDialog: React.FC<RegisterDialogProps> = ({ ...props }) => {
     const [showDialog, setShowDialog] = useState(false);
 
     return (
-        <div>
-            <Dialog open={showDialog} onOpenChange={setShowDialog}>
-                <DialogTrigger asChild>
-                    <Button
-                        variant='outline'
-                        onClick={() => setShowDialog(true)}
-                    >
-                        Register
-                    </Button>
-                </DialogTrigger>
-                <DialogContent className='sm:max-w-[425px]'>
-                    <DialogHeader>
-                        <DialogTitle>Register</DialogTitle>
-                        <DialogDescription>
-                            Enter all the relevant Information.
-                        </DialogDescription>
-                    </DialogHeader>
-                    <Register
-                        onRegisterSuccess={(success) => {
-                            setShowDialog(false);
-                            if (onRegisterSuccess) {
-                                onRegisterSuccess(success);
-                            }
-                        }}
-                    />
-                </DialogContent>
-            </Dialog>
-        </div>
+        <Dialog open={showDialog} onOpenChange={setShowDialog} {...props}>
+            <DialogTrigger asChild>
+                <Button variant='outline' onClick={() => setShowDialog(true)}>
+                    Register
+                </Button>
+            </DialogTrigger>
+            <DialogContent className='sm:max-w-[425px]'>
+                <DialogHeader>
+                    <DialogTitle>Register</DialogTitle>
+                    <DialogDescription>
+                        Enter all the relevant Information.
+                    </DialogDescription>
+                </DialogHeader>
+                <Register />
+            </DialogContent>
+        </Dialog>
     );
 };
 

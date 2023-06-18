@@ -5,17 +5,13 @@ import Login from './login';
 describe('Login', () => {
     it('should render successfully', () => {
         const onSubmitMock = jest.fn();
-        const onSuccessMock = jest.fn();
-        const { baseElement } = render(
-            <Login submit={onSubmitMock} onLoginSuccess={onSuccessMock} />
-        );
+        const { baseElement } = render(<Login submit={onSubmitMock} />);
         expect(baseElement).toBeTruthy();
     });
 
     it('should render username and password fields', () => {
         const onSubmitMock = jest.fn();
-        const onSuccessMock = jest.fn();
-        render(<Login submit={onSubmitMock} onLoginSuccess={onSuccessMock} />);
+        render(<Login submit={onSubmitMock} />);
 
         const usernameInput = screen.getByPlaceholderText('Username');
         expect(usernameInput).toBeInTheDocument();
@@ -26,8 +22,7 @@ describe('Login', () => {
 
     it('should render the submit button', () => {
         const onSubmitMock = jest.fn();
-        const onSuccessMock = jest.fn();
-        render(<Login submit={onSubmitMock} onLoginSuccess={onSuccessMock} />);
+        render(<Login submit={onSubmitMock} />);
 
         const submitButton = screen.getByRole('button', { name: /Submit/i });
         expect(submitButton).toBeInTheDocument();
@@ -35,8 +30,7 @@ describe('Login', () => {
 
     it('should handle form submission', async () => {
         const onSubmitMock = jest.fn();
-        const onSuccessMock = jest.fn();
-        render(<Login submit={onSubmitMock} onLoginSuccess={onSuccessMock} />);
+        render(<Login submit={onSubmitMock} />);
 
         const usernameInput = screen.getByPlaceholderText('Username');
         const passwordInput = screen.getByPlaceholderText('Password');

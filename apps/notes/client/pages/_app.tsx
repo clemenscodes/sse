@@ -5,6 +5,7 @@ import '../styles.css';
 import dynamic from 'next/dynamic';
 
 const Layout = dynamic(() => import('@components').then((mod) => mod.Layout));
+const Toaster = dynamic(() => import('@components').then((mod) => mod.Toaster));
 
 const App: React.FC<AppProps> = ({ Component, pageProps }) => {
     return (
@@ -19,6 +20,7 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
             <Layout>
                 <Component {...pageProps} />
             </Layout>
+            <Toaster />
         </>
     );
 };

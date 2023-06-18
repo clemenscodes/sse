@@ -1,11 +1,29 @@
 import { Button } from '@components';
 import { cn } from '@styles';
+import { type HomeProps } from '@types';
+import { useSessionStore } from '@utils';
 import { NextPage } from 'next';
 import Link from 'next/link';
-
-export type HomeProps = React.ComponentPropsWithoutRef<'div'>;
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 
 export const Home: NextPage<HomeProps> = ({ ...props }) => {
+    const [hasMounted, setHasMounted] = useState(false);
+    const session = useSessionStore((state) => state.session);
+    const router = useRouter();
+
+    useEffect(() => {
+        setHasMounted(true);
+    }, []);
+
+    if (!hasMounted) {
+        return null;
+    }
+
+    if (session) {
+        router.push('/note');
+    }
+
     return (
         <div
             className={cn('flex flex-col items-center justify-center')}

@@ -1,7 +1,14 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { cn } from '@styles';
 import { type Auth } from '@types';
-import { post, registerSchema, type RegisterSchema } from '@utils';
+import {
+    getSession,
+    post,
+    registerSchema,
+    useSessionStore,
+    type RegisterSchema,
+} from '@utils';
+import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import { Button } from '../button/button';
 import {
@@ -12,17 +19,14 @@ import {
     FormMessage,
 } from '../form/form';
 import { Input } from '../input/input';
+import { toast } from '../toast/useToast';
 
 export type RegisterProps = React.ComponentPropsWithoutRef<'form'> & {
     submit?: (values: RegisterSchema) => Promise<void>;
-    onRegisterSuccess: (success: boolean) => void;
 };
 
-export const Register: React.FC<RegisterProps> = ({
-    submit,
-    onRegisterSuccess,
-    ...props
-}) => {
+export const Register: React.FC<RegisterProps> = ({ submit, ...props }) => {
+    const router = useRouter();
     const form = useForm<RegisterSchema>({
         resolver: zodResolver(registerSchema),
         defaultValues: {
@@ -42,13 +46,35 @@ export const Register: React.FC<RegisterProps> = ({
             values
         );
         if (!data || status !== 200) {
-            return onRegisterSuccess(false);
-        }
-        onRegisterSuccess(true);
-        const { jwt } = data;
-        if (!jwt) {
+            toast({
+                title: 'Failed registering',
+                variant: 'destructive',
+            });
             return null;
         }
+        const { jwt } = data;
+        if (!jwt) {
+            toast({
+                title: 'Failed registering',
+                variant: 'destructive',
+            });
+            return null;
+        }
+        useSessionStore.setState((state) => {
+            return {
+                ...state,
+                jwt,
+            };
+        });
+        const session = await getSession();
+        useSessionStore.setState((state) => {
+            return { ...state, session };
+        });
+        router.push('/note');
+        toast({
+            title: 'Successfully registered',
+            description: `Welcome to notes, ${session?.username}`,
+        });
     };
 
     return (

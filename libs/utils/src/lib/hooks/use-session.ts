@@ -1,5 +1,6 @@
 import { UserSession } from '@types';
 import { create } from 'zustand';
+import { devtools, persist } from 'zustand/middleware';
 
 export type SessionStore = {
     session: UserSession | null;
@@ -8,9 +9,19 @@ export type SessionStore = {
     setJwt: (jwt: string | null) => void;
 };
 
-export const useSessionStore = create<SessionStore>((set) => ({
-    session: null,
-    jwt: null,
-    setSession: (session) => set({ session }),
-    setJwt: (jwt) => set({ jwt }),
-}));
+export const useSessionStore = create<SessionStore>()(
+    devtools(
+        persist(
+            (set) => ({
+                session: null,
+                jwt: null,
+                setSession: (session) =>
+                    set((state) => ({ ...state, session })),
+                setJwt: (jwt) => set((state) => ({ ...state, jwt })),
+            }),
+            {
+                name: 'notes-store',
+            }
+        )
+    )
+);

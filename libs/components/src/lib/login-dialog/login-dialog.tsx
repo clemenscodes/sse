@@ -11,14 +11,9 @@ import {
 } from '../dialog/dialog';
 import Login from '../login/login';
 
-export interface LoginDialogProps {
-    onLoginSuccess?: (success: boolean) => void;
-}
+export type LoginDialogProps = React.ComponentPropsWithoutRef<'div'>;
 
-export const LoginDialog: React.FC<LoginDialogProps> = ({
-    onLoginSuccess,
-    ...props
-}) => {
+export const LoginDialog: React.FC<LoginDialogProps> = ({ ...props }) => {
     const [showDialog, setShowDialog] = useState(false);
 
     return (
@@ -35,14 +30,7 @@ export const LoginDialog: React.FC<LoginDialogProps> = ({
                         Enter your username and password
                     </DialogDescription>
                 </DialogHeader>
-                <Login
-                    onLoginSuccess={(success) => {
-                        setShowDialog(false);
-                        if (onLoginSuccess) {
-                            onLoginSuccess(success);
-                        }
-                    }}
-                />
+                <Login />
             </DialogContent>
         </Dialog>
     );

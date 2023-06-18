@@ -3,16 +3,12 @@ import Register from './registration';
 
 describe('Register', () => {
     it('should render successfully', () => {
-        const onRegisterMock = jest.fn();
-        const { baseElement } = render(
-            <Register onRegisterSuccess={onRegisterMock} />
-        );
+        const { baseElement } = render(<Register />);
         expect(baseElement).toBeTruthy();
     });
 
     it('should display validation errors when form fields are empty', async () => {
-        const onRegisterMock = jest.fn();
-        render(<Register onRegisterSuccess={onRegisterMock} />);
+        render(<Register />);
         fireEvent.click(screen.getByText('Register'));
 
         await waitFor(() => {
@@ -30,13 +26,7 @@ describe('Register', () => {
 
     it('should submit form when all fields are filled correctly', async () => {
         const onSubmitMock = jest.fn();
-        const onRegisterMock = jest.fn();
-        render(
-            <Register
-                submit={onSubmitMock}
-                onRegisterSuccess={onRegisterMock}
-            />
-        );
+        render(<Register submit={onSubmitMock} />);
         const password = 'testPassword123!ahg';
 
         fireEvent.input(screen.getByPlaceholderText('Username'), {
