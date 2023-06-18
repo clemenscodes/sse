@@ -2,7 +2,7 @@
 // import { GetServerSideProps } from 'next';
 import dynamic from 'next/dynamic';
 
-const Login = dynamic(() => import('@pages').then((mod) => mod.Login));
+const Login = dynamic(() => import('@pages').then((mod) => mod.LoginPage));
 
 // export const getServerSideProps: GetServerSideProps = async () => {
 //     const session = await getSession();

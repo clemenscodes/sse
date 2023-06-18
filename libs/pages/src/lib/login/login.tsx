@@ -1,6 +1,13 @@
-import { Alert, AlertDescription, AlertTitle, LoginDialog } from '@components';
+import {
+    Alert,
+    AlertDescription,
+    AlertTitle,
+    Login,
+    LoginDialog,
+} from '@components';
 import { cn } from '@styles';
 import { type UserSession } from '@types';
+import { useSessionStore } from '@utils';
 import { CheckCircle, XCircle } from 'lucide-react';
 import { NextPage } from 'next';
 import { useEffect, useState } from 'react';
@@ -9,12 +16,12 @@ export type LoginProps = React.ComponentPropsWithoutRef<'div'> & {
     session?: UserSession;
 };
 
-export const Login: NextPage<LoginProps> = ({ ...props }) => {
+export const LoginPage: NextPage<LoginProps> = ({ ...props }) => {
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
     const [showFailureAlert, setShowFailureAlert] = useState(false);
     const [isLoginSuccessful, setIsLoginSuccessful] = useState(false);
 
-    const handleLoginSuccess = (success: boolean) => {
+    const handleLoginSuccess = async (success: boolean) => {
         setIsLoginSuccessful(success);
         if (success) {
             setShowSuccessAlert(true);
@@ -29,29 +36,33 @@ export const Login: NextPage<LoginProps> = ({ ...props }) => {
         setIsLoginSuccessful(isLoginSuccessful);
     }, [isLoginSuccessful]);
 
-    return (
-        <div className={cn('flex flex-col items-center')} {...props}>
-            <LoginDialog onLoginSuccess={handleLoginSuccess} />
-            {showSuccessAlert && (
-                <Alert style={{ backgroundColor: 'lightgreen' }}>
-                    <CheckCircle className={cn('h-4 w-4 text-green-500')} />
-                    <AlertTitle>Login Successful!</AlertTitle>
-                    <AlertDescription>
-                        You have successfully logged in.
-                    </AlertDescription>
-                </Alert>
-            )}
-            {showFailureAlert && (
-                <Alert style={{ backgroundColor: 'lightcoral' }}>
-                    <XCircle className={cn('h-4 w-4 text-red-500')} />
-                    <AlertTitle>Login Failed!</AlertTitle>
-                    <AlertDescription>
-                        The login attempt was unsuccessful. Please try again.
-                    </AlertDescription>
-                </Alert>
-            )}
-        </div>
-    );
+    const session = useSessionStore((state) => state.session);
+    if (!session) {
+        return (
+            <div className={cn('flex flex-col items-center')} {...props}>
+                <LoginDialog onLoginSuccess={handleLoginSuccess} />
+                {showSuccessAlert && (
+                    <Alert style={{ backgroundColor: 'lightgreen' }}>
+                        <CheckCircle className={cn('h-4 w-4 text-green-500')} />
+                        <AlertTitle>Login Successful!</AlertTitle>
+                        <AlertDescription>
+                            You have successfully logged in.
+                        </AlertDescription>
+                    </Alert>
+                )}
+                {showFailureAlert && (
+                    <Alert style={{ backgroundColor: 'lightcoral' }}>
+                        <XCircle className={cn('h-4 w-4 text-red-500')} />
+                        <AlertTitle>Login Failed!</AlertTitle>
+                        <AlertDescription>
+                            The login attempt was unsuccessful. Please try
+                            again.
+                        </AlertDescription>
+                    </Alert>
+                )}
+            </div>
+        );
+    }
 };
 
 export default Login;

@@ -1,17 +1,17 @@
 import axios from 'axios';
+import { useSessionStore } from './hooks/use-session';
 import { apiUrl } from './url';
 
 export const api = axios.create({
     baseURL: apiUrl,
 });
 
-export let jwtBearerToken: string | null = null;
-
 api.interceptors.request.use((config) => {
     config.withCredentials = true;
+    const { jwt } = useSessionStore.getState();
 
-    if (jwtBearerToken) {
-        const header = `Bearer ${jwtBearerToken}`;
+    if (jwt) {
+        const header = `Bearer ${jwt}`;
         config.headers['Authorization'] = header;
     }
 
@@ -23,7 +23,12 @@ api.interceptors.response.use(
         const jwtRefreshHeader = 'x-refresh-jwt';
         if (jwtRefreshHeader in response.headers) {
             const jwt = response.headers[jwtRefreshHeader];
-            setJWTBearerToken(jwt);
+            useSessionStore.setState((state) => {
+                return {
+                    ...state,
+                    jwt,
+                };
+            });
         }
         return response;
     },
@@ -31,11 +36,6 @@ api.interceptors.response.use(
         return Promise.reject(error);
     }
 );
-
-export const setJWTBearerToken = (token: string) => {
-    console.log({ token });
-    jwtBearerToken = token;
-};
 
 export const get = async <T = unknown>(endpoint: string) => {
     try {

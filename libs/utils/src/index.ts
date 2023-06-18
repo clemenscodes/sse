@@ -6,6 +6,7 @@ export * from './lib/passwordStrength';
 export * from './lib/api';
 export * from './lib/url';
 export * from './lib/getSession';
+export * from './lib/hooks/use-session';
 export * from './lib/models/loginSchema';
 export * from './lib/models/userSchema';
 export * from './lib/models/noteSchema';

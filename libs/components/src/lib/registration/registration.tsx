@@ -1,12 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { cn } from '@styles';
 import { type Auth } from '@types';
-import {
-    post,
-    registerSchema,
-    setJWTBearerToken,
-    type RegisterSchema,
-} from '@utils';
+import { post, registerSchema, type RegisterSchema } from '@utils';
 import { useForm } from 'react-hook-form';
 import { Button } from '../button/button';
 import {
@@ -54,7 +49,6 @@ export const Register: React.FC<RegisterProps> = ({
         if (!jwt) {
             return null;
         }
-        setJWTBearerToken(jwt);
     };
 
     return (

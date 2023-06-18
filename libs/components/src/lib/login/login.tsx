@@ -1,7 +1,14 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { cn } from '@styles';
 import { type Auth } from '@types';
-import { loginSchema, post, setJWTBearerToken, type LoginSchema } from '@utils';
+import {
+    getSession,
+    loginSchema,
+    post,
+    useSessionStore,
+    type LoginSchema,
+} from '@utils';
+import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import { Button } from '../button/button';
 import {
@@ -23,6 +30,7 @@ export const Login: React.FC<LoginProps> = ({
     onLoginSuccess,
     ...props
 }) => {
+    const router = useRouter();
     const form = useForm<LoginSchema>({
         resolver: zodResolver(loginSchema),
         defaultValues: {
@@ -42,12 +50,22 @@ export const Login: React.FC<LoginProps> = ({
         if (!data || status !== 200) {
             return onLoginSuccess(false);
         }
-        onLoginSuccess(true);
         const { jwt } = data;
         if (!jwt) {
             return null;
         }
-        setJWTBearerToken(jwt);
+        useSessionStore.setState((state) => {
+            return {
+                ...state,
+                jwt,
+            };
+        });
+        const session = await getSession();
+        useSessionStore.setState((state) => {
+            return { ...state, session };
+        });
+        onLoginSuccess(true);
+        router.push('/');
     };
 
     return (
