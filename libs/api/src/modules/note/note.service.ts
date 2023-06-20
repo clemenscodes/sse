@@ -4,6 +4,7 @@ import {
     NotFoundException,
 } from '@nestjs/common';
 import { Prisma, type Note, type User } from '@prisma/api';
+import { type CreatedNote } from '@types';
 import { type NoteSchema } from '@utils';
 import { PrismaService } from '../prisma/prisma.service';
 
@@ -11,7 +12,7 @@ import { PrismaService } from '../prisma/prisma.service';
 export class NoteService {
     constructor(private readonly prismaService: PrismaService) {}
 
-    async create(note: NoteSchema, userId: User['id']) {
+    async create(note: NoteSchema, userId: User['id']): Promise<CreatedNote> {
         try {
             const { isPublic, content } = note;
             const createdNote = await this.prismaService.note.create({
@@ -23,7 +24,7 @@ export class NoteService {
                     },
                 },
                 select: {
-                    id: false,
+                    id: true,
                     content: true,
                     isPublic: true,
                     userId: false,
@@ -47,6 +48,40 @@ export class NoteService {
         }
     }
 
+    async findById(id: Note['id'], userId: User['id']): Promise<CreatedNote> {
+        try {
+            const note = await this.prismaService.note.findUnique({
+                where: { id },
+                select: {
+                    id: true,
+                    content: true,
+                    isPublic: true,
+                    userId: true,
+                },
+            });
+            if (!note) {
+                throw new NotFoundException('Note not found');
+            }
+            const { userId: noteOwnerId, ...rest } = note;
+            if (!note.isPublic && noteOwnerId !== userId) {
+                throw new NotFoundException('Note not found');
+            }
+            return rest;
+        } catch (e) {
+            if (e instanceof Prisma.PrismaClientKnownRequestError) {
+                throw new InternalServerErrorException(
+                    'Failed to retrieve user notes'
+                );
+            } else if (e instanceof NotFoundException) {
+                throw e;
+            } else {
+                throw new InternalServerErrorException(
+                    'Failed to retrieve user notes'
+                );
+            }
+        }
+    }
+
     async findAllByUserId(userId: User['id']) {
         try {
             const notes = await this.prismaService.note.findMany({
@@ -58,9 +93,6 @@ export class NoteService {
                     userId: false,
                 },
             });
-            if (!(notes && notes.length)) {
-                throw new NotFoundException('No notes found for the user');
-            }
             return notes;
         } catch (e) {
             if (e instanceof Prisma.PrismaClientKnownRequestError) {
@@ -77,7 +109,9 @@ export class NoteService {
         }
     }
 
-    async searchPublicNotesByContent(content: Note['content']) {
+    async searchPublicNotesByContent(
+        content: Note['content']
+    ): Promise<CreatedNote[]> {
         try {
             const notes = await this.prismaService.note.findMany({
                 where: {
@@ -87,17 +121,12 @@ export class NoteService {
                     },
                 },
                 select: {
-                    id: false,
+                    id: true,
                     content: true,
                     isPublic: true,
                     userId: false,
                 },
             });
-            if (!(notes && notes.length)) {
-                throw new NotFoundException(
-                    `No notes found matching the search criteria`
-                );
-            }
             return notes;
         } catch (e) {
             if (e instanceof Prisma.PrismaClientKnownRequestError) {

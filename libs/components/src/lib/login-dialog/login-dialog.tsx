@@ -9,7 +9,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '../dialog/dialog';
-import Login from '../login/login';
+import LoginForm from '../login-form/login-form';
 
 export type LoginDialogProps = React.ComponentPropsWithoutRef<'div'>;
 
@@ -30,7 +30,7 @@ export const LoginDialog: React.FC<LoginDialogProps> = ({ ...props }) => {
                         Enter your username and password
                     </DialogDescription>
                 </DialogHeader>
-                <Login />
+                <LoginForm />
             </DialogContent>
         </Dialog>
     );

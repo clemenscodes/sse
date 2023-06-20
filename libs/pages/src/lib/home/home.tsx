@@ -26,7 +26,7 @@ export const Home: NextPage<HomeProps> = ({ ...props }) => {
 
     return (
         <div
-            className={cn('flex flex-col items-center justify-center')}
+            className="flex flex-col justify-center items-center w-full h-full"
             {...props}
         >
             <h1 className={cn('text-4xl font-bold mb-4')}>
