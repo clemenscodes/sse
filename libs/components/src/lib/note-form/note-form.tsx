@@ -58,7 +58,10 @@ export const NoteForm: React.FC<NoteFormProps> = ({ submit, ...props }) => {
             <form
                 onSubmit={form.handleSubmit(onSubmit)}
                 className={cn(
-                    'sm:max-w-scree-sm mx-auto mb-4 w-full space-y-2 rounded bg-white px-8 pb-8 pt-6 md:max-w-screen-md lg:max-w-[40%]'
+                    'mx-auto mb-4 w-full space-y-2 rounded bg-white px-8 pb-8 pt-6',
+                    'sm:max-w-scree-sm',
+                    'md:max-w-screen-md',
+                    'lg:max-w-[40%]'
                 )}
                 {...props}
             >
