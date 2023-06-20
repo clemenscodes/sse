@@ -15,6 +15,7 @@
         "skipDefaultLibCheck": true,
         "baseUrl": ".",
         "paths": {
+            "react": ["./node_modules/@types/react"],
             "@api": ["libs/api/src/index.ts"],
             "@auth": ["libs/auth/src/index.ts"],
             "@components": ["libs/components/src/index.ts"],
