@@ -1,4 +1,4 @@
-import { Redirect } from '@components';
+import { NoteForm, Redirect } from '@components';
 import { cn } from '@styles';
 import { useSessionStore } from '@utils';
 import { NextPage } from 'next';
@@ -25,6 +25,7 @@ export const Note: NextPage<NoteProps> = ({ ...props }) => {
     return (
         <div className={cn('flex flex-col items-center')} {...props}>
             <h1>Start creating notes :)</h1>
+            <NoteForm />
         </div>
     );
 };

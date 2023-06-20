@@ -1,3 +1,4 @@
+export * from './lib/checkbox/checkbox';
 export * from './lib/loader/loader';
 export * from './lib/register-form/register-form';
 export * from './lib/login-form/login-form';

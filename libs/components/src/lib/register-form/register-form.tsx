@@ -44,7 +44,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
         if (submit) {
             return submit(values);
         }
-        const { data, status } = await post<Auth, RegisterSchema>(
+        const { data, status } = await post<RegisterSchema, Auth>(
             '/auth/register',
             values
         );

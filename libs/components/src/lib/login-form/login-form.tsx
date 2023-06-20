@@ -39,7 +39,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ submit, ...props }) => {
         if (submit) {
             return submit(values);
         }
-        const { data, status } = await post<Auth, LoginSchema>(
+        const { data, status } = await post<LoginSchema, Auth>(
             '/auth/login',
             values
         );

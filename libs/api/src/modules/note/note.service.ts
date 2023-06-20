@@ -4,6 +4,7 @@ import {
     NotFoundException,
 } from '@nestjs/common';
 import { Prisma, type Note, type User } from '@prisma/api';
+import { type CreatedNote } from '@types';
 import { type NoteSchema } from '@utils';
 import { PrismaService } from '../prisma/prisma.service';
 
@@ -11,7 +12,7 @@ import { PrismaService } from '../prisma/prisma.service';
 export class NoteService {
     constructor(private readonly prismaService: PrismaService) {}
 
-    async create(note: NoteSchema, userId: User['id']) {
+    async create(note: NoteSchema, userId: User['id']): Promise<CreatedNote> {
         try {
             const { isPublic, content } = note;
             const createdNote = await this.prismaService.note.create({
