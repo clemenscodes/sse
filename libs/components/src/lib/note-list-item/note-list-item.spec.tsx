@@ -6,6 +6,7 @@ describe('NoteListItem', () => {
         const { baseElement } = render(
             <NoteListItem
                 note={{
+                    id: 'id',
                     content: 'Test',
                     isPublic: false,
                 }}

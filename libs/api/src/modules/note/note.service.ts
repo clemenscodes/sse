@@ -24,7 +24,7 @@ export class NoteService {
                     },
                 },
                 select: {
-                    id: false,
+                    id: true,
                     content: true,
                     isPublic: true,
                     userId: false,
@@ -48,6 +48,40 @@ export class NoteService {
         }
     }
 
+    async findById(id: Note['id'], userId: User['id']): Promise<CreatedNote> {
+        try {
+            const note = await this.prismaService.note.findUnique({
+                where: { id },
+                select: {
+                    id: true,
+                    content: true,
+                    isPublic: true,
+                    userId: true,
+                },
+            });
+            if (!note) {
+                throw new NotFoundException('Note not found');
+            }
+            const { userId: noteOwnerId, ...rest } = note;
+            if (!note.isPublic && noteOwnerId !== userId) {
+                throw new NotFoundException('Note not found');
+            }
+            return rest;
+        } catch (e) {
+            if (e instanceof Prisma.PrismaClientKnownRequestError) {
+                throw new InternalServerErrorException(
+                    'Failed to retrieve user notes'
+                );
+            } else if (e instanceof NotFoundException) {
+                throw e;
+            } else {
+                throw new InternalServerErrorException(
+                    'Failed to retrieve user notes'
+                );
+            }
+        }
+    }
+
     async findAllByUserId(userId: User['id']) {
         try {
             const notes = await this.prismaService.note.findMany({
@@ -59,9 +93,6 @@ export class NoteService {
                     userId: false,
                 },
             });
-            if (!(notes && notes.length)) {
-                throw new NotFoundException('No notes found for the user');
-            }
             return notes;
         } catch (e) {
             if (e instanceof Prisma.PrismaClientKnownRequestError) {
@@ -90,7 +121,7 @@ export class NoteService {
                     },
                 },
                 select: {
-                    id: false,
+                    id: true,
                     content: true,
                     isPublic: true,
                     userId: false,

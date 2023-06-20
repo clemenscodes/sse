@@ -7,6 +7,7 @@ describe('NoteList', () => {
             <NoteList
                 notes={[
                     {
+                        id: 'id',
                         content: 'Test',
                         isPublic: false,
                     },

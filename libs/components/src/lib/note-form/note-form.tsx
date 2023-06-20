@@ -2,6 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { cn } from '@styles';
 import type { CreatedNote } from '@types';
 import { NoteSchema, noteSchema, post } from '@utils';
+import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Button } from '../button/button';
@@ -23,6 +24,7 @@ export type NoteFormProps = React.ComponentPropsWithoutRef<'form'> & {
 
 export const NoteForm: React.FC<NoteFormProps> = ({ submit, ...props }) => {
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const router = useRouter();
 
     const form = useForm<NoteSchema>({
         resolver: zodResolver(noteSchema),
@@ -49,6 +51,8 @@ export const NoteForm: React.FC<NoteFormProps> = ({ submit, ...props }) => {
             return null;
         }
         form.reset();
+        const noteUrl = `/note/${data.id}`;
+        router.push(noteUrl);
         toast({ title: 'Successfully created note' });
         setTimeout(() => setIsSubmitting(false), 5000);
     };
@@ -58,10 +62,10 @@ export const NoteForm: React.FC<NoteFormProps> = ({ submit, ...props }) => {
             <form
                 onSubmit={form.handleSubmit(onSubmit)}
                 className={cn(
-                    'mx-auto mb-4 w-full space-y-2 rounded bg-white px-8 pb-8 pt-6',
+                    'mx-auto w-full space-y-2 rounded bg-white px-8 pb-8 pt-6',
                     'sm:max-w-scree-sm',
                     'md:max-w-screen-md',
-                    'lg:max-w-[40%]'
+                    'lg:max-w-full'
                 )}
                 {...props}
             >
@@ -73,7 +77,7 @@ export const NoteForm: React.FC<NoteFormProps> = ({ submit, ...props }) => {
                             <FormControl>
                                 <Textarea
                                     placeholder='# My amazing note'
-                                    className='resize-y'
+                                    className='h-[28rem] resize-y'
                                     {...field}
                                     disabled={isSubmitting}
                                 />
