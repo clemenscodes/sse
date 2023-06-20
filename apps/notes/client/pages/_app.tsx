@@ -2,8 +2,12 @@ import { site } from '@config';
 import { type AppProps } from 'next/app';
 import Head from 'next/head';
 import '../styles.css';
+import dynamic from 'next/dynamic';
 
-const App: React.FC<AppProps> = ({ Component, ...pageProps }) => {
+const Layout = dynamic(() => import('@components').then((mod) => mod.Layout));
+const Toaster = dynamic(() => import('@components').then((mod) => mod.Toaster));
+
+const App: React.FC<AppProps> = ({ Component, pageProps }) => {
     return (
         <>
             <Head>
@@ -13,7 +17,10 @@ const App: React.FC<AppProps> = ({ Component, ...pageProps }) => {
                 />
                 <title>{site.title}</title>
             </Head>
-            <Component {...pageProps} />
+            <Layout>
+                <Component {...pageProps} />
+            </Layout>
+            <Toaster />
         </>
     );
 };

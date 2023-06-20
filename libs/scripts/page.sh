@@ -19,11 +19,11 @@ nx generate @nx/next:component "$page" --directory="$directory" --project=pages 
 rm "$lib/$css"
 sed -i '1d' "$tsx"
 sed -i 's/className={[^\}]*}//g' "$tsx"
-nx format
+nx format --all
 function_name=$(grep -m 1 -oP '(?<=export function )\w+' "$tsx")
 props_interface=$(grep -m 1 -oP '(?<=interface )\w+(?=\s*\{\s*\})' "$tsx")
 sed -i "1i\ import { NextPage } from 'next';" "$tsx"
 sed -i "s/export function\(.*\)$/export const $function_name: NextPage<$props_interface> = ({ ...props }) => {/" "$tsx"
 sed -i "1i\ import { cn } from '@styles';" "$tsx"
 sed -i "s/<div>\(.*\)$/<div className={cn()} {...props}>/" "$tsx"
-nx format
+nx format --all

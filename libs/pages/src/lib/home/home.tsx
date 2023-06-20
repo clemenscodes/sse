@@ -1,20 +1,48 @@
-import { Footer, Header, Login } from '@components';
+import { Button } from '@components';
 import { cn } from '@styles';
+import { type HomeProps } from '@types';
+import { useSessionStore } from '@utils';
 import { NextPage } from 'next';
-
-export type HomeProps = React.ComponentPropsWithoutRef<'div'>;
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 
 export const Home: NextPage<HomeProps> = ({ ...props }) => {
+    const [hasMounted, setHasMounted] = useState(false);
+    const session = useSessionStore((state) => state.session);
+    const router = useRouter();
+
+    useEffect(() => {
+        setHasMounted(true);
+    }, []);
+
+    if (!hasMounted) {
+        return null;
+    }
+
+    if (session) {
+        router.push('/note');
+    }
+
     return (
         <div
-            className={cn('flex h-screen flex-col justify-between')}
+            className={cn('flex flex-col items-center justify-center')}
             {...props}
         >
-            <Header />
-            <main className={cn('mx-6 mb-auto mt-24 md:mx-12 xl:mx-24')}>
-                <Login />
-            </main>
-            <Footer />
+            <h1 className={cn('text-4xl font-bold mb-4')}>
+                Welcome to Secure Notes!
+            </h1>
+            <p className="text-lg text-gray-500 mb-8">
+                Start organizing your notes today!
+            </p>
+            <div className="space-x-16">
+                <Link href="/login">
+                    <Button>Login</Button>
+                </Link>
+                <Link href="/register">
+                    <Button>Register</Button>
+                </Link>
+            </div>
         </div>
     );
 };

@@ -7,7 +7,7 @@
         "strict": true
     },
     "files": [],
-    "include": [],
+    "include": ["next-auth.d.ts"],
     "references": [
         {
             "path": "./tsconfig.lib.json"
