@@ -1,3 +1,4 @@
+export * from './lib/note/note';
 export * from './lib/note-list-item/note-list-item';
 export * from './lib/note-list/note-list';
 export * from './lib/search/search';

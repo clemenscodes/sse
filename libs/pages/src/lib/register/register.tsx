@@ -26,7 +26,12 @@ export const Register: NextPage<RegisterProps> = ({ ...props }) => {
     }
 
     return (
-        <div className={cn('flex flex-col items-center')} {...props}>
+        <div
+            className={cn(
+                'flex flex-col items-center justify-center w-full h-full'
+            )}
+            {...props}
+        >
             <h1>Register</h1>
             <p>Enter all the relevant information.</p>
             <RegisterForm />

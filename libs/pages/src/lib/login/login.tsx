@@ -25,7 +25,12 @@ export const Login: NextPage<LoginProps> = ({ ...props }) => {
     }
 
     return (
-        <div className={cn('flex flex-col items-center')} {...props}>
+        <div
+            className={cn(
+                'flex flex-col items-center justify-center h-full w-full'
+            )}
+            {...props}
+        >
             <h1>Login</h1>
             <p>Enter your username and password</p>
             <LoginForm />

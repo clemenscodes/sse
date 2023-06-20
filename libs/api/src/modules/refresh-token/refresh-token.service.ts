@@ -66,7 +66,6 @@ export class RefreshTokenService {
             const token = await this.prismaService.refreshToken.findUnique({
                 where: { refreshToken },
             });
-            console.log({ token });
             if (!token) {
                 throw new NotFoundException('Refresh token not found');
             }

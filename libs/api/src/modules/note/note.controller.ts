@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { User } from '@prisma/api';
 import { type NoteSchema } from '@utils';
 import { Roles } from '../../decorator/roles.decorator';
@@ -29,5 +29,11 @@ export class NoteController {
     @Roles('USER')
     findAllByUserId(@UserId() userId: User['id']) {
         return this.noteService.findAllByUserId(userId);
+    }
+
+    @Get(':id')
+    @Roles('USER')
+    findById(@Param('id') id: string, @UserId() userId: User['id']) {
+        return this.noteService.findById(id, userId);
     }
 }

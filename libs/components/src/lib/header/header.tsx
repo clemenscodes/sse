@@ -82,7 +82,14 @@ export const Header: React.FC<HeaderProps> = ({ ...props }) => {
                         Home
                     </Link>
                     <span>{session?.username || 'Guest'}</span>
-                    {session && <Button onClick={onSignout}>Logout</Button>}
+                    {session && (
+                        <Button
+                            className={cn('hover:bg-slate-950')}
+                            onClick={onSignout}
+                        >
+                            Logout
+                        </Button>
+                    )}
                 </nav>
             </div>
         </header>

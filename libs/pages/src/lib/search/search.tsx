@@ -25,8 +25,11 @@ export const Search: NextPage<SearchProps> = ({ ...props }) => {
     }
 
     return (
-        <div className={cn('flex flex-col items-center w-full')} {...props}>
-            <h1 className={cn('text-xl mb-4')}>Search results for: {search}</h1>
+        <div
+            className={cn('flex flex-col mb-12 items-center justify-center')}
+            {...props}
+        >
+            <h1 className={cn('text-xl')}>Search results for: {search}</h1>
             {result && result.length ? (
                 <NoteList notes={result} />
             ) : (
