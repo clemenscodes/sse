@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { Button } from '../button/button';
+import Search from '../search/search';
 import { toast } from '../toast/useToast';
 
 export type HeaderProps = React.ComponentPropsWithoutRef<'header'>;
@@ -21,23 +22,41 @@ export const Header: React.FC<HeaderProps> = ({ ...props }) => {
         return null;
     }
 
-    const onSignout = async () => {
-        const { status } = await post('/auth/logout');
+    const clearState = () => {
+        useSessionStore.setState((state) => {
+            return {
+                ...state,
+                session: null,
+                jwt: null,
+            };
+        });
+        toast({
+            title: 'Successfully logged out',
+            description: `Goodbye, ${session?.username}`,
+        });
+        router.push('/');
+    };
 
+    const onSignout = async () => {
+        const { status, error } = await post('/auth/logout');
         if (status === 204) {
-            useSessionStore.setState((state) => {
-                return {
-                    ...state,
-                    session: null,
-                    jwt: null,
-                };
+            return clearState();
+        }
+        if (!error) {
+            return toast({
+                title: 'Failed logging out',
+                description: 'Check the developer tools for errors',
+                variant: 'destructive',
             });
-            toast({
-                title: 'Successfully logged out',
-                description: `Goodbye, ${session?.username}`,
-            });
-            router.push('/');
-            return;
+        }
+        if (
+            error.response &&
+            error.response.status === 401 &&
+            error.response.data &&
+            error.response.data.message &&
+            error.response.data.message === 'Sessions expired'
+        ) {
+            return clearState();
         }
         toast({
             title: 'Failed logging out',
@@ -54,7 +73,8 @@ export const Header: React.FC<HeaderProps> = ({ ...props }) => {
                 )}
             >
                 <div className={cn('text-2xl font-bold')}>Notes</div>
-                <nav className={cn('space-x-4')}>
+                <nav className={cn('flex items-center space-x-4')}>
+                    {session && <Search />}
                     <Link
                         href={session ? '/note' : '/'}
                         className={cn('text-gray-300 hover:text-white')}

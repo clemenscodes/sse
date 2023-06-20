@@ -50,7 +50,8 @@ export class RefreshTokenService {
 
     async checkRefreshToken(refreshToken: RefreshToken['refreshToken']) {
         try {
-            const { expires } = await this.findByRefreshToken(refreshToken);
+            const token = await this.findByRefreshToken(refreshToken);
+            const { expires } = token;
             const tokenTimestamp = expires.getTime();
             const currentTimestamp = Date.now();
             const validRefreshToken = tokenTimestamp > currentTimestamp;
@@ -65,6 +66,7 @@ export class RefreshTokenService {
             const token = await this.prismaService.refreshToken.findUnique({
                 where: { refreshToken },
             });
+            console.log({ token });
             if (!token) {
                 throw new NotFoundException('Refresh token not found');
             }

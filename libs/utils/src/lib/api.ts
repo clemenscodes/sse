@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosRequestConfig } from 'axios';
 import { useSessionStore } from './hooks/use-session';
 import { apiUrl } from './url';
 
@@ -37,9 +37,12 @@ api.interceptors.response.use(
     }
 );
 
-export const get = async <Return = unknown>(endpoint: string) => {
+export const get = async <Return = unknown, Config = unknown>(
+    endpoint: string,
+    config?: AxiosRequestConfig<Config>
+) => {
     try {
-        const { data, status } = await api.get<Return>(endpoint);
+        const { data, status } = await api.get<Return>(endpoint, config);
         return { data, status, error: null };
     } catch (e) {
         if (axios.isAxiosError(e)) {
@@ -50,12 +53,21 @@ export const get = async <Return = unknown>(endpoint: string) => {
     }
 };
 
-export const post = async <Payload = unknown, Return = unknown>(
+export const post = async <
+    Payload = unknown,
+    Return = unknown,
+    Config = unknown
+>(
     endpoint: string,
-    payload?: Payload
+    payload?: Payload,
+    config?: AxiosRequestConfig<Config>
 ) => {
     try {
-        const { data, status } = await api.post<Return>(endpoint, payload);
+        const { data, status } = await api.post<Return>(
+            endpoint,
+            payload,
+            config
+        );
         return { data, status, error: null };
     } catch (e) {
         if (axios.isAxiosError(e)) {

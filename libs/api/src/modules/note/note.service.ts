@@ -78,7 +78,9 @@ export class NoteService {
         }
     }
 
-    async searchPublicNotesByContent(content: Note['content']) {
+    async searchPublicNotesByContent(
+        content: Note['content']
+    ): Promise<CreatedNote[]> {
         try {
             const notes = await this.prismaService.note.findMany({
                 where: {
@@ -94,11 +96,6 @@ export class NoteService {
                     userId: false,
                 },
             });
-            if (!(notes && notes.length)) {
-                throw new NotFoundException(
-                    `No notes found matching the search criteria`
-                );
-            }
             return notes;
         } catch (e) {
             if (e instanceof Prisma.PrismaClientKnownRequestError) {
