@@ -1,3 +1,7 @@
+export * from './lib/note-list-item/note-list-item';
+export * from './lib/note-list/note-list';
+export * from './lib/search/search';
+export * from './lib/command/command';
 export * from './lib/checkbox/checkbox';
 export * from './lib/loader/loader';
 export * from './lib/register-form/register-form';
