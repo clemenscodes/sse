@@ -2,6 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { cn } from '@styles';
 import type { CreatedNote } from '@types';
 import { NoteSchema, noteSchema, post } from '@utils';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Button } from '../button/button';
 import { Checkbox } from '../checkbox/checkbox';
@@ -22,6 +23,8 @@ export type NoteFormProps = React.ComponentPropsWithoutRef<'form'> & {
 };
 
 export const NoteForm: React.FC<NoteFormProps> = ({ submit, ...props }) => {
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
     const form = useForm<NoteSchema>({
         resolver: zodResolver(noteSchema),
         defaultValues: {
@@ -34,6 +37,7 @@ export const NoteForm: React.FC<NoteFormProps> = ({ submit, ...props }) => {
         if (submit) {
             return submit(values);
         }
+        setIsSubmitting(true);
         const { data, status } = await post<NoteSchema, CreatedNote>(
             '/note',
             values
@@ -45,7 +49,9 @@ export const NoteForm: React.FC<NoteFormProps> = ({ submit, ...props }) => {
             });
             return null;
         }
+        form.reset();
         toast({ title: 'Successfully created note' });
+        setTimeout(() => setIsSubmitting(false), 6000);
     };
 
     return (
@@ -70,6 +76,7 @@ export const NoteForm: React.FC<NoteFormProps> = ({ submit, ...props }) => {
                                     placeholder='# My amazing note written in Markdown'
                                     className='resize-y'
                                     {...field}
+                                    disabled={isSubmitting}
                                 />
                             </FormControl>
                         </FormItem>
@@ -84,6 +91,7 @@ export const NoteForm: React.FC<NoteFormProps> = ({ submit, ...props }) => {
                                 <Checkbox
                                     checked={field.value || false}
                                     onCheckedChange={field.onChange}
+                                    disabled={isSubmitting}
                                 />
                             </FormControl>
                             <div className='space-y-1 leading-none'>
@@ -97,7 +105,11 @@ export const NoteForm: React.FC<NoteFormProps> = ({ submit, ...props }) => {
                         </FormItem>
                     )}
                 />
-                <Button type='submit' className='w-full'>
+                <Button
+                    type='submit'
+                    className='w-full'
+                    disabled={isSubmitting}
+                >
                     Create note
                 </Button>
             </form>
