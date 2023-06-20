@@ -24,7 +24,9 @@ export const Note: NextPage<NoteProps> = ({ ...props }) => {
 
     return (
         <div className={cn('flex flex-col items-center')} {...props}>
-            <h1>Start creating notes :)</h1>
+            <h1 className={cn('text-lg')}>
+                Write notes using HTML or even Markdown
+            </h1>
             <NoteForm />
         </div>
     );

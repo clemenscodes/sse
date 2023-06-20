@@ -9,7 +9,6 @@ import { Checkbox } from '../checkbox/checkbox';
 import {
     Form,
     FormControl,
-    FormDescription,
     FormField,
     FormItem,
     FormLabel,
@@ -51,7 +50,7 @@ export const NoteForm: React.FC<NoteFormProps> = ({ submit, ...props }) => {
         }
         form.reset();
         toast({ title: 'Successfully created note' });
-        setTimeout(() => setIsSubmitting(false), 6000);
+        setTimeout(() => setIsSubmitting(false), 5000);
     };
 
     return (
@@ -59,7 +58,7 @@ export const NoteForm: React.FC<NoteFormProps> = ({ submit, ...props }) => {
             <form
                 onSubmit={form.handleSubmit(onSubmit)}
                 className={cn(
-                    'mx-auto mb-4 w-full max-w-sm space-y-2 rounded bg-white px-8 pb-8 pt-6'
+                    'sm:max-w-scree-sm mx-auto mb-4 w-full space-y-2 rounded bg-white px-8 pb-8 pt-6 md:max-w-screen-md lg:max-w-[40%]'
                 )}
                 {...props}
             >
@@ -68,17 +67,15 @@ export const NoteForm: React.FC<NoteFormProps> = ({ submit, ...props }) => {
                     name='content'
                     render={({ field }) => (
                         <FormItem className='w-full'>
-                            <FormLabel>
-                                Write your note in HTML or Markdown
-                            </FormLabel>
                             <FormControl>
                                 <Textarea
-                                    placeholder='# My amazing note written in Markdown'
+                                    placeholder='# My amazing note'
                                     className='resize-y'
                                     {...field}
                                     disabled={isSubmitting}
                                 />
                             </FormControl>
+                            <FormMessage />
                         </FormItem>
                     )}
                 />
@@ -96,22 +93,20 @@ export const NoteForm: React.FC<NoteFormProps> = ({ submit, ...props }) => {
                             </FormControl>
                             <div className='space-y-1 leading-none'>
                                 <FormLabel>Public note</FormLabel>
-                                <FormDescription>
-                                    You can decide whether other people should
-                                    be able to view this note as well.
-                                </FormDescription>
                             </div>
                             <FormMessage />
                         </FormItem>
                     )}
                 />
-                <Button
-                    type='submit'
-                    className='w-full'
-                    disabled={isSubmitting}
-                >
-                    Create note
-                </Button>
+                <div className={cn('flex flex-col items-center')}>
+                    <Button
+                        type='submit'
+                        className={cn('h-full w-full')}
+                        disabled={isSubmitting}
+                    >
+                        Create note
+                    </Button>
+                </div>
             </form>
         </Form>
     );
