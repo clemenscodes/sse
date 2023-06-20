@@ -1,7 +1,5 @@
 import dynamic from 'next/dynamic';
 
-const RegisterPage = dynamic(() =>
-    import('@pages').then((mod) => mod.RegisterPage)
-);
+const Register = dynamic(() => import('@pages').then((mod) => mod.Register));
 
-export default RegisterPage;
+export default Register;

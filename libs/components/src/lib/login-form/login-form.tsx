@@ -3,10 +3,10 @@ import { cn } from '@styles';
 import { type Auth } from '@types';
 import {
     getSession,
+    loginSchema,
     post,
-    registerSchema,
     useSessionStore,
-    type RegisterSchema,
+    type LoginSchema,
 } from '@utils';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
@@ -21,33 +21,31 @@ import {
 import { Input } from '../input/input';
 import { toast } from '../toast/useToast';
 
-export type RegisterProps = React.ComponentPropsWithoutRef<'form'> & {
-    submit?: (values: RegisterSchema) => Promise<void>;
+export type LoginFormProps = React.ComponentPropsWithoutRef<'form'> & {
+    submit?: (values: LoginSchema) => Promise<void>;
 };
 
-export const Register: React.FC<RegisterProps> = ({ submit, ...props }) => {
+export const LoginForm: React.FC<LoginFormProps> = ({ submit, ...props }) => {
     const router = useRouter();
-    const form = useForm<RegisterSchema>({
-        resolver: zodResolver(registerSchema),
+    const form = useForm<LoginSchema>({
+        resolver: zodResolver(loginSchema),
         defaultValues: {
             username: '',
-            email: '',
             password: '',
-            passwordConfirm: '',
         },
     });
 
-    const onSubmit = async (values: RegisterSchema) => {
+    const onSubmit = async (values: LoginSchema) => {
         if (submit) {
             return submit(values);
         }
-        const { data, status } = await post<Auth, RegisterSchema>(
-            '/auth/register',
+        const { data, status } = await post<Auth, LoginSchema>(
+            '/auth/login',
             values
         );
         if (!data || status !== 200) {
             toast({
-                title: 'Failed registering',
+                title: 'Failed logging in',
                 variant: 'destructive',
             });
             return null;
@@ -55,7 +53,7 @@ export const Register: React.FC<RegisterProps> = ({ submit, ...props }) => {
         const { jwt } = data;
         if (!jwt) {
             toast({
-                title: 'Failed registering',
+                title: 'Failed logging in',
                 variant: 'destructive',
             });
             return null;
@@ -72,7 +70,7 @@ export const Register: React.FC<RegisterProps> = ({ submit, ...props }) => {
         });
         router.push('/note');
         toast({
-            title: 'Successfully registered',
+            title: 'Successfully logged in',
             description: `Welcome to notes, ${session?.username}`,
         });
     };
@@ -104,23 +102,6 @@ export const Register: React.FC<RegisterProps> = ({ submit, ...props }) => {
                 />
                 <FormField
                     control={form.control}
-                    name='email'
-                    render={({ field }) => (
-                        <FormItem className='w-full'>
-                            <FormControl>
-                                <Input
-                                    type='email'
-                                    placeholder='Email'
-                                    {...field}
-                                    className='w-full border-2 border-gray-300'
-                                />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
                     name='password'
                     render={({ field }) => (
                         <FormItem className='w-full'>
@@ -136,29 +117,12 @@ export const Register: React.FC<RegisterProps> = ({ submit, ...props }) => {
                         </FormItem>
                     )}
                 />
-                <FormField
-                    control={form.control}
-                    name='passwordConfirm'
-                    render={({ field }) => (
-                        <FormItem className='w-full'>
-                            <FormControl>
-                                <Input
-                                    type='password'
-                                    placeholder='Confirm Password'
-                                    {...field}
-                                    className='w-full border-2 border-gray-300'
-                                />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
                 <Button type='submit' className='w-full'>
-                    Register
+                    Submit
                 </Button>
             </form>
         </Form>
     );
 };
 
-export default Register;
+export default LoginForm;

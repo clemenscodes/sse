@@ -1,5 +1,5 @@
 import dynamic from 'next/dynamic';
 
-const LoginPage = dynamic(() => import('@pages').then((mod) => mod.LoginPage));
+const Login = dynamic(() => import('@pages').then((mod) => mod.Login));
 
-export default LoginPage;
+export default Login;
