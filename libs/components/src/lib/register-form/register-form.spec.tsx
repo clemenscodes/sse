@@ -1,14 +1,14 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import Register from './registration';
+import RegisterForm from './register-form';
 
 describe('Register', () => {
     it('should render successfully', () => {
-        const { baseElement } = render(<Register />);
+        const { baseElement } = render(<RegisterForm />);
         expect(baseElement).toBeTruthy();
     });
 
     it('should display validation errors when form fields are empty', async () => {
-        render(<Register />);
+        render(<RegisterForm />);
         fireEvent.click(screen.getByText('Register'));
 
         await waitFor(() => {
@@ -26,7 +26,7 @@ describe('Register', () => {
 
     it('should submit form when all fields are filled correctly', async () => {
         const onSubmitMock = jest.fn();
-        render(<Register submit={onSubmitMock} />);
+        render(<RegisterForm submit={onSubmitMock} />);
         const password = 'testPassword123!ahg';
 
         fireEvent.input(screen.getByPlaceholderText('Username'), {

@@ -8,7 +8,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '../dialog/dialog';
-import Register from '../registration/registration';
+import RegisterForm from '../register-form/register-form';
 
 export type RegisterDialogProps = React.ComponentPropsWithoutRef<'div'>;
 
@@ -29,7 +29,7 @@ export const RegisterDialog: React.FC<RegisterDialogProps> = ({ ...props }) => {
                         Enter all the relevant Information.
                     </DialogDescription>
                 </DialogHeader>
-                <Register />
+                <RegisterForm />
             </DialogContent>
         </Dialog>
     );

@@ -1,4 +1,4 @@
-import { Button, Register } from '@components';
+import { Button, RegisterForm } from '@components';
 import { cn } from '@styles';
 import { useSessionStore } from '@utils';
 import { NextPage } from 'next';
@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react';
 
 export type RegisterProps = React.ComponentPropsWithoutRef<'div'>;
 
-export const RegisterPage: NextPage<RegisterProps> = ({ ...props }) => {
+export const Register: NextPage<RegisterProps> = ({ ...props }) => {
     const router = useRouter();
     const session = useSessionStore((state) => state.session);
     const [hasMounted, setHasMounted] = useState(false);
@@ -29,7 +29,7 @@ export const RegisterPage: NextPage<RegisterProps> = ({ ...props }) => {
         <div className={cn('flex flex-col items-center')} {...props}>
             <h1>Register</h1>
             <p>Enter all the relevant information.</p>
-            <Register />
+            <RegisterForm />
             <p>Already registered?</p>
             <Link href={'/login'} className={cn('m-8')}>
                 <Button>Login</Button>
@@ -38,4 +38,4 @@ export const RegisterPage: NextPage<RegisterProps> = ({ ...props }) => {
     );
 };
 
-export default RegisterPage;
+export default Register;

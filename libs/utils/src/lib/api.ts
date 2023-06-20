@@ -37,9 +37,9 @@ api.interceptors.response.use(
     }
 );
 
-export const get = async <T = unknown>(endpoint: string) => {
+export const get = async <Return = unknown>(endpoint: string) => {
     try {
-        const { data, status } = await api.get<T>(endpoint);
+        const { data, status } = await api.get<Return>(endpoint);
         return { data, status, error: null };
     } catch (e) {
         if (axios.isAxiosError(e)) {
@@ -50,12 +50,12 @@ export const get = async <T = unknown>(endpoint: string) => {
     }
 };
 
-export const post = async <T = unknown, K = unknown>(
+export const post = async <Payload = unknown, Return = unknown>(
     endpoint: string,
-    payload?: K
+    payload?: Payload
 ) => {
     try {
-        const { data, status } = await api.post<T>(endpoint, payload);
+        const { data, status } = await api.post<Return>(endpoint, payload);
         return { data, status, error: null };
     } catch (e) {
         if (axios.isAxiosError(e)) {
