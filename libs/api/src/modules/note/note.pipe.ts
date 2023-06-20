@@ -1,5 +1,5 @@
 import { Injectable, PipeTransform } from '@nestjs/common';
-import { NoteSchema, noteSchema } from '@types';
+import { noteSchema, type NoteSchema } from '@utils';
 import { sanitize } from 'isomorphic-dompurify';
 import { Converter } from 'showdown';
 

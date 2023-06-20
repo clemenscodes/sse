@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Button } from '../button/button';
 import {
     Dialog,
@@ -9,14 +10,17 @@ import {
 } from '../dialog/dialog';
 import Register from '../registration/registration';
 
-/* eslint-disable-next-line */
-export interface RegisterDialogProps {}
+export type RegisterDialogProps = React.ComponentPropsWithoutRef<'div'>;
 
 export const RegisterDialog: React.FC<RegisterDialogProps> = ({ ...props }) => {
+    const [showDialog, setShowDialog] = useState(false);
+
     return (
-        <Dialog>
+        <Dialog open={showDialog} onOpenChange={setShowDialog} {...props}>
             <DialogTrigger asChild>
-                <Button variant='outline'>Register</Button>
+                <Button variant='outline' onClick={() => setShowDialog(true)}>
+                    Register
+                </Button>
             </DialogTrigger>
             <DialogContent className='sm:max-w-[425px]'>
                 <DialogHeader>
@@ -25,7 +29,7 @@ export const RegisterDialog: React.FC<RegisterDialogProps> = ({ ...props }) => {
                         Enter all the relevant Information.
                     </DialogDescription>
                 </DialogHeader>
-                <Register></Register>
+                <Register />
             </DialogContent>
         </Dialog>
     );

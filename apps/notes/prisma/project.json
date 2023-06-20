@@ -4,6 +4,13 @@
     "sourceRoot": "apps/notes/prisma",
     "projectType": "application",
     "targets": {
+        "env": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "[ ! -f .env ] && cp .env.skeleton .env; true",
+                "cwd": "apps/notes/prisma"
+            }
+        },
         "generation": {
             "executor": "nx:run-commands",
             "options": {
@@ -32,7 +39,7 @@
             }
         },
         "reset": {
-            "dependsOn": ["build"],
+            "dependsOn": ["build", "env"],
             "executor": "nx:run-commands",
             "options": {
                 "command": "PRISMA_DISABLE_WARNINGS=1 yarn prisma migrate reset --schema=apps/notes/prisma/schema.prisma --skip-generate --force"

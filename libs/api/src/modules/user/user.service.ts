@@ -5,7 +5,7 @@ import {
     UnauthorizedException,
 } from '@nestjs/common';
 import { Prisma, User } from '@prisma/api';
-import { UserSchema } from '@types';
+import { type UserSchema } from '@utils';
 import { HashService } from '../hash/hash.service';
 import { PrismaService } from '../prisma/prisma.service';
 
@@ -141,58 +141,29 @@ export class UserService {
         }
     }
 
-    async update(id: User['id'], data: Prisma.UserUpdateInput) {
+    async findByIdCustom(id: User['id'], select: Prisma.UserSelect) {
         try {
-            const updatedUser = await this.prismaService.user.update({
+            const user = await this.prismaService.user.findUnique({
                 where: { id },
-                data,
-                select: {
-                    id: true,
-                    email: true,
-                    username: true,
-                    password: false,
-                },
+                select,
             });
-            if (!updatedUser) {
-                throw new UnauthorizedException('Invalid credentials');
+            if (!user) {
+                throw new NotFoundException('User not found');
             }
-            return updatedUser;
-        } catch (e) {
-            if (
-                e instanceof Prisma.PrismaClientKnownRequestError &&
-                e.code === 'P2002'
-            ) {
-                throw new InternalServerErrorException('User update failed');
-            } else if (e instanceof Prisma.PrismaClientValidationError) {
-                throw new UnauthorizedException('Invalid credentials');
-            } else {
-                throw new InternalServerErrorException('User update failed');
-            }
-        }
-    }
-
-    async remove(id: User['id']) {
-        try {
-            const deletedUser = await this.prismaService.user.delete({
-                where: { id },
-                select: {
-                    id: true,
-                    email: true,
-                    username: true,
-                    password: false,
-                },
-            });
-            if (!deletedUser) {
-                throw new UnauthorizedException('Invalid credentials');
-            }
-            return deletedUser;
+            return user;
         } catch (e) {
             if (e instanceof Prisma.PrismaClientKnownRequestError) {
-                throw new InternalServerErrorException('Failed to delete user');
+                throw new InternalServerErrorException(
+                    'Failed to retrieve user'
+                );
             } else if (e instanceof Prisma.PrismaClientValidationError) {
-                throw new UnauthorizedException('Invalid credentials');
+                throw new NotFoundException('User not found');
+            } else if (e instanceof NotFoundException) {
+                throw e;
             } else {
-                throw new InternalServerErrorException('Failed to delete user');
+                throw new InternalServerErrorException(
+                    'Failed to retrieve user'
+                );
             }
         }
     }

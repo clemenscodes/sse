@@ -1,17 +1,17 @@
 import axios from 'axios';
+import { useSessionStore } from './hooks/use-session';
 import { apiUrl } from './url';
 
 export const api = axios.create({
     baseURL: apiUrl,
 });
 
-let jwtBearerToken: string | null = null;
-
 api.interceptors.request.use((config) => {
     config.withCredentials = true;
+    const { jwt } = useSessionStore.getState();
 
-    if (jwtBearerToken) {
-        const header = `Bearer ${jwtBearerToken}`;
+    if (jwt) {
+        const header = `Bearer ${jwt}`;
         config.headers['Authorization'] = header;
     }
 
@@ -23,7 +23,12 @@ api.interceptors.response.use(
         const jwtRefreshHeader = 'x-refresh-jwt';
         if (jwtRefreshHeader in response.headers) {
             const jwt = response.headers[jwtRefreshHeader];
-            setJWTBearerToken(jwt);
+            useSessionStore.setState((state) => {
+                return {
+                    ...state,
+                    jwt,
+                };
+            });
         }
         return response;
     },
@@ -32,17 +37,13 @@ api.interceptors.response.use(
     }
 );
 
-export const setJWTBearerToken = (token: string) => {
-    jwtBearerToken = token;
-};
-
 export const get = async <T = unknown>(endpoint: string) => {
     try {
         const { data, status } = await api.get<T>(endpoint);
-        return { data, status };
+        return { data, status, error: null };
     } catch (e) {
         if (axios.isAxiosError(e)) {
-            console.error(e);
+            return { data: null, status: e.status, error: e };
         }
         console.error(e);
         throw e;
@@ -51,14 +52,14 @@ export const get = async <T = unknown>(endpoint: string) => {
 
 export const post = async <T = unknown, K = unknown>(
     endpoint: string,
-    payload: K
+    payload?: K
 ) => {
     try {
         const { data, status } = await api.post<T>(endpoint, payload);
-        return { data, status };
+        return { data, status, error: null };
     } catch (e) {
         if (axios.isAxiosError(e)) {
-            console.error(e);
+            return { data: null, status: e.status, error: e };
         }
         console.error(e);
         throw e;

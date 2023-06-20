@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { User } from '@prisma/api';
-import { NoteSchema } from '@types';
+import { type NoteSchema } from '@utils';
 import { Roles } from '../../decorator/roles.decorator';
 import { UserId } from '../../decorator/userId.decorator';
 import { NotePipe } from './note.pipe';

@@ -1,5 +1,5 @@
 import { Injectable, PipeTransform } from '@nestjs/common';
-import { UsernameSchema, usernameSchema } from '@types';
+import { UsernameSchema, usernameSchema } from '@utils';
 
 @Injectable()
 export class UsernamePipe<T extends UsernameSchema>

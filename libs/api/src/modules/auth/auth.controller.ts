@@ -1,13 +1,15 @@
 import {
     Body,
     Controller,
+    Get,
     HttpCode,
     HttpStatus,
     Post,
     Res,
 } from '@nestjs/common';
 import { User } from '@prisma/api';
-import { Auth, LoginSchema } from '@types';
+import type { Auth } from '@types';
+import { type LoginSchema } from '@utils';
 import { Response } from 'express';
 import { SignedCookies } from '../../decorator/cookies.decorator';
 import { Public } from '../../decorator/public.decorator';
@@ -59,5 +61,10 @@ export class AuthController {
         @Res({ passthrough: true }) res: Response
     ) {
         return await this.authService.logout(userId, cookies, res);
+    }
+
+    @Get('session')
+    async getUserBySession(@UserId() userId: User['id']) {
+        return await this.authService.getUserBySession(userId);
     }
 }

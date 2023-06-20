@@ -1,5 +1,6 @@
 import path from 'path';
-import { NextPage } from 'next';
+import type { HomeProps } from '@types';
+import type { NextPage } from 'next';
 import dynamic from 'next/dynamic';
 
 // import next config in any page file to somehow make next aware of correct folder structure (MAGIC)
@@ -9,7 +10,7 @@ path.resolve('./next.config.js');
 
 const Home = dynamic(() => import('@pages').then((mod) => mod.Home));
 
-export const Index: NextPage = () => {
+export const Index: NextPage<HomeProps> = () => {
     return <Home />;
 };
 

@@ -1,5 +1,5 @@
-import { checkPassword } from '@utils';
 import * as z from 'zod';
+import { checkPassword } from '../checkPassword';
 import { emailSchema } from './emailSchema';
 import { passwordSchema } from './passwordSchema';
 import { usernameSchema } from './usernameSchema';

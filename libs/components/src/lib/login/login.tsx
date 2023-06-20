@@ -1,7 +1,14 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { cn } from '@styles';
-import { Auth, loginSchema, type LoginSchema } from '@types';
-import { post, setJWTBearerToken } from '@utils';
+import { type Auth } from '@types';
+import {
+    getSession,
+    loginSchema,
+    post,
+    useSessionStore,
+    type LoginSchema,
+} from '@utils';
+import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import { Button } from '../button/button';
 import {
@@ -12,12 +19,14 @@ import {
     FormMessage,
 } from '../form/form';
 import { Input } from '../input/input';
+import { toast } from '../toast/useToast';
 
 export type LoginProps = React.ComponentPropsWithoutRef<'form'> & {
     submit?: (values: LoginSchema) => Promise<void>;
 };
 
 export const Login: React.FC<LoginProps> = ({ submit, ...props }) => {
+    const router = useRouter();
     const form = useForm<LoginSchema>({
         resolver: zodResolver(loginSchema),
         defaultValues: {
@@ -27,75 +36,92 @@ export const Login: React.FC<LoginProps> = ({ submit, ...props }) => {
     });
 
     const onSubmit = async (values: LoginSchema) => {
-        try {
-            if (submit) {
-                return submit(values);
-            }
-            const { data, status } = await post<Auth, LoginSchema>(
-                '/auth/login',
-                values
-            );
-            if (!data || status !== 200) {
-                return null;
-            }
-            const { jwt } = data;
-            if (!jwt) {
-                return null;
-            }
-            setJWTBearerToken(jwt);
-        } catch (error) {
-            console.error(error);
+        if (submit) {
+            return submit(values);
         }
+        const { data, status } = await post<Auth, LoginSchema>(
+            '/auth/login',
+            values
+        );
+        if (!data || status !== 200) {
+            toast({
+                title: 'Failed logging in',
+                variant: 'destructive',
+            });
+            return null;
+        }
+        const { jwt } = data;
+        if (!jwt) {
+            toast({
+                title: 'Failed logging in',
+                variant: 'destructive',
+            });
+            return null;
+        }
+        useSessionStore.setState((state) => {
+            return {
+                ...state,
+                jwt,
+            };
+        });
+        const session = await getSession();
+        useSessionStore.setState((state) => {
+            return { ...state, session };
+        });
+        router.push('/note');
+        toast({
+            title: 'Successfully logged in',
+            description: `Welcome to notes, ${session?.username}`,
+        });
     };
 
     return (
-        <div className='mx-auto w-full max-w-sm'>
-            <h2 className=''>Login</h2>
-            <Form {...form}>
-                <form
-                    onSubmit={form.handleSubmit(onSubmit)}
-                    className={cn('space-y-2')}
-                    {...props}
-                >
-                    <FormField
-                        control={form.control}
-                        name='username'
-                        render={({ field }) => (
-                            <FormItem className='w-full'>
-                                <FormControl>
-                                    <Input
-                                        placeholder='Username'
-                                        {...field}
-                                        className='w-full border-2 border-gray-300'
-                                    />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                        control={form.control}
-                        name='password'
-                        render={({ field }) => (
-                            <FormItem className='w-full'>
-                                <FormControl>
-                                    <Input
-                                        type='password'
-                                        placeholder='Password'
-                                        {...field}
-                                        className='w-full border-2 border-gray-300'
-                                    />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <Button type='submit' className='w-full'>
-                        Submit
-                    </Button>
-                </form>
-            </Form>
-        </div>
+        <Form {...form}>
+            <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className={cn(
+                    'mx-auto mb-4 w-full max-w-sm space-y-2 rounded bg-white px-8 pb-8 pt-6'
+                )}
+                {...props}
+            >
+                <FormField
+                    control={form.control}
+                    name='username'
+                    render={({ field }) => (
+                        <FormItem className='w-full'>
+                            <FormControl>
+                                <Input
+                                    placeholder='Username'
+                                    {...field}
+                                    className='w-full border-2 border-gray-300'
+                                />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name='password'
+                    render={({ field }) => (
+                        <FormItem className='w-full'>
+                            <FormControl>
+                                <Input
+                                    type='password'
+                                    placeholder='Password'
+                                    {...field}
+                                    className='w-full border-2 border-gray-300'
+                                />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <Button type='submit' className='w-full'>
+                    Submit
+                </Button>
+            </form>
+        </Form>
     );
 };
 

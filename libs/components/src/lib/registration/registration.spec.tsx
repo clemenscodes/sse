@@ -9,7 +9,6 @@ describe('Register', () => {
 
     it('should display validation errors when form fields are empty', async () => {
         render(<Register />);
-
         fireEvent.click(screen.getByText('Register'));
 
         await waitFor(() => {
