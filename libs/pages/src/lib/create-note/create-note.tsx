@@ -1,6 +1,6 @@
 import { NoteForm, Preview, Redirect } from '@components';
 import { cn } from '@styles';
-import { useSessionStore } from '@utils';
+import { usePreviewStore, useSessionStore } from '@utils';
 import { NextPage } from 'next';
 import { useEffect, useState } from 'react';
 
@@ -12,6 +12,12 @@ export const CreateNote: NextPage<CreateNoteProps> = ({ ...props }) => {
 
     useEffect(() => {
         setHasMounted(true);
+        usePreviewStore.setState((state) => {
+            return {
+                ...state,
+                preview: null,
+            };
+        });
     }, []);
 
     if (!hasMounted) {
