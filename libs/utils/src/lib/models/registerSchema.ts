@@ -1,5 +1,4 @@
 import * as z from 'zod';
-import { checkPassword } from '../checkPassword';
 import { emailSchema } from './emailSchema';
 import { passwordSchema } from './passwordSchema';
 import { usernameSchema } from './usernameSchema';
@@ -16,16 +15,21 @@ export const registerSchema = z
         path: ['passwordConfirm'],
     })
     .refine(
-        (data) => {
+        async (data) => {
             const { password, username, email } = data;
-            const result = checkPassword(password, [username, email]);
+            const checkPassword = (await import('@password')).checkPassword;
+            const result = await checkPassword(password, [username, email]);
             return result.score === 4;
         },
         ({ password, email, username }) => {
             return {
-                message: `Password is not secure enough, score: ${
-                    checkPassword(password, [email, username]).score
-                }/4`,
+                message: `Password is not secure enough, score: ${import(
+                    '@password'
+                )
+                    .then((mod) =>
+                        mod.checkPassword(password, [email, username])
+                    )
+                    .then((password) => password)}/4`,
                 path: ['passwordConfirm'],
             };
         }

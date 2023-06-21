@@ -1,5 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { cn } from '@styles';
+import { IconLogin } from '@tabler/icons-react';
 import { type Auth } from '@types';
 import {
     getSession,
@@ -117,8 +118,8 @@ export const LoginForm: React.FC<LoginFormProps> = ({ submit, ...props }) => {
                         </FormItem>
                     )}
                 />
-                <Button type='submit' className='w-full'>
-                    Submit
+                <Button type='submit' className='w-full' data-testid='Login'>
+                    <IconLogin />
                 </Button>
             </form>
         </Form>

@@ -1,9 +1,9 @@
 import { render } from '@testing-library/react';
-import Loader from './loader';
+import Preview from './preview';
 
-describe('Loader', () => {
+describe('Preview', () => {
     it('should render successfully', () => {
-        const { baseElement } = render(<Loader />);
+        const { baseElement } = render(<Preview />);
         expect(baseElement).toBeTruthy();
     });
 });

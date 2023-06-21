@@ -1,7 +1,8 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { cn } from '@styles';
+import { IconFilePlus } from '@tabler/icons-react';
 import type { CreatedNote } from '@types';
-import { NoteSchema, noteSchema, post } from '@utils';
+import { NoteSchema, noteSchema, post, usePreviewStore } from '@utils';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -22,7 +23,11 @@ export type NoteFormProps = React.ComponentPropsWithoutRef<'form'> & {
     submit?: (values: NoteSchema) => Promise<void>;
 };
 
-export const NoteForm: React.FC<NoteFormProps> = ({ submit, ...props }) => {
+export const NoteForm: React.FC<NoteFormProps> = ({
+    submit,
+    className,
+    ...props
+}) => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const router = useRouter();
 
@@ -33,6 +38,16 @@ export const NoteForm: React.FC<NoteFormProps> = ({ submit, ...props }) => {
             isPublic: false,
         },
     });
+
+    const onChange = () => {
+        const { content } = form.getValues();
+        usePreviewStore.setState((state) => {
+            return {
+                ...state,
+                preview: content,
+            };
+        });
+    };
 
     const onSubmit = async (values: NoteSchema) => {
         if (submit) {
@@ -61,11 +76,13 @@ export const NoteForm: React.FC<NoteFormProps> = ({ submit, ...props }) => {
         <Form {...form}>
             <form
                 onSubmit={form.handleSubmit(onSubmit)}
+                onChange={onChange}
                 className={cn(
                     'mx-auto w-full space-y-2 rounded bg-white px-8 pb-8 pt-6',
                     'sm:max-w-scree-sm',
                     'md:max-w-screen-md',
-                    'lg:max-w-full'
+                    'lg:max-w-full',
+                    className || ''
                 )}
                 {...props}
             >
@@ -111,7 +128,7 @@ export const NoteForm: React.FC<NoteFormProps> = ({ submit, ...props }) => {
                         className={cn('h-full w-full')}
                         disabled={isSubmitting}
                     >
-                        Create note
+                        <IconFilePlus />
                     </Button>
                 </div>
             </form>
