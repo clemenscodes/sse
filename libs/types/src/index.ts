@@ -7,3 +7,4 @@ export * from './lib/session';
 export * from './lib/pages/home';
 export * from './lib/pages/login';
 export * from './lib/pages/note';
+export * from './lib/pages/notes';

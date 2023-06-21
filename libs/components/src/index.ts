@@ -27,3 +27,4 @@ export * from './lib/label/label';
 export * from './lib/form/form';
 export * from './lib/footer/footer';
 export * from './lib/header/header';
+export * from './lib/toast/useToast';
