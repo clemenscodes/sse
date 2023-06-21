@@ -1,11 +1,10 @@
-import { useEffect } from 'react';
-import { get, useNotesStore } from '@utils';
-import { cn } from '@styles';
-import { NextPage } from 'next';
-import { CreatedNote } from '@types';
-import { toast } from 'libs/components/src/lib/toast/useToast';
 import { NoteList } from '@components';
-
+import { cn } from '@styles';
+import { CreatedNote } from '@types';
+import { get, useNotesStore } from '@utils';
+import { toast } from 'libs/components/src/lib/toast/useToast';
+import { NextPage } from 'next';
+import { useEffect } from 'react';
 
 export type MynotesProps = React.ComponentPropsWithoutRef<'div'>;
 
@@ -15,7 +14,7 @@ export const Mynotes: NextPage<MynotesProps> = ({ ...props }) => {
 
     useEffect(() => {
         const fetchNotes = async () => {
-            const url = `note/user`
+            const url = `note/user`;
             const { data, status } = await get<CreatedNote[]>(url);
             if (status !== 200) {
                 toast({
@@ -27,7 +26,7 @@ export const Mynotes: NextPage<MynotesProps> = ({ ...props }) => {
             if (data != null) {
                 setNotes(data);
             }
-        }
+        };
         fetchNotes();
     }, [setNotes]);
 

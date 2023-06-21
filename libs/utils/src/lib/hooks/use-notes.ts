@@ -20,4 +20,3 @@ export const useNotesStore = create<NotesStore>()(
         )
     )
 );
-

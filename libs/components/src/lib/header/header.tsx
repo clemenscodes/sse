@@ -1,5 +1,10 @@
 import { cn } from '@styles';
-import { IconLogout2, IconNote, IconUserCog, IconBook } from '@tabler/icons-react';
+import {
+    IconBook,
+    IconLogout2,
+    IconNote,
+    IconUserCog,
+} from '@tabler/icons-react';
 import { post, useSessionStore } from '@utils';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -176,6 +181,6 @@ export const Header: React.FC<HeaderProps> = ({ ...props }) => {
             </div>
         </header>
     );
-}
+};
 
 export default Header;

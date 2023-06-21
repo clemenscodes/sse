@@ -5,7 +5,7 @@ export const getNotes = async (
     id: string,
     cookies?: string
 ): Promise<CreatedNote[] | null> => {
-    const url=`note/user?id=${id}`
+    const url = `note/user?id=${id}`;
     const config = cookies
         ? {
               headers: {

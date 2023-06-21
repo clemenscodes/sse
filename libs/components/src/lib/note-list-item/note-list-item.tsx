@@ -14,7 +14,9 @@ export const NoteListItem: React.FC<NoteListItemProps> = ({
 }) => {
     return (
         <li
-            className={cn('m-4 p-4 w-full md:w-2/5 bg-gray-100 hover:bg-gray-200 rounded-md border shadow transition-colors duration-200 ease-in-out')}
+            className={cn(
+                'm-4 w-full rounded-md border bg-gray-100 p-4 shadow transition-colors duration-200 ease-in-out hover:bg-gray-200 md:w-2/5'
+            )}
             {...props}
         >
             <Link
@@ -22,7 +24,10 @@ export const NoteListItem: React.FC<NoteListItemProps> = ({
                 className={cn('hover:cursor-pointer')}
             >
                 <ScrollArea className={cn('h-96 p-4')}>
-                    <Note content={note.content} className={cn('text-lg font-medium text-gray-800')} />
+                    <Note
+                        content={note.content}
+                        className={cn('text-lg font-medium text-gray-800')}
+                    />
                 </ScrollArea>
             </Link>
         </li>
