@@ -81,6 +81,12 @@ export const Header: React.FC<HeaderProps> = ({ ...props }) => {
                     >
                         Home
                     </Link>
+                    <Link
+                        href={session ? '/mynotes' : '/'}
+                        className={cn('text-gray-300 hover:text-white')}
+                    >
+                        My Notes
+                    </Link>
                     <span>{session?.username || 'Guest'}</span>
                     {session && (
                         <Button
