@@ -1,3 +1,5 @@
+export * from './lib/consent/consent';
+export * from './lib/video/video';
 export * from './lib/preview/preview';
 export * from './lib/tooltip/tooltip';
 export * from './lib/tooltip/tooltip';
