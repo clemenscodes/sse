@@ -24,7 +24,7 @@ describe('LoginForm', () => {
         const onSubmitMock = jest.fn();
         render(<LoginForm submit={onSubmitMock} />);
 
-        const submitButton = screen.getByRole('button', { name: /Submit/i });
+        const submitButton = screen.getByTestId('Login');
         expect(submitButton).toBeInTheDocument();
     });
 
@@ -34,7 +34,7 @@ describe('LoginForm', () => {
 
         const usernameInput = screen.getByPlaceholderText('Username');
         const passwordInput = screen.getByPlaceholderText('Password');
-        const submitButton = screen.getByRole('button', { name: /Submit/i });
+        const submitButton = screen.getByTestId('Login');
 
         await userEvent.type(usernameInput, 'testuser');
         await userEvent.type(passwordInput, 'testPassword1');

@@ -1,6 +1,6 @@
-import { NoteForm, Redirect } from '@components';
+import { NoteForm, Preview, Redirect } from '@components';
 import { cn } from '@styles';
-import { useSessionStore } from '@utils';
+import { usePreviewStore, useSessionStore } from '@utils';
 import { NextPage } from 'next';
 import { useEffect, useState } from 'react';
 
@@ -12,6 +12,12 @@ export const CreateNote: NextPage<CreateNoteProps> = ({ ...props }) => {
 
     useEffect(() => {
         setHasMounted(true);
+        usePreviewStore.setState((state) => {
+            return {
+                ...state,
+                preview: null,
+            };
+        });
     }, []);
 
     if (!hasMounted) {
@@ -29,10 +35,13 @@ export const CreateNote: NextPage<CreateNoteProps> = ({ ...props }) => {
             )}
             {...props}
         >
-            <h1 className={cn('text-lg')}>
+            <h1 className={cn('text-2xl font-semibold')}>
                 Write notes using HTML or even Markdown
             </h1>
-            <NoteForm />
+            <div className="flex w-full">
+                <NoteForm className={'w-1/2'} />
+                <Preview className={'w-1/2'} />
+            </div>
         </div>
     );
 };

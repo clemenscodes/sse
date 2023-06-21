@@ -6,8 +6,8 @@ import { Converter } from 'showdown';
 @Injectable()
 export class NotePipe<T extends NoteSchema> implements PipeTransform<T> {
     constructor(public schema = noteSchema) {}
-    transform(value: T) {
-        this.schema.parse(value);
+    async transform(value: T) {
+        this.schema.parseAsync(value);
         const converter = new Converter();
         const rawHTML = converter.makeHtml(value.content);
         const sanitizedValue = sanitize(rawHTML);

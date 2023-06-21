@@ -7,9 +7,9 @@ export type NoteProps = React.ComponentPropsWithoutRef<'div'> & {
 export const Note: React.FC<NoteProps> = ({ content, className, ...props }) => {
     return (
         <div
-            className={cn(className, 'prose')}
-            {...props}
+            className={cn(className, 'prose max-w-none break-all')}
             dangerouslySetInnerHTML={{ __html: content }}
+            {...props}
         />
     );
 };

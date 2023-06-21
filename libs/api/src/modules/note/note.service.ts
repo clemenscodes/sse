@@ -82,12 +82,12 @@ export class NoteService {
         }
     }
 
-    async findAllByUserId(userId: User['id']) {
+    async findAllByUserId(userId: User['id']): Promise<CreatedNote[]> {
         try {
             const notes = await this.prismaService.note.findMany({
                 where: { userId },
                 select: {
-                    id: false,
+                    id: true,
                     content: true,
                     isPublic: true,
                     userId: false,

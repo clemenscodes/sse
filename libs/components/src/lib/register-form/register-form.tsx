@@ -1,5 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { cn } from '@styles';
+import { IconUserPlus } from '@tabler/icons-react';
 import { type Auth } from '@types';
 import {
     getSession,
@@ -156,8 +157,8 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                         </FormItem>
                     )}
                 />
-                <Button type='submit' className='w-full'>
-                    Register
+                <Button type='submit' className='w-full' data-testid='Register'>
+                    <IconUserPlus />
                 </Button>
             </form>
         </Form>

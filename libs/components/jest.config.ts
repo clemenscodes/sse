@@ -8,6 +8,11 @@ export default {
             { jsc: { transform: { react: { runtime: 'automatic' } } } },
         ],
     },
+    moduleNameMapper: {
+        '@next/font/(.*)': require.resolve(
+            'next/dist/build/jest/__mocks__/nextFontMock.js'
+        ),
+    },
     moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
     setupFilesAfterEnv: ['<rootDir>/setupTests.ts'],
 };

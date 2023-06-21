@@ -1,5 +1,5 @@
 import * as z from 'zod';
-import { checkPassword } from '../checkPassword';
+import { useScoreStore } from '../hooks/use-score';
 import { emailSchema } from './emailSchema';
 import { passwordSchema } from './passwordSchema';
 import { usernameSchema } from './usernameSchema';
@@ -16,16 +16,26 @@ export const registerSchema = z
         path: ['passwordConfirm'],
     })
     .refine(
-        (data) => {
+        async (data) => {
             const { password, username, email } = data;
-            const result = checkPassword(password, [username, email]);
+            const checkPassword = (await import('@password')).checkPassword;
+            const result = await checkPassword(password, [username, email]);
             return result.score === 4;
         },
         ({ password, email, username }) => {
+            (async () => {
+                const checkPassword = (await import('@password')).checkPassword;
+                const result = await checkPassword(password, [username, email]);
+                useScoreStore.setState((state) => {
+                    return {
+                        ...state,
+                        score: result.score,
+                    };
+                });
+            })();
+            const { score } = useScoreStore.getState();
             return {
-                message: `Password is not secure enough, score: ${
-                    checkPassword(password, [email, username]).score
-                }/4`,
+                message: `Password is not secure enough, score: ${score}/4`,
                 path: ['passwordConfirm'],
             };
         }
