@@ -20,8 +20,9 @@ export const useSessionStore = create<SessionStore>()(
                 setJwt: (jwt) => set((state) => ({ ...state, jwt })),
             }),
             {
-                name: 'notes-store',
+                name: 'session-store',
             }
-        )
+        ),
+        { enabled: process.env['NODE_ENV'] === 'development' }
     )
 );
