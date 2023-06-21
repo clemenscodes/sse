@@ -1,5 +1,10 @@
 import { cn } from '@styles';
-import { IconLogout2, IconNote, IconUserCog } from '@tabler/icons-react';
+import {
+    IconBook,
+    IconLogout2,
+    IconNote,
+    IconUserCog,
+} from '@tabler/icons-react';
 import { post, useSessionStore } from '@utils';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -86,6 +91,7 @@ export const Header: React.FC<HeaderProps> = ({ ...props }) => {
                 >
                     <div className={cn('text-2xl font-bold')}>Notes</div>
                 </Link>
+
                 <nav className={cn('flex items-center space-x-16')}>
                     {session && (
                         <TooltipProvider>
@@ -115,6 +121,25 @@ export const Header: React.FC<HeaderProps> = ({ ...props }) => {
                                 </TooltipTrigger>
                                 <TooltipContent align={'end'} side={'bottom'}>
                                     Create a new note
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
+                    )}
+                    {session && (
+                        <TooltipProvider>
+                            <Tooltip>
+                                <TooltipTrigger>
+                                    <Link
+                                        href={'/mynotes'}
+                                        className={cn(
+                                            'text-gray-300 hover:text-white'
+                                        )}
+                                    >
+                                        <IconBook />
+                                    </Link>
+                                </TooltipTrigger>
+                                <TooltipContent align={'end'} side={'bottom'}>
+                                    View my notes
                                 </TooltipContent>
                             </Tooltip>
                         </TooltipProvider>

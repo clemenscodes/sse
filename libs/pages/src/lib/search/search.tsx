@@ -30,7 +30,7 @@ export const Search: NextPage<SearchProps> = ({ ...props }) => {
             {...props}
         >
             <h1 className={cn('text-xl')}>Search results for: {search}</h1>
-            {result && result.length ? (
+            {result?.length ? (
                 <NoteList notes={result} />
             ) : (
                 <p className={cn()}>No notes found</p>
