@@ -15,7 +15,6 @@
         "skipDefaultLibCheck": true,
         "baseUrl": ".",
         "paths": {
-            "react": ["./node_modules/@types/react"],
             "@api": ["libs/api/src/index.ts"],
             "@auth": ["libs/auth/src/index.ts"],
             "@components": ["libs/components/src/index.ts"],
@@ -26,7 +25,8 @@
             "@test/*": ["libs/test/src/*"],
             "@types": ["libs/types/src/index.ts"],
             "@types/express": ["libs/types/src/lib/express.d.ts"],
-            "@utils": ["libs/utils/src/index.ts"]
+            "@utils": ["libs/utils/src/index.ts"],
+            "react": ["./node_modules/@types/react"]
         }
     },
     "exclude": ["node_modules", "tmp"]

@@ -8,6 +8,7 @@ import {
     useSessionStore,
     type LoginSchema,
 } from '@utils';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import { Button } from '../button/button';
@@ -120,6 +121,9 @@ export const Login: React.FC<LoginProps> = ({ submit, ...props }) => {
                 <Button type='submit' className='w-full'>
                     Submit
                 </Button>
+                <Link href={'/forgot-password'}>
+                    <p style={{ float: 'right' }}>forgot password?</p>
+                </Link>
             </form>
         </Form>
     );

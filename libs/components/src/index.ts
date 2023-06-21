@@ -1,3 +1,4 @@
+export * from './lib/forgot-password/forgot-password';
 export * from './lib/redirect/redirect';
 export * from './lib/toaster/toaster';
 export * from './lib/toast/toast';
