@@ -1,5 +1,5 @@
+import { ForgotPassword } from '@components';
 import { cn } from '@styles';
-import {ForgotPassword} from "@components";
 
 export function ForgotPasswordPage() {
     return (
