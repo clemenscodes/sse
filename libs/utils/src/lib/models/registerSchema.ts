@@ -1,4 +1,5 @@
 import * as z from 'zod';
+import { useScoreStore } from '../hooks/use-score';
 import { emailSchema } from './emailSchema';
 import { passwordSchema } from './passwordSchema';
 import { usernameSchema } from './usernameSchema';
@@ -22,14 +23,19 @@ export const registerSchema = z
             return result.score === 4;
         },
         ({ password, email, username }) => {
+            (async () => {
+                const checkPassword = (await import('@password')).checkPassword;
+                const result = await checkPassword(password, [username, email]);
+                useScoreStore.setState((state) => {
+                    return {
+                        ...state,
+                        score: result.score,
+                    };
+                });
+            })();
+            const { score } = useScoreStore.getState();
             return {
-                message: `Password is not secure enough, score: ${import(
-                    '@password'
-                )
-                    .then((mod) =>
-                        mod.checkPassword(password, [email, username])
-                    )
-                    .then((password) => password)}/4`,
+                message: `Password is not secure enough, score: ${score}/4`,
                 path: ['passwordConfirm'],
             };
         }
