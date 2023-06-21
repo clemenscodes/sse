@@ -3,7 +3,7 @@ import { cn } from '@styles';
 import { CreatedNote } from '@types';
 import { get, useNotesStore, useSessionStore } from '@utils';
 import { NextPage } from 'next';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export type MynotesProps = React.ComponentPropsWithoutRef<'div'>;
 
@@ -35,7 +35,7 @@ export const Mynotes: NextPage<MynotesProps> = ({ ...props }) => {
             };
             fetchNotes();
         }
-    }, [session, hasMounted]);
+    }, [session, hasMounted, setNotes]);
 
     if (!hasMounted) {
         return null;
