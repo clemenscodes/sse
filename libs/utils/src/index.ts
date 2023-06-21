@@ -18,3 +18,4 @@ export * from './lib/models/usernameSchema';
 export * from './lib/models/registerSchema';
 export * from './lib/models/emailSchema';
 export * from './lib/models/contentSchema';
+export * from './lib/models/youtubeSchema';
