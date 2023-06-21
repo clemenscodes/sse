@@ -10,6 +10,7 @@ export * from './lib/hooks/use-session';
 export * from './lib/hooks/use-preview';
 export * from './lib/hooks/use-search';
 export * from './lib/hooks/use-notes';
+export * from './lib/hooks/use-score';
 export * from './lib/models/loginSchema';
 export * from './lib/models/userSchema';
 export * from './lib/models/searchSchema';
