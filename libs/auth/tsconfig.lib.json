@@ -24,6 +24,7 @@
         "src/**/*.jsx",
         "src/**/*.ts",
         "src/**/*.tsx",
-        "../utils/src/lib/generateSessionToken.ts"
+        "../utils/src/lib/generateSessionToken.ts",
+        "../password/src/lib/checkPassword.ts"
     ]
 }

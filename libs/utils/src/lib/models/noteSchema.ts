@@ -1,19 +1,8 @@
-import { sanitize } from 'isomorphic-dompurify';
-import { Converter } from 'showdown';
 import * as z from 'zod';
+import { contentSchema } from './contentSchema';
 
 export const noteSchema = z.object({
-    content: z
-        .string()
-        .min(1, {
-            message: 'Note can not be empty',
-        })
-        .transform((value) => {
-            const converter = new Converter();
-            const rawHTML = converter.makeHtml(value);
-            const sanitizedValue = sanitize(rawHTML);
-            return sanitizedValue;
-        }),
+    content: contentSchema,
     isPublic: z.boolean().default(false),
 });
 

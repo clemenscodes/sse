@@ -1,5 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { cn } from '@styles';
+import { IconFileSearch } from '@tabler/icons-react';
 import { CreatedNote } from '@types';
 import { get, SearchSchema, searchSchema, useSearchStore } from '@utils';
 import { useRouter } from 'next/router';
@@ -69,18 +70,12 @@ export const Search: React.FC<SearchProps> = ({ ...props }) => {
 
     return (
         <div {...props}>
-            <Button
-                variant='outline'
+            <IconFileSearch
                 className={cn(
-                    'flex h-8 w-full justify-between space-x-4 p-4 py-5'
+                    'text-gray-300 hover:cursor-pointer hover:text-white'
                 )}
                 onClick={() => setOpen(true)}
-            >
-                <span>Search</span>
-                <kbd className='pointer-events-none hidden select-none rounded border px-2 md:flex'>
-                    <span>⌘ K</span>
-                </kbd>
-            </Button>
+            />
             <CommandDialog open={open} onOpenChange={setOpen}>
                 <Form {...form}>
                     <form

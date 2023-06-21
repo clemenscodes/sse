@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { get, useSessionStore, useNotesStore } from '@utils';
+import { get, useNotesStore } from '@utils';
 import { cn } from '@styles';
 import { NextPage } from 'next';
 import { CreatedNote } from '@types';
@@ -10,16 +10,12 @@ import { NoteList } from '@components';
 export type MynotesProps = React.ComponentPropsWithoutRef<'div'>;
 
 export const Mynotes: NextPage<MynotesProps> = ({ ...props }) => {
-    const session = useSessionStore((state) => state.session);
     const setNotes = useNotesStore((state) => state.setNotes);
     const notes = useNotesStore((state) => state.notes);
-    const userId = session?.id;
-    const token = useSessionStore((state) => state.jwt);
 
     useEffect(() => {
         const fetchNotes = async () => {
-            const url=`note/user`
-            const config = {userId: userId}
+            const url = `note/user`
             const { data, status } = await get<CreatedNote[]>(url);
             if (status !== 200) {
                 toast({
@@ -33,7 +29,7 @@ export const Mynotes: NextPage<MynotesProps> = ({ ...props }) => {
             }
         }
         fetchNotes();
-    }, []);
+    }, [setNotes]);
 
     return (
         <div
@@ -41,7 +37,7 @@ export const Mynotes: NextPage<MynotesProps> = ({ ...props }) => {
             {...props}
         >
             <h1 className={cn('text-xl')}>My Notes:</h1>
-            {notes && notes.length ? (
+            {notes?.length ? (
                 <NoteList notes={notes} />
             ) : (
                 <p className={cn()}>No notes found</p>

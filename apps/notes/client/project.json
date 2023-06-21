@@ -3,7 +3,7 @@
     "$schema": "../../../node_modules/nx/schemas/project-schema.json",
     "sourceRoot": "apps/notes/client",
     "projectType": "application",
-    "implicitDependencies": ["prisma"],
+    "implicitDependencies": ["prisma", "pages"],
     "targets": {
         "build": {
             "dependsOn": ["^generation"],

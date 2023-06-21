@@ -9,5 +9,10 @@ export default {
         ],
     },
     moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
+    moduleNameMapper: {
+        '@next/font/(.*)': require.resolve(
+            'next/dist/build/jest/__mocks__/nextFontMock.js'
+        ),
+    },
     setupFilesAfterEnv: ['<rootDir>/setupTests.ts'],
 };

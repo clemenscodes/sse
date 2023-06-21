@@ -9,7 +9,7 @@ describe('Register', () => {
 
     it('should display validation errors when form fields are empty', async () => {
         render(<RegisterForm />);
-        fireEvent.click(screen.getByText('Register'));
+        fireEvent.click(screen.getByTestId('Register'));
 
         await waitFor(() => {
             expect(
@@ -53,7 +53,7 @@ describe('Register', () => {
             },
         });
 
-        fireEvent.click(screen.getByText('Register'));
+        fireEvent.click(screen.getByTestId('Register'));
 
         await waitFor(() => {
             expect(onSubmitMock).toHaveBeenCalledWith({

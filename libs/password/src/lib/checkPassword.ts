@@ -4,22 +4,22 @@ import {
     type OptionsType,
     type ZxcvbnResult,
 } from '@zxcvbn-ts/core';
-import * as zxcvbnCommonPackage from '@zxcvbn-ts/language-common';
-import * as zxcvbnDePackage from '@zxcvbn-ts/language-de';
-import * as zxcvbnEnPackage from '@zxcvbn-ts/language-en';
 
-export const checkPassword = (
+export const checkPassword = async (
     pass: string,
     inputs: string[]
-): Omit<ZxcvbnResult, 'password'> => {
+): Promise<Omit<ZxcvbnResult, 'password'>> => {
+    const commonPackage = await import('@zxcvbn-ts/language-common');
+    const dePackge = await import('@zxcvbn-ts/language-en');
+    const enPackage = await import('@zxcvbn-ts/language-de');
     const options: OptionsType = {
         dictionary: {
-            ...zxcvbnCommonPackage.dictionary,
-            ...zxcvbnEnPackage.dictionary,
-            ...zxcvbnDePackage.dictionary,
+            ...commonPackage.dictionary,
+            ...dePackge.dictionary,
+            ...enPackage.dictionary,
             userInputs: inputs,
         },
-        graphs: zxcvbnCommonPackage.adjacencyGraphs,
+        graphs: commonPackage.adjacencyGraphs,
         useLevenshteinDistance: true,
         levenshteinThreshold: 4,
     };
