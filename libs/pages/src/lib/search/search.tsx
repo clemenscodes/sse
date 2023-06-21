@@ -29,7 +29,9 @@ export const Search: NextPage<SearchProps> = ({ ...props }) => {
             className={cn('flex flex-col mb-12 items-center justify-center')}
             {...props}
         >
-            <h1 className={cn('text-xl break-all')}>Search results for: {search}</h1>
+            <h1 className={cn('text-xl break-all')}>
+                Search results for: {search}
+            </h1>
             {result?.length ? (
                 <NoteList notes={result} />
             ) : (
