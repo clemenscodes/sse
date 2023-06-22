@@ -1,5 +1,5 @@
+import { ResetPassword } from '@components';
 import { cn } from '@styles';
-import {ResetPassword} from "@components";
 
 export function ResetPasswordPage() {
     return (
