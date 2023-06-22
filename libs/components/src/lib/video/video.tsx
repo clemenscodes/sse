@@ -1,4 +1,4 @@
-import { cn } from '@styles';
+import Consent from '../consent/consent';
 
 export type VideoProps = React.ComponentPropsWithoutRef<'iframe'> & {
     videoId: string;
@@ -7,16 +7,15 @@ export type VideoProps = React.ComponentPropsWithoutRef<'iframe'> & {
 export const Video: React.FC<VideoProps> = ({ videoId, ...props }) => {
     const src = `https://www.youtube-nocookie.com/embed/${videoId}`;
     return (
-        <div className={cn()}>
+        <Consent>
             <iframe
-                data-cookieblock-src={src}
-                data-cookieconsent={'marketing'}
-                allow='autoplay; encrypted-media'
+                src={src}
+                allow='encrypted-media'
                 allowFullScreen
                 title='video'
                 {...props}
             />
-        </div>
+        </Consent>
     );
 };
 

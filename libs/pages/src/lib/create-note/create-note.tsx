@@ -16,6 +16,8 @@ export const CreateNote: NextPage<CreateNoteProps> = ({ ...props }) => {
             return {
                 ...state,
                 preview: null,
+                attachment: null,
+                videoId: null,
             };
         });
     }, []);
@@ -36,7 +38,7 @@ export const CreateNote: NextPage<CreateNoteProps> = ({ ...props }) => {
             {...props}
         >
             <h1 className={cn('text-2xl font-semibold')}>
-                Write notes using HTML or even Markdown
+                Write notes using HTML or Markdown
             </h1>
             <div className="flex w-full">
                 <NoteForm className={'w-1/2'} />

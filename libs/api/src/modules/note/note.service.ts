@@ -3,10 +3,11 @@ import {
     InternalServerErrorException,
     NotFoundException,
 } from '@nestjs/common';
-import { Prisma, type Note, type User } from '@prisma/api';
+import { Attachment, Prisma, type Note, type User } from '@prisma/api';
 import { type CreatedNote } from '@types';
 import { type NoteSchema } from '@utils';
 import { PrismaService } from '../prisma/prisma.service';
+import { validateVideoId } from './validateVideoId';
 
 @Injectable()
 export class NoteService {
@@ -14,19 +15,38 @@ export class NoteService {
 
     async create(note: NoteSchema, userId: User['id']): Promise<CreatedNote> {
         try {
-            const { isPublic, content } = note;
-            const createdNote = await this.prismaService.note.create({
-                data: {
-                    isPublic,
-                    content,
-                    user: {
-                        connect: { id: userId },
-                    },
+            const { isPublic, content, attachment } = note;
+
+            let data: Prisma.NoteCreateInput = {
+                isPublic,
+                content,
+                user: {
+                    connect: { id: userId },
                 },
+            };
+
+            if (attachment?.length === 11) {
+                data = {
+                    ...data,
+                    attachment: {
+                        create: {
+                            videoId: attachment,
+                        },
+                    },
+                };
+            }
+
+            const createdNote = await this.prismaService.note.create({
+                data,
                 select: {
                     id: true,
                     content: true,
                     isPublic: true,
+                    attachment: {
+                        select: {
+                            videoId: true,
+                        },
+                    },
                     userId: false,
                 },
             });
@@ -48,6 +68,10 @@ export class NoteService {
         }
     }
 
+    async validateVideoId(videoId: Attachment['videoId']): Promise<boolean> {
+        return await validateVideoId(videoId);
+    }
+
     async findById(id: Note['id'], userId: User['id']): Promise<CreatedNote> {
         try {
             const note = await this.prismaService.note.findUnique({
@@ -56,6 +80,11 @@ export class NoteService {
                     id: true,
                     content: true,
                     isPublic: true,
+                    attachment: {
+                        select: {
+                            videoId: true,
+                        },
+                    },
                     userId: true,
                 },
             });
@@ -90,6 +119,11 @@ export class NoteService {
                     id: true,
                     content: true,
                     isPublic: true,
+                    attachment: {
+                        select: {
+                            videoId: true,
+                        },
+                    },
                     userId: false,
                 },
             });
@@ -124,6 +158,11 @@ export class NoteService {
                     id: true,
                     content: true,
                     isPublic: true,
+                    attachment: {
+                        select: {
+                            videoId: true,
+                        },
+                    },
                     userId: false,
                 },
             });

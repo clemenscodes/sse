@@ -12,7 +12,7 @@ const robotoCondensed = Roboto_Condensed({
     weight: '300',
     variable: '--font-sans',
     subsets: ['latin'],
-    preload: true,
+    preload: false,
     display: 'swap',
 });
 
