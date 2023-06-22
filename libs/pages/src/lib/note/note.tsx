@@ -27,15 +27,14 @@ export const NotePage: NextPage<NotePageProps> = ({ note, ...props }) => {
     }
 
     return (
-        <div className="flex flex-col items-center justify-between lg:flex-row space-x-16">
+        <div className="flex flex-col items-center w-full justify-around lg:flex-row h-full lg:space-x-16 mb-12">
             <div
                 className={cn(
-                    'flex flex-col lg:h-[36rem] w-full my-12 border rounded',
-                    note.attachment?.videoId && 'lg:w-1/2'
+                    'flex-1 flex-col w-full h-[36rem] my-12 border rounded'
                 )}
                 {...props}
             >
-                <ScrollArea className={cn('h-full')}>
+                <ScrollArea className={cn('h-[36rem]')}>
                     <Note
                         className={cn('m-4 break-words rounded p-4')}
                         content={note.content}
@@ -43,11 +42,15 @@ export const NotePage: NextPage<NotePageProps> = ({ note, ...props }) => {
                 </ScrollArea>
             </div>
             {note.attachment?.videoId && (
-                <div className="flex lg:h-96 aspect-video">
-                    <Video
-                        videoId={note.attachment.videoId}
-                        className={cn('w-full h-full')}
-                    />
+                <div className="flex-1 w-3/4 h-[28rem] items-center justify-center">
+                    <div className="relative w-full aspect-video">
+                        <Video
+                            videoId={note.attachment.videoId}
+                            className={cn(
+                                'absolute top-0 left-0 w-full h-full'
+                            )}
+                        />
+                    </div>
                 </div>
             )}
         </div>
