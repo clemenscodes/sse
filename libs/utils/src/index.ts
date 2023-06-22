@@ -6,7 +6,6 @@ export * from './lib/api';
 export * from './lib/url';
 export * from './lib/getSession';
 export * from './lib/getNote';
-export * from './lib/checkYouTubeVideoId';
 export * from './lib/hooks/use-session';
 export * from './lib/hooks/use-preview';
 export * from './lib/hooks/use-search';
