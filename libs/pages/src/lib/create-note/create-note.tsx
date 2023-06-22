@@ -16,6 +16,7 @@ export const CreateNote: NextPage<CreateNoteProps> = ({ ...props }) => {
             return {
                 ...state,
                 preview: null,
+                attachment: null,
             };
         });
     }, []);

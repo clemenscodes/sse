@@ -16,12 +16,7 @@ export class PasswordException extends HttpException {
         public error: string,
         public result: Omit<ZxcvbnResult, 'password'>
     ) {
-        super(
-            {
-                message,
-            },
-            statusCode
-        );
+        super({ message }, statusCode);
     }
 }
 
