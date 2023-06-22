@@ -15,17 +15,13 @@ export const Preview: React.FC<PreviewProps> = ({ className, ...props }) => {
     const videoId = usePreviewStore((state) => state.videoId);
     const setVideoId = usePreviewStore((state) => state.setVideoId);
     const [content, setContent] = useState<PrismaNote['content']>('');
-    const [oldPreview, setOldPreview] = useState<PrismaNote['content'] | null>(
-        attachment
-    );
     const [oldAttachment, setOldAttachment] = useState<
         Attachment['videoId'] | null
     >(attachment);
 
     useEffect(() => {
         (async () => {
-            if (preview && preview && oldPreview) {
-                setOldPreview(preview);
+            if (preview) {
                 const clean = await sanitizeInput(preview);
                 setContent(clean);
             }
@@ -68,7 +64,7 @@ export const Preview: React.FC<PreviewProps> = ({ className, ...props }) => {
                 }
             }
         })();
-    }, [attachment, oldAttachment, oldPreview, preview, setVideoId]);
+    }, [attachment, oldAttachment, preview, setVideoId]);
 
     return (
         <div
@@ -85,8 +81,11 @@ export const Preview: React.FC<PreviewProps> = ({ className, ...props }) => {
                 </ScrollArea>
             </div>
             {videoId && (
-                <div className={cn('m-6 aspect-video')}>
-                    <Video videoId={videoId} />
+                <div className={cn('relative m-6 aspect-video w-1/2')}>
+                    <Video
+                        videoId={videoId}
+                        className={cn('absolute left-0 top-0 h-full w-full')}
+                    />
                 </div>
             )}
         </div>
