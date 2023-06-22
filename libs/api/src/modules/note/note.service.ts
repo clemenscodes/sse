@@ -14,19 +14,38 @@ export class NoteService {
 
     async create(note: NoteSchema, userId: User['id']): Promise<CreatedNote> {
         try {
-            const { isPublic, content } = note;
-            const createdNote = await this.prismaService.note.create({
-                data: {
-                    isPublic,
-                    content,
-                    user: {
-                        connect: { id: userId },
-                    },
+            const { isPublic, content, attachment } = note;
+
+            let data: Prisma.NoteCreateInput = {
+                isPublic,
+                content,
+                user: {
+                    connect: { id: userId },
                 },
+            };
+
+            if (attachment?.length === 11) {
+                data = {
+                    ...data,
+                    attachment: {
+                        create: {
+                            videoId: attachment,
+                        },
+                    },
+                };
+            }
+
+            const createdNote = await this.prismaService.note.create({
+                data,
                 select: {
                     id: true,
                     content: true,
                     isPublic: true,
+                    attachment: {
+                        select: {
+                            videoId: true,
+                        },
+                    },
                     userId: false,
                 },
             });
@@ -56,6 +75,11 @@ export class NoteService {
                     id: true,
                     content: true,
                     isPublic: true,
+                    attachment: {
+                        select: {
+                            videoId: true,
+                        },
+                    },
                     userId: true,
                 },
             });
@@ -90,6 +114,11 @@ export class NoteService {
                     id: true,
                     content: true,
                     isPublic: true,
+                    attachment: {
+                        select: {
+                            videoId: true,
+                        },
+                    },
                     userId: false,
                 },
             });
@@ -124,6 +153,11 @@ export class NoteService {
                     id: true,
                     content: true,
                     isPublic: true,
+                    attachment: {
+                        select: {
+                            videoId: true,
+                        },
+                    },
                     userId: false,
                 },
             });

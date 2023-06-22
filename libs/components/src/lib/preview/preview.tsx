@@ -1,15 +1,23 @@
-import { Note as PrismaNote } from '@prisma/api';
+import { Attachment, Note as PrismaNote } from '@prisma/api';
 import { cn } from '@styles';
-import { sanitizeInput, usePreviewStore } from '@utils';
+import {
+    checkYouTubeVideoId,
+    sanitizeInput,
+    usePreviewStore,
+    youtubeSchema,
+} from '@utils';
 import { useEffect, useState } from 'react';
 import Note from '../note/note';
 import { ScrollArea } from '../scroll-area/scroll-area';
+import Video from '../video/video';
 
 export type PreviewProps = React.ComponentPropsWithoutRef<'div'>;
 
 export const Preview: React.FC<PreviewProps> = ({ className, ...props }) => {
     const preview = usePreviewStore((state) => state.preview);
+    const attachment = usePreviewStore((state) => state.attachment);
     const [content, setContent] = useState<PrismaNote['content']>('');
+    const [videoId, setVideoId] = useState<Attachment['videoId']>('');
 
     useEffect(() => {
         (async () => {
@@ -17,8 +25,20 @@ export const Preview: React.FC<PreviewProps> = ({ className, ...props }) => {
                 const clean = await sanitizeInput(preview);
                 setContent(clean);
             }
+            if (attachment) {
+                try {
+                    const videoId = youtubeSchema.parse(attachment);
+                    const isValidVideoId = await checkYouTubeVideoId(videoId);
+                    if (isValidVideoId) {
+                        return setVideoId(videoId);
+                    }
+                    setVideoId('');
+                } catch (e) {
+                    setVideoId('');
+                }
+            }
         })();
-    }, [preview]);
+    }, [attachment, preview]);
 
     return (
         <div
@@ -34,6 +54,11 @@ export const Preview: React.FC<PreviewProps> = ({ className, ...props }) => {
                     <Note content={content} className={cn('p-4')} />
                 </ScrollArea>
             </div>
+            {videoId && (
+                <div className={cn('m-12 aspect-video')}>
+                    <Video videoId={videoId} />
+                </div>
+            )}
         </div>
     );
 };

@@ -11,11 +11,13 @@ import { Checkbox } from '../checkbox/checkbox';
 import {
     Form,
     FormControl,
+    FormDescription,
     FormField,
     FormItem,
     FormLabel,
     FormMessage,
 } from '../form/form';
+import { Input } from '../input/input';
 import Textarea from '../textarea/textarea';
 import { toast } from '../toast/useToast';
 
@@ -36,15 +38,20 @@ export const NoteForm: React.FC<NoteFormProps> = ({
         defaultValues: {
             content: '',
             isPublic: false,
+            attachment: undefined,
         },
     });
 
     const onChange = () => {
-        const { content } = form.getValues();
+        const { content, attachment } = form.getValues();
+        if (!attachment) {
+            form.resetField('attachment');
+        }
         usePreviewStore.setState((state) => {
             return {
                 ...state,
                 preview: content,
+                attachment: attachment ? attachment : undefined,
             };
         });
     };
@@ -118,6 +125,25 @@ export const NoteForm: React.FC<NoteFormProps> = ({
                             <div className='space-y-1 leading-none'>
                                 <FormLabel>Public note</FormLabel>
                             </div>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name='attachment'
+                    render={({ field }) => (
+                        <FormItem className='flex w-full flex-col items-start rounded-md border p-4'>
+                            <FormControl>
+                                <Input
+                                    placeholder='YouTube URL or video ID'
+                                    className='w-full border-2 border-gray-300'
+                                    {...field}
+                                />
+                            </FormControl>
+                            <FormDescription>
+                                You can attach a YouTube video to the note
+                            </FormDescription>
                             <FormMessage />
                         </FormItem>
                     )}
