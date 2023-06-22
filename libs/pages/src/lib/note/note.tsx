@@ -30,7 +30,8 @@ export const NotePage: NextPage<NotePageProps> = ({ note, ...props }) => {
         <div className="flex flex-col items-center justify-between lg:flex-row space-x-16">
             <div
                 className={cn(
-                    'flex flex-col lg:h-[36rem] w-full lg:w-1/2 my-12 border rounded'
+                    'flex flex-col lg:h-[36rem] w-full my-12 border rounded',
+                    note.attachment?.videoId && 'lg:w-1/2'
                 )}
                 {...props}
             >

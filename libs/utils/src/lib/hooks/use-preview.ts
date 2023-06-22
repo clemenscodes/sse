@@ -18,7 +18,10 @@ export const usePreviewStore = create<PreviewStore>()(
                 setPreview: (preview) =>
                     set((state) => ({ ...state, preview })),
                 setAttachment: (attachment) =>
-                    set((state) => ({ ...state, attachment })),
+                    set((state) => ({
+                        ...state,
+                        attachment: attachment ? attachment : null,
+                    })),
             }),
             {
                 name: 'preview-store',

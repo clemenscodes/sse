@@ -38,17 +38,20 @@ export const NoteForm: React.FC<NoteFormProps> = ({
         defaultValues: {
             content: '',
             isPublic: false,
-            attachment: '',
+            attachment: undefined,
         },
     });
 
     const onChange = () => {
         const { content, attachment } = form.getValues();
+        if (!attachment) {
+            form.resetField('attachment');
+        }
         usePreviewStore.setState((state) => {
             return {
                 ...state,
                 preview: content,
-                attachment,
+                attachment: attachment ? attachment : undefined,
             };
         });
     };

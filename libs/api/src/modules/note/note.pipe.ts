@@ -1,5 +1,5 @@
 import { HttpStatus, Injectable, PipeTransform } from '@nestjs/common';
-import { noteSchema, sanitizeInput, type NoteSchema } from '@utils';
+import { noteSchema, youtubeSchema, type NoteSchema } from '@utils';
 import axios from 'axios';
 import { YouTubeException } from '../../filter/youtube.filter';
 
@@ -7,17 +7,25 @@ import { YouTubeException } from '../../filter/youtube.filter';
 export class NotePipe<T extends NoteSchema> implements PipeTransform<T> {
     constructor(public schema = noteSchema) {}
     async transform(value: T) {
-        this.schema.parseAsync(value);
-        value.content = await sanitizeInput(value.content);
-        if (!value.attachment) {
-            return value;
+        const parsed = await this.schema.parseAsync(value);
+        if (!parsed.attachment) {
+            return parsed;
         }
-        const videoId = value.attachment;
-        const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/default.jpg`;
+        const videoId = parsed.attachment;
+        let parsedVideoId: string;
+        try {
+            parsedVideoId = youtubeSchema.parse(videoId);
+        } catch {
+            throw new YouTubeException(
+                HttpStatus.NOT_ACCEPTABLE,
+                'YouTube video id is invalid'
+            );
+        }
+        const thumbnailUrl = `https://img.youtube.com/vi/${parsedVideoId}/default.jpg`;
         try {
             const response = await axios.get(thumbnailUrl);
             if (response.status === 200) {
-                return value;
+                return parsed;
             }
             throw new YouTubeException(
                 HttpStatus.NOT_ACCEPTABLE,
