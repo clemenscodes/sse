@@ -38,7 +38,7 @@ export const NoteForm: React.FC<NoteFormProps> = ({
         defaultValues: {
             content: '',
             isPublic: false,
-            attachment: undefined,
+            attachment: '',
         },
     });
 
@@ -51,7 +51,7 @@ export const NoteForm: React.FC<NoteFormProps> = ({
             return {
                 ...state,
                 preview: content,
-                attachment: attachment ? attachment : undefined,
+                attachment: attachment ? attachment : '',
             };
         });
     };

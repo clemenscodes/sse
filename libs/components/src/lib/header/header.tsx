@@ -56,7 +56,7 @@ export const Header: React.FC<HeaderProps> = ({ ...props }) => {
         }
         if (!error) {
             return toast({
-                title: 'Failed logging out',
+                title: 'Errors happened while logging out',
                 description: 'Check the developer tools for errors',
                 variant: 'destructive',
             });
@@ -72,7 +72,7 @@ export const Header: React.FC<HeaderProps> = ({ ...props }) => {
         }
         clearState();
         toast({
-            title: 'Failed logging out',
+            title: 'Errors happened while logging out',
             description: 'Check the developer tools for errors',
             variant: 'destructive',
         });

@@ -1,6 +1,6 @@
 import { NotePipe } from './note.pipe';
 
-describe('ZodPipe', () => {
+describe('NotePipe', () => {
     it('should be defined', () => {
         expect(new NotePipe()).toBeDefined();
     });

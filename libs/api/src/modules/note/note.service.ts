@@ -3,10 +3,11 @@ import {
     InternalServerErrorException,
     NotFoundException,
 } from '@nestjs/common';
-import { Prisma, type Note, type User } from '@prisma/api';
+import { Attachment, Prisma, type Note, type User } from '@prisma/api';
 import { type CreatedNote } from '@types';
 import { type NoteSchema } from '@utils';
 import { PrismaService } from '../prisma/prisma.service';
+import { validateVideoId } from './validateVideoId';
 
 @Injectable()
 export class NoteService {
@@ -65,6 +66,10 @@ export class NoteService {
                 throw new InternalServerErrorException('Creating note failed');
             }
         }
+    }
+
+    async validateVideoId(videoId: Attachment['videoId']): Promise<boolean> {
+        return await validateVideoId(videoId);
     }
 
     async findById(id: Note['id'], userId: User['id']): Promise<CreatedNote> {
