@@ -53,7 +53,9 @@ export const Header: React.FC<HeaderProps> = ({ ...props }) => {
                     'container mx-auto flex items-center justify-between p-4'
                 )}
             >
-                <div className={cn('text-2xl font-bold')}>Notes</div>
+                <Link href={'/'}>
+                    <div className={cn('text-2xl font-bold')}>Notes</div>
+                </Link>
                 <nav className={cn('space-x-4')}>
                     <Link
                         href={session ? '/note' : '/'}
