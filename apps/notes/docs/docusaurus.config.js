@@ -3,9 +3,11 @@
 /** @type {import('@docusaurus/types').Config} */
 const config = {
     title: 'Notes',
-    url: 'http://localhost:4200',
+    url: 'https://clemenscodes.github.io',
     baseUrl: '/',
-    deploymentBranch: 'gh-pages',
+    trailingSlash: false,
+    organizationName: 'clemenscodes',
+    projectName: 'sse',
     onBrokenLinks: 'throw',
     onBrokenMarkdownLinks: 'warn',
     themeConfig:

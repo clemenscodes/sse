@@ -1,0 +1,108 @@
+name: Deploy to GitHub Pages
+
+on:
+    push:
+        branches:
+            - main
+    pull_request:
+        branches:
+            - main
+
+permissions:
+    contents: write
+
+jobs:
+    build:
+        name: Deploy to GitHub Pages
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout [Pull Request]
+              uses: actions/checkout@v3
+              if: github.event_name == 'pull_request'
+              with:
+                  ref: ${{ github.event.pull_request.head.sha }}
+                  fetch-depth: 0
+
+            - name: Derive SHAs
+              uses: nrwl/nx-set-shas@v3
+              if: github.event_name == 'pull_request'
+
+            - name: Install Node
+              uses: actions/setup-node@v3
+              if: github.event_name == 'pull_request'
+              with:
+                  node-version: 16
+
+            - name: Cache Node
+              id: node_cache
+              uses: actions/cache@v3
+              if: github.event_name == 'pull_request'
+              with:
+                  path: |
+                      dist/**/.next/cache
+                      node_modules/
+                  key: ubuntu-latest-node-${{ hashFiles('yarn.lock') }}
+                  restore-keys: ubuntu-latest-node-
+
+            - name: Install dependencies
+              if: github.event_name == 'pull_request'
+              run: yarn
+
+            - name: Build Documentation
+              if: github.event_name == 'pull_request'
+              run: yarn nx build docs
+
+            - name: Cache Docs
+              id: node_cache
+              uses: actions/cache@v3
+              if: github.event_name == 'pull_request'
+              with:
+                  path: |
+                      dist/apps/notes/docs
+                  key: ubuntu-latest-docs-${{ hashFiles('apps/notes/docs/**/*') }}
+                  restore-keys: ubuntu-latest-docs-
+
+    deploy:
+        name: Deploy to GitHub Pages
+        needs: [build]
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout [Main]
+              uses: actions/checkout@v3
+              if: github.event_name != 'pull_request'
+              with:
+                  fetch-depth: 0
+
+            - name: Install Node
+              uses: actions/setup-node@v3
+              if: github.event_name != 'pull_request'
+              with:
+                  node-version: 16
+
+            - name: Cache Node
+              id: node_cache
+              uses: actions/cache@v3
+              if: github.event_name != 'pull_request'
+              with:
+                  path: |
+                      dist/**/.next/cache
+                      node_modules/
+                  key: ubuntu-latest-node-${{ hashFiles('yarn.lock') }}
+                  restore-keys: ubuntu-latest-node-
+
+            - name: Restore docs
+              id: node_cache
+              uses: actions/cache/restore@v3
+              if: github.event_name != 'pull_request'
+              with:
+                  path: |
+                      dist/apps/notes/docs
+                  key: ubuntu-latest-docs-${{ hashFiles('apps/notes/docs/**/*') }}
+                  restore-keys: ubuntu-latest-docs-
+
+            - name: Deploy to GitHub Pages
+              uses: peaceiris/actions-gh-pages@v3
+              if: github.event_name != 'pull_request'
+              with:
+                  github_token: ${{ secrets.SSE_GITHUB_TOKEN }}
+                  publish_dir: ./dist/apps/notes/docs
