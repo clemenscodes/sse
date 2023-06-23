@@ -73,7 +73,7 @@
         "@docusaurus/module-type-aliases": "2.4.1",
         "@ianvs/prettier-plugin-sort-imports": "^4.0.0",
         "@inrupt/jest-jsdom-polyfills": "^1.8.0",
-        "@nestjs/schematics": "9.2.0",
+        "@nestjs/schematics": "10.0.1",
         "@nestjs/testing": "9.4.1",
         "@nrwl/next": "16.3.2",
         "@nx-tools/container-metadata": "^4.0.3",
