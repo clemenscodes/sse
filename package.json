@@ -44,6 +44,7 @@
         "@zxcvbn-ts/language-en": "^3.0.1",
         "argon2": "^0.30.3",
         "axios": "^1.0.0",
+        "babel-plugin-module-resolver": "^5.0.0",
         "class-variance-authority": "^0.6.0",
         "clsx": "^1.2.1",
         "cmdk": "^0.2.0",
