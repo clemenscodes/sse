@@ -60,16 +60,6 @@ jobs:
               if: github.event_name == 'pull_request'
               run: yarn nx build docs --skip-nx-cache
 
-            - name: Cache Docs
-              id: docs_cache
-              uses: actions/cache@v3
-              if: github.event_name == 'pull_request'
-              with:
-                  path: |
-                      dist/apps/notes/docs
-                  key: ubuntu-latest-docs-${{ hashFiles('apps/notes/docs/**/*') }}
-                  restore-keys: ubuntu-latest-docs-
-
     deploy:
         name: Deploy
         needs: [build]
@@ -98,15 +88,9 @@ jobs:
                   key: ubuntu-latest-node-${{ hashFiles('yarn.lock') }}
                   restore-keys: ubuntu-latest-node-
 
-            - name: Restore docs
-              id: docs_cache
-              uses: actions/cache/restore@v3
+            - name: Build Documentation
               if: github.event_name != 'pull_request'
-              with:
-                  path: |
-                      dist/apps/notes/docs
-                  key: ubuntu-latest-docs-${{ hashFiles('apps/notes/docs/**/*') }}
-                  restore-keys: ubuntu-latest-docs-
+              run: yarn nx build docs --skip-nx-cache
 
             - name: Deploy to GitHub Pages
               uses: peaceiris/actions-gh-pages@v3
