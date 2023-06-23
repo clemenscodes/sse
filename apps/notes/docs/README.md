@@ -21,3 +21,8 @@ This command starts a local development server and opens up a browser window. Mo
 ```sh
 yarn nx build docs
 ```
+
+### Importing workspace components
+
+Due to the way docusaurus gets compiled, there are limitations on the module resolutions.
+This limits importing components using path aliases and instead they have to be imported using full relative paths.
