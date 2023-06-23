@@ -53,7 +53,7 @@ jobs:
               run: yarn nx build docs
 
             - name: Cache Docs
-              id: node_cache
+              id: docs_cache
               uses: actions/cache@v3
               if: github.event_name == 'pull_request'
               with:
@@ -91,7 +91,7 @@ jobs:
                   restore-keys: ubuntu-latest-node-
 
             - name: Restore docs
-              id: node_cache
+              id: docs_cache
               uses: actions/cache/restore@v3
               if: github.event_name != 'pull_request'
               with:
