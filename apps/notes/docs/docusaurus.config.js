@@ -4,7 +4,7 @@
 const config = {
     title: 'Notes',
     url: 'https://clemenscodes.github.io',
-    baseUrl: '/',
+    baseUrl: '/sse/',
     trailingSlash: false,
     organizationName: 'clemenscodes',
     projectName: 'sse',
