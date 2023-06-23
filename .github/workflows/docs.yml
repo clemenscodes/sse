@@ -88,6 +88,10 @@ jobs:
                   key: ubuntu-latest-node-${{ hashFiles('yarn.lock') }}
                   restore-keys: ubuntu-latest-node-
 
+            - name: Install dependencies
+              if: github.event_name != 'pull_request' && steps.node_cache.outputs.cache-hit != 'true'
+              run: yarn
+
             - name: Build Documentation
               if: github.event_name != 'pull_request'
               run: yarn nx build docs --skip-nx-cache
