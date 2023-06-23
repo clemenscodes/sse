@@ -4,13 +4,11 @@ on:
     push:
         branches: [main]
         paths-ignore:
-            - 'apps/notes/docs/**/*'
-            - '**/README.md'
+            - 'apps/notes/docs/**'
     pull_request:
         types: [opened, synchronize]
         paths-ignore:
-            - 'apps/notes/docs/**/*'
-            - '**/README.md'
+            - 'apps/notes/docs/**'
 
 concurrency:
     group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
