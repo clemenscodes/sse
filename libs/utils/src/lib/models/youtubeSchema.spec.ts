@@ -9,9 +9,8 @@ describe('youtubeSchema', () => {
         expect(id).toBe(videoId);
     });
 
-    it('should validate normal youtube video id', () => {
-        const id = youtubeSchema.parse(videoId);
-        expect(id).toBe(videoId);
+    it('should not validate id if its not part of url', () => {
+        expect(() => youtubeSchema.parse(videoId)).toThrow();
     });
 
     it('should validate share youtube url', () => {
@@ -40,6 +39,7 @@ describe('youtubeSchema', () => {
 
     it('should validate youtube shorts url', () => {
         const url = `https://youtube.com/shorts/${videoId}`;
-        expect(() => youtubeSchema.parse(url)).not.toThrow();
+        const id = youtubeSchema.parse(url);
+        expect(id).toBe(videoId);
     });
 });

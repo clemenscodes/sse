@@ -1,8 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { cn } from '@styles';
 import { IconFileSearch } from '@tabler/icons-react';
-import { CreatedNote } from '@types';
-import { get, SearchSchema, searchSchema, useSearchStore } from '@utils';
+import { SearchSchema, searchSchema } from '@utils';
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -15,7 +14,6 @@ import {
     FormMessage,
 } from '../form/form';
 import { Input } from '../input/input';
-import { toast } from '../toast/useToast';
 import { CommandDialog } from './../command/command';
 
 export type SearchProps = React.ComponentPropsWithoutRef<'div'>;
@@ -48,24 +46,8 @@ export const Search: React.FC<SearchProps> = ({ ...props }) => {
         setOpen(false);
         const { search } = values;
         const encodedSearch = encodeURIComponent(search);
-        const url = `/note/search?content=${encodedSearch}`;
-        const { data, status } = await get<CreatedNote[]>(url);
-        if (status !== 200) {
-            toast({
-                title: 'Failed searching for notes',
-                variant: 'destructive',
-            });
-            return;
-        }
-        useSearchStore.setState((state) => {
-            return {
-                ...state,
-                search,
-                result: data,
-            };
-        });
-        toast({ title: 'Successfully searched for notes' });
-        router.push('/search');
+        const url = `/search?content=${encodedSearch}`;
+        router.push(url);
     };
 
     return (
