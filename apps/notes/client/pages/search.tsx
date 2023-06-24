@@ -10,6 +10,16 @@ export const getServerSideProps: GetServerSideProps<SearchProps> = async ({
     query,
 }) => {
     const parsedCookies = getCookies(req);
+    if (!parsedCookies) {
+        const error = 'Unauthorized';
+        const destination = `/error?message=${encodeURIComponent(error)}`;
+        return {
+            redirect: {
+                destination,
+            },
+            props: {},
+        };
+    }
     const { content } = query;
     if (!content || content instanceof Array) {
         const error = 'Invalid search';

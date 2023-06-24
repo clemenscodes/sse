@@ -1,5 +1,6 @@
 import {
     Global,
+    Logger,
     MiddlewareConsumer,
     Module,
     ModuleMetadata,
@@ -68,6 +69,7 @@ const modules: ModuleMetadata['imports'] = [
             provide: APP_GUARD,
             useClass: ThrottlerGuard,
         },
+        Logger,
     ],
 })
 export class ApiModule implements NestModule {

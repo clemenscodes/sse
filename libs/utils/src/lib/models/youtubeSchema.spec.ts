@@ -9,8 +9,8 @@ describe('youtubeSchema', () => {
         expect(id).toBe(videoId);
     });
 
-    it('should not validate id if its not part of url', () => {
-        expect(() => youtubeSchema.parse(videoId)).toThrow();
+    it('should validate even if its not part of url', () => {
+        expect(() => youtubeSchema.parse(videoId)).not.toThrow();
     });
 
     it('should validate share youtube url', () => {

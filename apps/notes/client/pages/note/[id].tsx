@@ -20,6 +20,16 @@ export const getServerSideProps: GetServerSideProps<NotePageProps> = async ({
         };
     }
     const parsedCookies = getCookies(req);
+    if (!parsedCookies) {
+        const error = 'Unauthorized';
+        const destination = `/error?message=${encodeURIComponent(error)}`;
+        return {
+            redirect: {
+                destination,
+            },
+            props: {},
+        };
+    }
     const noteId = params.id as string;
     const note = await getNote(noteId, parsedCookies);
     return {
