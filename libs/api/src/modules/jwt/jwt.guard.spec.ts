@@ -1,3 +1,4 @@
+import { Logger } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { mockDeep } from 'jest-mock-extended';
 import { AuthService } from '../auth/auth.service';
@@ -14,6 +15,7 @@ describe('JwtGuard', () => {
     let cookieService: CookieService;
     let sessionService: SessionService;
     let refreshTokenService: RefreshTokenService;
+    const logger = mockDeep<Logger>();
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
@@ -38,6 +40,8 @@ describe('JwtGuard', () => {
             .useValue(mockDeep<RefreshTokenService>())
             .compile();
 
+        module.useLogger(logger);
+
         guard = module.get(JwtGuard);
         authService = module.get(AuthService);
         jwtService = module.get(JwtService);
@@ -53,5 +57,6 @@ describe('JwtGuard', () => {
         expect(cookieService).toBeDefined();
         expect(sessionService).toBeDefined();
         expect(refreshTokenService).toBeDefined();
+        expect(logger).toBeDefined();
     });
 });
