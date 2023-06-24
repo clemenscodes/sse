@@ -1,7 +1,6 @@
 import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { JwtService as Service } from '@nestjs/jwt';
 import { JsonWebTokenError } from 'jsonwebtoken';
-import { JwtException } from '../../filter/jwt.filter';
 
 export type JWT = {
     sub: string;
@@ -29,8 +28,8 @@ export class JwtService {
             return payload;
         } catch (e) {
             if (e instanceof JsonWebTokenError) {
-                this.logger.error(JSON.stringify(e));
-                throw new JwtException(e.message);
+                this.logger.debug(JSON.stringify(e));
+                throw new UnauthorizedException(e.message);
             }
             this.logger.error(
                 `Something unexpected happened. This is likely a bug or vulnerability.`

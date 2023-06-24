@@ -39,11 +39,25 @@ export class JwtGuard implements CanActivate {
         this.logger.debug(`Body: ${JSON.stringify(body)}`);
         const token = this.extractTokenFromHeader(request);
         if (token) {
-            const payload = await this.jwtService.verifyToken(token);
-            request['user'] = payload;
-            return this.authorize(payload.sub);
+            try {
+                const payload = await this.jwtService.verifyToken(token);
+                this.logger.warn('JWT verified');
+                request['user'] = payload;
+                return this.authorize(payload.sub);
+            } catch (e) {
+                if (
+                    !(e instanceof UnauthorizedException) ||
+                    e.message !== 'jwt expired'
+                ) {
+                    this.logger.error(
+                        `Something unexpected happened. This is likely a bug or vulnerability.`
+                    );
+                    this.logger.error(JSON.stringify(e));
+                    throw new UnauthorizedException();
+                }
+                this.logger.warn('JWT expired');
+            }
         }
-        this.logger.warn('No JWT provided');
         if (!Object.keys(request.signedCookies).length) {
             this.logger.error('No cookies provided');
             throw new UnauthorizedException();
