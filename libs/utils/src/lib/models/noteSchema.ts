@@ -5,7 +5,7 @@ import { youtubeSchema } from './youtubeSchema';
 export const noteSchema = z.object({
     content: contentSchema,
     isPublic: z.boolean().default(false),
-    attachment: z.union([youtubeSchema, z.string().max(0)]),
+    attachment: youtubeSchema.or(z.literal('')),
 });
 
 export type NoteSchema = z.infer<typeof noteSchema>;
