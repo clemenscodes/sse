@@ -51,7 +51,7 @@ export const NoteForm: React.FC<NoteFormProps> = ({
             return {
                 ...state,
                 preview: content,
-                attachment: attachment ? attachment : '',
+                attachment: attachment ? attachment : null,
             };
         });
     };
