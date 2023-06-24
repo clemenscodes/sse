@@ -8,6 +8,7 @@ export type ErrorProps = React.ComponentPropsWithoutRef<'div'> & {
 
 export const Error: NextPage<ErrorProps> = ({ children, error, ...props }) => {
     const router = useRouter();
+    const errorMessage = router.query.message || 'An error occurred';
     return (
         <div
             onClick={() => router.push('/')}
@@ -16,7 +17,9 @@ export const Error: NextPage<ErrorProps> = ({ children, error, ...props }) => {
             )}
             {...props}
         >
-            <h1 className={cn('text-9xl')}>{error}</h1>
+            <h1 className={cn('text-4xl break-all')}>
+                {error ? error : errorMessage}
+            </h1>
             {children}
         </div>
     );

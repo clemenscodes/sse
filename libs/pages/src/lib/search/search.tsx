@@ -1,15 +1,12 @@
 import { NoteList, Redirect } from '@components';
 import { cn } from '@styles';
-import { useSearchStore, useSessionStore } from '@utils';
+import type { SearchProps } from '@types';
+import { useSessionStore } from '@utils';
 import { NextPage } from 'next';
 import { useEffect, useState } from 'react';
 
-export type SearchProps = React.ComponentPropsWithoutRef<'div'>;
-
-export const Search: NextPage<SearchProps> = ({ ...props }) => {
+export const Search: NextPage<SearchProps> = ({ search, result, ...props }) => {
     const session = useSessionStore((state) => state.session);
-    const search = useSearchStore((state) => state.search);
-    const result = useSearchStore((state) => state.result);
     const [hasMounted, setHasMounted] = useState(false);
 
     useEffect(() => {
@@ -35,7 +32,7 @@ export const Search: NextPage<SearchProps> = ({ ...props }) => {
             {result?.length ? (
                 <NoteList notes={result} />
             ) : (
-                <p className={cn()}>No notes found</p>
+                <p className={cn('font-bold text-lg m-4')}>No notes found</p>
             )}
         </div>
     );

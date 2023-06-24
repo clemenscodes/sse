@@ -12,8 +12,7 @@ export class NotePipe<T extends NoteSchema> implements PipeTransform<T> {
         if (!parsed.attachment) {
             return parsed;
         }
-        const videoId = parsed.attachment;
-        const validVideoId = await validateVideoId(videoId);
+        const validVideoId = await validateVideoId(value.attachment);
         if (validVideoId) {
             return parsed;
         }

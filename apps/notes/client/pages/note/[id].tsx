@@ -1,5 +1,5 @@
 import type { NotePageProps } from '@types';
-import { getNote } from '@utils';
+import { getCookies, getNote } from '@utils';
 import { GetServerSideProps } from 'next';
 import dynamic from 'next/dynamic';
 
@@ -10,15 +10,28 @@ export const getServerSideProps: GetServerSideProps<NotePageProps> = async ({
     req,
 }) => {
     if (!params) {
-        throw new Error('No params');
+        const error = 'No parameter';
+        const destination = `/error?message=${encodeURIComponent(error)}`;
+        return {
+            redirect: {
+                destination,
+            },
+            props: {},
+        };
     }
-    const { cookies } = req;
-    const sessionToken = cookies.sessionToken;
-    const refreshToken = cookies.refreshToken;
-    const parsedCookies = `sessionToken=${sessionToken}; refreshToken=${refreshToken}`;
+    const parsedCookies = getCookies(req);
+    if (!parsedCookies) {
+        const error = 'Unauthorized';
+        const destination = `/error?message=${encodeURIComponent(error)}`;
+        return {
+            redirect: {
+                destination,
+            },
+            props: {},
+        };
+    }
     const noteId = params.id as string;
     const note = await getNote(noteId, parsedCookies);
-
     return {
         props: {
             note,

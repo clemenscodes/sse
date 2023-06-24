@@ -52,28 +52,30 @@ export const LoginForm: React.FC<LoginFormProps> = ({ submit, ...props }) => {
             return null;
         }
         const { jwt } = data;
-        if (!jwt) {
+        if (jwt) {
+            useSessionStore.setState((state) => {
+                return {
+                    ...state,
+                    jwt,
+                };
+            });
+        }
+        try {
+            const session = await getSession();
+            useSessionStore.setState((state) => {
+                return { ...state, session };
+            });
+            router.push('/note');
+            toast({
+                title: 'Successfully logged in',
+                description: `Welcome to notes, ${session?.username}`,
+            });
+        } catch {
             toast({
                 title: 'Failed logging in',
                 variant: 'destructive',
             });
-            return null;
         }
-        useSessionStore.setState((state) => {
-            return {
-                ...state,
-                jwt,
-            };
-        });
-        const session = await getSession();
-        useSessionStore.setState((state) => {
-            return { ...state, session };
-        });
-        router.push('/note');
-        toast({
-            title: 'Successfully logged in',
-            description: `Welcome to notes, ${session?.username}`,
-        });
     };
 
     return (

@@ -4,7 +4,6 @@ import {
     ExceptionFilter,
     HttpException,
     HttpStatus,
-    Logger,
 } from '@nestjs/common';
 import { ZxcvbnResult } from '@zxcvbn-ts/core';
 import { Response } from 'express';
@@ -27,7 +26,6 @@ export class PasswordFilter implements ExceptionFilter {
         const response = ctx.getResponse<Response>();
         const { statusCode, message, error, result } = exception;
         const res = { statusCode, message, error, result };
-        Logger.log({ res });
         response.status(exception.statusCode).json(res);
     }
 }

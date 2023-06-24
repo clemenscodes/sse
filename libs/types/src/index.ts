@@ -8,3 +8,4 @@ export * from './lib/pages/home';
 export * from './lib/pages/login';
 export * from './lib/pages/note';
 export * from './lib/pages/notes';
+export * from './lib/pages/search';
