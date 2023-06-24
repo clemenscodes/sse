@@ -4,7 +4,6 @@ import {
     ExceptionFilter,
     HttpException,
     HttpStatus,
-    Logger,
 } from '@nestjs/common';
 import { Response } from 'express';
 
@@ -21,7 +20,6 @@ export class YouTubeFilter implements ExceptionFilter {
         const response = ctx.getResponse<Response>();
         const { statusCode, message } = exception;
         const res = { statusCode, message };
-        Logger.log({ res });
         response.status(exception.statusCode).json(res);
     }
 }

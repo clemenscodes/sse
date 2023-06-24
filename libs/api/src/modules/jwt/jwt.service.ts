@@ -1,5 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { JwtService as Service } from '@nestjs/jwt';
+import { JsonWebTokenError } from 'jsonwebtoken';
+import { JwtException } from '../../filter/jwt.filter';
 
 export type JWT = {
     sub: string;
@@ -11,12 +13,30 @@ export type JWT = {
 export class JwtService {
     constructor(private readonly jwtService: Service) {}
 
+    private readonly logger = new Logger(JwtService.name);
+
     async generateToken(userId: string): Promise<string> {
+        this.logger.debug(`Generating JWT for ${userId}`);
         const payload = { sub: userId };
-        return this.jwtService.signAsync(payload);
+        const jwt = await this.jwtService.signAsync(payload);
+        return jwt;
     }
 
     async verifyToken<T extends JWT>(token: string): Promise<T> {
-        return this.jwtService.verifyAsync<T>(token);
+        try {
+            this.logger.debug(`Verifying JWT ${token}`);
+            const payload = await this.jwtService.verifyAsync<T>(token);
+            return payload;
+        } catch (e) {
+            if (e instanceof JsonWebTokenError) {
+                this.logger.error(JSON.stringify(e));
+                throw new JwtException(e.message);
+            }
+            this.logger.error(
+                `Something unexpected happened. This is likely a bug or vulnerability.`
+            );
+            this.logger.error(JSON.stringify(e));
+            throw new UnauthorizedException();
+        }
     }
 }

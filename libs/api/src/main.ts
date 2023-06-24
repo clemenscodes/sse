@@ -4,6 +4,7 @@ import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
+import { JwtFilter } from './filter/jwt.filter';
 import { PasswordFilter } from './filter/password.filter';
 import { YouTubeFilter } from './filter/youtube.filter';
 import { ZodFilter } from './filter/zod.filter';
@@ -28,6 +29,7 @@ export async function bootstrap() {
     app.useGlobalFilters(new ZodFilter());
     app.useGlobalFilters(new PasswordFilter());
     app.useGlobalFilters(new YouTubeFilter());
+    app.useGlobalFilters(new JwtFilter());
     app.useGlobalInterceptors(new LoggingInterceptor());
     app.use(cookieParser(secret));
     app.use(
