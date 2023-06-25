@@ -10,6 +10,11 @@ const config = {
     projectName: 'sse',
     onBrokenLinks: 'throw',
     onBrokenMarkdownLinks: 'warn',
+    noIndex: true,
+    i18n: {
+        defaultLocale: 'de',
+        locales: ['de', 'en'],
+    },
     themeConfig:
         /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
         ({
@@ -41,7 +46,13 @@ const config = {
                     path: 'src',
                     routeBasePath: '/',
                     sidebarCollapsible: true,
+                    breadcrumbs: true,
+                    editUrl:
+                        'https://github.com/clemenscodes/sse/edit/main/apps/notes/docs',
                 },
+                pages: false,
+                blog: false,
+                sitemap: false,
                 theme: {
                     customCss: require.resolve('./custom.css'),
                 },
@@ -49,7 +60,7 @@ const config = {
         ],
     ],
     plugins: [
-        async function myPlugin(context, options) {
+        async function loadTailwind(context, options) {
             return {
                 name: 'docusaurus-tailwindcss',
                 configurePostCss(postcssOptions) {

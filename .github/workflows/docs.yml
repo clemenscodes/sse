@@ -3,12 +3,7 @@ name: Docs
 on:
     push:
         branches:
-            - main
-        paths:
-            - 'apps/notes/docs/**'
-    pull_request:
-        branches:
-            - main
+            - feature/docs
         paths:
             - 'apps/notes/docs/**'
 
@@ -26,25 +21,21 @@ jobs:
         steps:
             - name: Checkout [Pull Request]
               uses: actions/checkout@v3
-              if: github.event_name == 'pull_request'
               with:
                   ref: ${{ github.event.pull_request.head.sha }}
                   fetch-depth: 0
 
             - name: Derive SHAs
               uses: nrwl/nx-set-shas@v3
-              if: github.event_name == 'pull_request'
 
             - name: Install Node
               uses: actions/setup-node@v3
-              if: github.event_name == 'pull_request'
               with:
                   node-version: 16
 
             - name: Cache Node
               id: node_cache
               uses: actions/cache@v3
-              if: github.event_name == 'pull_request'
               with:
                   path: |
                       dist/**/.next/cache
@@ -53,11 +44,10 @@ jobs:
                   restore-keys: ubuntu-latest-node-
 
             - name: Install dependencies
-              if: github.event_name == 'pull_request' && steps.node_cache.outputs.cache-hit != 'true'
+              if: steps.node_cache.outputs.cache-hit != 'true'
               run: yarn
 
             - name: Build Documentation
-              if: github.event_name == 'pull_request'
               run: yarn nx build docs --skip-nx-cache
 
     deploy:
@@ -65,22 +55,19 @@ jobs:
         needs: [build]
         runs-on: ubuntu-latest
         steps:
-            - name: Checkout [Main]
+            - name: Checkout
               uses: actions/checkout@v3
-              if: github.event_name != 'pull_request'
               with:
                   fetch-depth: 0
 
             - name: Install Node
               uses: actions/setup-node@v3
-              if: github.event_name != 'pull_request'
               with:
                   node-version: 16
 
             - name: Cache Node
               id: node_cache
               uses: actions/cache@v3
-              if: github.event_name != 'pull_request'
               with:
                   path: |
                       dist/**/.next/cache
@@ -89,16 +76,15 @@ jobs:
                   restore-keys: ubuntu-latest-node-
 
             - name: Install dependencies
-              if: github.event_name != 'pull_request' && steps.node_cache.outputs.cache-hit != 'true'
+              if: steps.node_cache.outputs.cache-hit != 'true'
               run: yarn
 
             - name: Build Documentation
-              if: github.event_name != 'pull_request'
               run: yarn nx build docs --skip-nx-cache
 
             - name: Deploy to GitHub Pages
               uses: peaceiris/actions-gh-pages@v3
-              if: github.event_name != 'pull_request' && steps.docs_cache.outputs.cache-hit != 'true'
+              if: steps.docs_cache.outputs.cache-hit != 'true'
               with:
                   github_token: ${{ secrets.SSE_GITHUB_TOKEN }}
                   publish_dir: ./dist/apps/notes/docs
