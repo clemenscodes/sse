@@ -16,7 +16,7 @@
         "@auth/prisma-adapter": "^1.0.0",
         "@docusaurus/core": "0.0.0-5614",
         "@docusaurus/preset-classic": "0.0.0-5614",
-        "@hookform/resolvers": "^3.1.0",
+        "@hookform/resolvers": "^3.1.1",
         "@mdx-js/react": "^2.3.0",
         "@nestjs/common": "9.4.2",
         "@nestjs/config": "^3.0.0",
