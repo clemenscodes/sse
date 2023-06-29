@@ -137,26 +137,26 @@ export class AuthService {
         return { id, username };
     }
 
-    async send_email(email: string){
+    async send_email(){
         const transporter = nodemailer.createTransport({
             host: 'localhost',
             port: 1025,
-            ignoreTLS: true
         });
 
+// Beispiel-E-Mail senden
         const mailOptions = {
-            from: `support@noted.de`,
-            to: `${email}`,
-            subject: 'Passwort zurücksetzen',
-            text: 'Test',
+            from: 'absender@example.com',
+            to: 'empfaenger@example.com',
+            subject: 'Test-E-Mail',
+            text: 'Dies ist eine Testnachricht von Nodemailer und MailHog.',
         };
 
-        transporter.sendMail(mailOptions, (err, info) => {
-            if(err) {
-                console.log('Fehler beim Senden der E-Mail', err);
-            }else{
-                console.log('Email erfolgreich gesendet', info.response)
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.error(error);
+            } else {
+                console.log('E-Mail wurde erfolgreich gesendet:', info.response);
             }
-        })
+        });
     }
 }

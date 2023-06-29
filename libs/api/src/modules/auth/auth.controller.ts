@@ -66,9 +66,8 @@ export class AuthController {
     @Public()
     @Post('send-email')
     async send_email(
-        data: Parameters<typeof String>,
     ){
-        return await this.authService.send_email(data.toString())
+        return await this.authService.send_email()
     }
 
     @Get('session')
