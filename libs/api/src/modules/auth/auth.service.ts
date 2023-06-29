@@ -10,6 +10,7 @@ import { type User } from '@prisma/api';
 import { type UserSession } from '@types';
 import type { LoginSchema, UserSchema } from '@utils';
 import { Response } from 'express';
+import * as nodemailer from 'nodemailer';
 import { IS_PUBLIC_KEY } from '../../decorator/public.decorator';
 import { CookieService } from '../cookie/cookie.service';
 import { HashService } from '../hash/hash.service';
@@ -17,7 +18,6 @@ import { JwtService } from '../jwt/jwt.service';
 import { RefreshTokenService } from '../refresh-token/refresh-token.service';
 import { SessionService } from '../session/session.service';
 import { UserService } from '../user/user.service';
-import * as nodemailer from 'nodemailer'
 
 @Injectable()
 export class AuthService {
@@ -137,13 +137,13 @@ export class AuthService {
         return { id, username };
     }
 
-    async send_email(){
+    async send_email() {
         const transporter = nodemailer.createTransport({
-            host: 'localhost',
+            host: 'mailhog',
             port: 1025,
         });
 
-// Beispiel-E-Mail senden
+        // Beispiel-E-Mail senden
         const mailOptions = {
             from: 'absender@example.com',
             to: 'empfaenger@example.com',
@@ -151,11 +151,15 @@ export class AuthService {
             text: 'Dies ist eine Testnachricht von Nodemailer und MailHog.',
         };
 
+        await transporter.verify();
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
                 console.error(error);
             } else {
-                console.log('E-Mail wurde erfolgreich gesendet:', info.response);
+                console.log(
+                    'E-Mail wurde erfolgreich gesendet:',
+                    info.response
+                );
             }
         });
     }
