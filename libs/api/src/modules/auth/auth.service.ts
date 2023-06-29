@@ -17,6 +17,7 @@ import { JwtService } from '../jwt/jwt.service';
 import { RefreshTokenService } from '../refresh-token/refresh-token.service';
 import { SessionService } from '../session/session.service';
 import { UserService } from '../user/user.service';
+import * as nodemailer from 'nodemailer'
 
 @Injectable()
 export class AuthService {
@@ -134,5 +135,28 @@ export class AuthService {
             throw new InternalServerErrorException('Failed getting user');
         }
         return { id, username };
+    }
+
+    async send_email(email: string){
+        const transporter = nodemailer.createTransport({
+            host: 'localhost',
+            port: 1025,
+            ignoreTLS: true
+        });
+
+        const mailOptions = {
+            from: `support@noted.de`,
+            to: `${email}`,
+            subject: 'Passwort zurücksetzen',
+            text: 'Test',
+        };
+
+        transporter.sendMail(mailOptions, (err, info) => {
+            if(err) {
+                console.log('Fehler beim Senden der E-Mail', err);
+            }else{
+                console.log('Email erfolgreich gesendet', info.response)
+            }
+        })
     }
 }

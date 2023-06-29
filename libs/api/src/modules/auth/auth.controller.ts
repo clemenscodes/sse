@@ -3,7 +3,7 @@ import {
     Controller,
     Get,
     HttpCode,
-    HttpStatus,
+    HttpStatus, Param,
     Post,
     Res,
 } from '@nestjs/common';
@@ -61,6 +61,14 @@ export class AuthController {
         @Res({ passthrough: true }) res: Response
     ) {
         return await this.authService.logout(userId, cookies, res);
+    }
+
+    @Public()
+    @Post('send-email')
+    async send_email(
+        data: Parameters<typeof String>,
+    ){
+        return await this.authService.send_email(data.toString())
     }
 
     @Get('session')
