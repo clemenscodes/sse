@@ -29,6 +29,10 @@ const nextConfig = {
                 destination: 'http://server:3000/api/auth/logout',
             },
             {
+                source: '/api/auth/send-email',
+                destination: 'http://server:3000/api/auth/send-email',
+            },
+            {
                 source: '/api/auth/session',
                 destination: 'http://server:3000/api/auth/session',
             },
