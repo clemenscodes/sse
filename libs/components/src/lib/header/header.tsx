@@ -85,7 +85,10 @@ export const Header: React.FC<HeaderProps> = ({ ...props }) => {
                     'container mx-auto flex items-center justify-between p-4'
                 )}
             >
-                <Link href={'/'}>
+                <Link
+                    href={session ? '/note' : '/'}
+                    className={cn('text-gray-300 hover:text-white')}
+                >
                     <div className={cn('text-2xl font-bold')}>Notes</div>
                 </Link>
 
