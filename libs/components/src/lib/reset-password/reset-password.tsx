@@ -1,6 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { cn } from '@styles';
 import { post, ResetPasswordSchema, resetPasswordSchema } from '@utils';
+import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import { Button } from '../button/button';
 import {
@@ -11,10 +12,11 @@ import {
     FormMessage,
 } from '../form/form';
 import { Input } from '../input/input';
+import { toast } from '../toast/useToast';
 
 export type ResetPasswordProps = React.ComponentPropsWithoutRef<'form'> & {
     submit?: (values: ResetPasswordSchema) => Promise<void>;
-    token: string;
+    token?: string;
 };
 
 export const ResetPassword: React.FC<ResetPasswordProps> = ({
@@ -22,6 +24,7 @@ export const ResetPassword: React.FC<ResetPasswordProps> = ({
     token,
     ...props
 }) => {
+    const router = useRouter();
     const form = useForm<ResetPasswordSchema>({
         resolver: zodResolver(resetPasswordSchema),
         defaultValues: {
@@ -35,9 +38,19 @@ export const ResetPassword: React.FC<ResetPasswordProps> = ({
             return submit(values);
         }
         try {
-            await post(`/auth/reset-password/${token}`, values);
+            const { status } = await post(
+                `/auth/reset-password/${token}`,
+                values
+            );
+            if (status === 201) {
+                toast({ title: 'Password reset success' });
+                router.push('/login');
+                return;
+            }
+            toast({ title: 'Password reset failure', variant: 'destructive' });
         } catch (e) {
             console.log(e);
+            toast({ title: 'Password reset failure', variant: 'destructive' });
         }
     };
     return (
