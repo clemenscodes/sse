@@ -3,29 +3,50 @@ import {
     InternalServerErrorException,
     NotFoundException,
 } from '@nestjs/common';
-import { Prisma, type Note, type User } from '@prisma/api';
+import { Attachment, Prisma, type Note, type User } from '@prisma/api';
+import { type CreatedNote } from '@types';
 import { type NoteSchema } from '@utils';
 import { PrismaService } from '../prisma/prisma.service';
+import { validateVideoId } from './validateVideoId';
 
 @Injectable()
 export class NoteService {
     constructor(private readonly prismaService: PrismaService) {}
 
-    async create(note: NoteSchema, userId: User['id']) {
+    async create(note: NoteSchema, userId: User['id']): Promise<CreatedNote> {
         try {
-            const { isPublic, content } = note;
-            const createdNote = await this.prismaService.note.create({
-                data: {
-                    isPublic,
-                    content,
-                    user: {
-                        connect: { id: userId },
-                    },
+            const { isPublic, content, attachment } = note;
+
+            let data: Prisma.NoteCreateInput = {
+                isPublic,
+                content,
+                user: {
+                    connect: { id: userId },
                 },
+            };
+
+            if (attachment?.length === 11) {
+                data = {
+                    ...data,
+                    attachment: {
+                        create: {
+                            videoId: attachment,
+                        },
+                    },
+                };
+            }
+
+            const createdNote = await this.prismaService.note.create({
+                data,
                 select: {
-                    id: false,
+                    id: true,
                     content: true,
                     isPublic: true,
+                    attachment: {
+                        select: {
+                            videoId: true,
+                        },
+                    },
                     userId: false,
                 },
             });
@@ -47,20 +68,65 @@ export class NoteService {
         }
     }
 
-    async findAllByUserId(userId: User['id']) {
+    async validateVideoId(videoId: Attachment['videoId']): Promise<boolean> {
+        return await validateVideoId(videoId);
+    }
+
+    async findById(id: Note['id'], userId: User['id']): Promise<CreatedNote> {
+        try {
+            const note = await this.prismaService.note.findUnique({
+                where: { id },
+                select: {
+                    id: true,
+                    content: true,
+                    isPublic: true,
+                    attachment: {
+                        select: {
+                            videoId: true,
+                        },
+                    },
+                    userId: true,
+                },
+            });
+            if (!note) {
+                throw new NotFoundException('Note not found');
+            }
+            const { userId: noteOwnerId, ...rest } = note;
+            if (!note.isPublic && noteOwnerId !== userId) {
+                throw new NotFoundException('Note not found');
+            }
+            return rest;
+        } catch (e) {
+            if (e instanceof Prisma.PrismaClientKnownRequestError) {
+                throw new InternalServerErrorException(
+                    'Failed to retrieve user notes'
+                );
+            } else if (e instanceof NotFoundException) {
+                throw e;
+            } else {
+                throw new InternalServerErrorException(
+                    'Failed to retrieve user notes'
+                );
+            }
+        }
+    }
+
+    async findAllByUserId(userId: User['id']): Promise<CreatedNote[]> {
         try {
             const notes = await this.prismaService.note.findMany({
                 where: { userId },
                 select: {
-                    id: false,
+                    id: true,
                     content: true,
                     isPublic: true,
+                    attachment: {
+                        select: {
+                            videoId: true,
+                        },
+                    },
                     userId: false,
                 },
             });
-            if (!(notes && notes.length)) {
-                throw new NotFoundException('No notes found for the user');
-            }
             return notes;
         } catch (e) {
             if (e instanceof Prisma.PrismaClientKnownRequestError) {
@@ -77,7 +143,9 @@ export class NoteService {
         }
     }
 
-    async searchPublicNotesByContent(content: Note['content']) {
+    async searchPublicNotesByContent(
+        content: Note['content']
+    ): Promise<CreatedNote[]> {
         try {
             const notes = await this.prismaService.note.findMany({
                 where: {
@@ -87,17 +155,17 @@ export class NoteService {
                     },
                 },
                 select: {
-                    id: false,
+                    id: true,
                     content: true,
                     isPublic: true,
+                    attachment: {
+                        select: {
+                            videoId: true,
+                        },
+                    },
                     userId: false,
                 },
             });
-            if (!(notes && notes.length)) {
-                throw new NotFoundException(
-                    `No notes found matching the search criteria`
-                );
-            }
             return notes;
         } catch (e) {
             if (e instanceof Prisma.PrismaClientKnownRequestError) {

@@ -1,5 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { cn } from '@styles';
+import { Auth } from '@types';
+import { post, RegisterSchema } from '@utils';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import {
@@ -15,8 +17,6 @@ import {
     FormMessage,
 } from '../form/form';
 import { Input } from '../input/input';
-import {post, RegisterSchema} from "@utils";
-import {Auth} from "@types";
 
 export type ForgotPasswordProps = React.ComponentPropsWithoutRef<'form'> & {
     submit?: (values: ForgotPasswordSchema) => Promise<void>;
@@ -39,10 +39,7 @@ export const ForgotPassword: React.FC<ForgotPasswordProps> = ({
         if (submit) {
             return submit(values);
         }
-        await post(
-            '/auth/send-email',
-            values
-        );
+        await post('/auth/send-email', values);
         await router.push('/email-sent');
     };
 

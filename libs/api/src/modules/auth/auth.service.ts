@@ -10,6 +10,7 @@ import { type User } from '@prisma/api';
 import { type UserSession } from '@types';
 import type { LoginSchema, UserSchema } from '@utils';
 import { Response } from 'express';
+import * as jwt from 'jsonwebtoken';
 import * as nodemailer from 'nodemailer';
 import { IS_PUBLIC_KEY } from '../../decorator/public.decorator';
 import { CookieService } from '../cookie/cookie.service';
@@ -18,6 +19,7 @@ import { JwtService } from '../jwt/jwt.service';
 import { RefreshTokenService } from '../refresh-token/refresh-token.service';
 import { SessionService } from '../session/session.service';
 import { UserService } from '../user/user.service';
+import {VerificationTokenService} from "../verification-token/verification-token.service";
 
 @Injectable()
 export class AuthService {
@@ -28,7 +30,8 @@ export class AuthService {
         private readonly refreshTokenService: RefreshTokenService,
         private readonly hashService: HashService,
         private readonly jwtService: JwtService,
-        private readonly reflector: Reflector
+        private readonly reflector: Reflector,
+        private readonly verificationTokenService: VerificationTokenService,
     ) {}
 
     async register(
@@ -137,18 +140,25 @@ export class AuthService {
         return { id, username };
     }
 
-    async send_email() {
+    async send_email(email: string) {
         const transporter = nodemailer.createTransport({
             host: 'mailhog',
             port: 1025,
         });
+        const old_user = await this.userService.findByEmail(email);
+        if (!old_user) {
+            console.log('User does not exist');
+        }
+        const resetToken = this.verificationTokenService.createToken(old_user.id);
+
+        const resetLink = `http://localhost:4200/reset-password/${resetToken}`;
 
         // Beispiel-E-Mail senden
         const mailOptions = {
-            from: 'absender@example.com',
-            to: 'empfaenger@example.com',
-            subject: 'Test-E-Mail',
-            text: 'Dies ist eine Testnachricht von Nodemailer und MailHog.',
+            from: 'support@notes.de',
+            to: email,
+            subject: 'Passwort zurücksetzen',
+            html: `<p>Klicken Sie auf den folgenden Link, um Ihr Passwort zurückzusetzen: <a href="${resetLink}">${resetLink}</a></p>`,
         };
 
         await transporter.verify();
@@ -162,5 +172,11 @@ export class AuthService {
                 );
             }
         });
+    }
+
+    async reset_password(token, password, confirmPassword) {
+
+        const data = this.verificationTokenService.findByVerificationToken(token)
+        this.userService.updatePassword(data.userId, password);
     }
 }

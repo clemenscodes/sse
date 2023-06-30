@@ -50,7 +50,8 @@ export class RefreshTokenService {
 
     async checkRefreshToken(refreshToken: RefreshToken['refreshToken']) {
         try {
-            const { expires } = await this.findByRefreshToken(refreshToken);
+            const token = await this.findByRefreshToken(refreshToken);
+            const { expires } = token;
             const tokenTimestamp = expires.getTime();
             const currentTimestamp = Date.now();
             const validRefreshToken = tokenTimestamp > currentTimestamp;

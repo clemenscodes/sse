@@ -167,4 +167,17 @@ export class UserService {
             }
         }
     }
+
+    async updatePassword(userId, password, confirmPassword) {
+
+        const [hashedPassword, salt] = await this.hashService.hashPassword(
+            password
+        );
+        await this.prismaService.user.update({
+            where: {userId},
+            data: {
+                password: hashedPassword,
+            },
+        });
+    }
 }

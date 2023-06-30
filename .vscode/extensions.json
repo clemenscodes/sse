@@ -5,6 +5,7 @@
         "firsttris.vscode-jest-runner",
         "ms-azuretools.vscode-docker",
         "bradlc.vscode-tailwindcss",
+        "unifiedjs.vscode-mdx",
         "dbaeumer.vscode-eslint"
     ]
 }

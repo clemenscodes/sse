@@ -1,0 +1,90 @@
+name: Docs
+
+on:
+    push:
+        branches:
+            - feature/docs
+        paths:
+            - 'apps/notes/docs/**'
+
+permissions:
+    contents: write
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    build:
+        name: Build
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout [Pull Request]
+              uses: actions/checkout@v3
+              with:
+                  ref: ${{ github.event.pull_request.head.sha }}
+                  fetch-depth: 0
+
+            - name: Derive SHAs
+              uses: nrwl/nx-set-shas@v3
+
+            - name: Install Node
+              uses: actions/setup-node@v3
+              with:
+                  node-version: 16
+
+            - name: Cache Node
+              id: node_cache
+              uses: actions/cache@v3
+              with:
+                  path: |
+                      dist/**/.next/cache
+                      node_modules/
+                  key: ubuntu-latest-node-${{ hashFiles('yarn.lock') }}
+                  restore-keys: ubuntu-latest-node-
+
+            - name: Install dependencies
+              if: steps.node_cache.outputs.cache-hit != 'true'
+              run: yarn
+
+            - name: Build Documentation
+              run: yarn nx build docs --skip-nx-cache
+
+    deploy:
+        name: Deploy
+        needs: [build]
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v3
+              with:
+                  fetch-depth: 0
+
+            - name: Install Node
+              uses: actions/setup-node@v3
+              with:
+                  node-version: 16
+
+            - name: Cache Node
+              id: node_cache
+              uses: actions/cache@v3
+              with:
+                  path: |
+                      dist/**/.next/cache
+                      node_modules/
+                  key: ubuntu-latest-node-${{ hashFiles('yarn.lock') }}
+                  restore-keys: ubuntu-latest-node-
+
+            - name: Install dependencies
+              if: steps.node_cache.outputs.cache-hit != 'true'
+              run: yarn
+
+            - name: Build Documentation
+              run: yarn nx build docs --skip-nx-cache
+
+            - name: Deploy to GitHub Pages
+              uses: peaceiris/actions-gh-pages@v3
+              if: steps.docs_cache.outputs.cache-hit != 'true'
+              with:
+                  github_token: ${{ secrets.SSE_GITHUB_TOKEN }}
+                  publish_dir: ./dist/apps/notes/docs

@@ -1,9 +1,11 @@
+import typography from '@tailwindcss/typography';
 import { Config } from 'tailwindcss';
 import { fontFamily } from 'tailwindcss/defaultTheme';
 
 export default {
     content: [],
     darkMode: ['class'],
+    plugins: [require('tailwindcss-animate'), typography],
     theme: {
         container: {
             center: true,
@@ -72,5 +74,4 @@ export default {
             },
         },
     },
-    plugins: [require('tailwindcss-animate')],
 } satisfies Config;

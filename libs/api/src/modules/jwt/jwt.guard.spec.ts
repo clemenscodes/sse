@@ -1,8 +1,10 @@
+import { Logger } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { mockDeep } from 'jest-mock-extended';
 import { AuthService } from '../auth/auth.service';
 import { CookieService } from '../cookie/cookie.service';
 import { RefreshTokenService } from '../refresh-token/refresh-token.service';
+import { SessionService } from '../session/session.service';
 import { JwtGuard } from './jwt.guard';
 import { JwtService } from './jwt.service';
 
@@ -11,7 +13,9 @@ describe('JwtGuard', () => {
     let authService: AuthService;
     let jwtService: JwtService;
     let cookieService: CookieService;
+    let sessionService: SessionService;
     let refreshTokenService: RefreshTokenService;
+    const logger = mockDeep<Logger>();
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
@@ -20,6 +24,7 @@ describe('JwtGuard', () => {
                 AuthService,
                 JwtService,
                 CookieService,
+                SessionService,
                 RefreshTokenService,
             ],
         })
@@ -29,14 +34,19 @@ describe('JwtGuard', () => {
             .useValue(mockDeep<JwtService>())
             .overrideProvider(CookieService)
             .useValue(mockDeep<CookieService>())
+            .overrideProvider(SessionService)
+            .useValue(mockDeep<SessionService>())
             .overrideProvider(RefreshTokenService)
             .useValue(mockDeep<RefreshTokenService>())
             .compile();
+
+        module.useLogger(logger);
 
         guard = module.get(JwtGuard);
         authService = module.get(AuthService);
         jwtService = module.get(JwtService);
         cookieService = module.get(CookieService);
+        sessionService = module.get(SessionService);
         refreshTokenService = module.get(RefreshTokenService);
     });
 
@@ -45,6 +55,8 @@ describe('JwtGuard', () => {
         expect(authService).toBeDefined();
         expect(jwtService).toBeDefined();
         expect(cookieService).toBeDefined();
+        expect(sessionService).toBeDefined();
         expect(refreshTokenService).toBeDefined();
+        expect(logger).toBeDefined();
     });
 });

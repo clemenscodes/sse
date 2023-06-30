@@ -1,17 +1,24 @@
-import { Injectable, PipeTransform } from '@nestjs/common';
+import { HttpStatus, Injectable, PipeTransform } from '@nestjs/common';
 import { noteSchema, type NoteSchema } from '@utils';
-import { sanitize } from 'isomorphic-dompurify';
-import { Converter } from 'showdown';
+import { YouTubeException } from '../../filter/youtube.filter';
+import { validateVideoId } from './validateVideoId';
 
 @Injectable()
 export class NotePipe<T extends NoteSchema> implements PipeTransform<T> {
-    constructor(public schema = noteSchema) {}
-    transform(value: T) {
-        this.schema.parse(value);
-        const converter = new Converter();
-        const rawHTML = converter.makeHtml(value.content);
-        const sanitizedValue = sanitize(rawHTML);
-        value.content = sanitizedValue;
-        return value;
+    constructor(private readonly schema = noteSchema) {}
+
+    async transform(value: T) {
+        const parsed = await this.schema.parseAsync(value);
+        if (!parsed.attachment) {
+            return parsed;
+        }
+        const validVideoId = await validateVideoId(value.attachment);
+        if (validVideoId) {
+            return parsed;
+        }
+        throw new YouTubeException(
+            HttpStatus.NOT_ACCEPTABLE,
+            'YouTube video id is invalid'
+        );
     }
 }

@@ -1,15 +1,11 @@
-import { sanitize } from 'isomorphic-dompurify';
-import { Converter } from 'showdown';
 import * as z from 'zod';
+import { contentSchema } from './contentSchema';
+import { youtubeSchema } from './youtubeSchema';
 
 export const noteSchema = z.object({
-    content: z.string().transform((value) => {
-        const converter = new Converter();
-        const rawHTML = converter.makeHtml(value);
-        const sanitizedValue = sanitize(rawHTML);
-        return sanitizedValue;
-    }),
+    content: contentSchema,
     isPublic: z.boolean().default(false),
+    attachment: youtubeSchema.or(z.literal('')),
 });
 
 export type NoteSchema = z.infer<typeof noteSchema>;

@@ -1,5 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { cn } from '@styles';
+import { post } from '@utils';
 import { useForm } from 'react-hook-form';
 import {
     resetPasswordSchema,
@@ -17,22 +18,34 @@ import { Input } from '../input/input';
 
 export type ResetPasswordProps = React.ComponentPropsWithoutRef<'form'> & {
     submit?: (values: ResetPasswordSchema) => Promise<void>;
+    token?: string;
 };
 
 export const ResetPassword: React.FC<ResetPasswordProps> = ({
     submit,
+    token,
     ...props
 }) => {
     const form = useForm<ResetPasswordSchema>({
         resolver: zodResolver(resetPasswordSchema),
         defaultValues: {
             password: '',
+            confirmPassword: '',
         },
     });
 
     const onSubmit = async (values: ResetPasswordSchema) => {
         if (submit) {
             return submit(values);
+        }
+        if (values.password !== values.confirmPassword) {
+            alert('Die Passwörter stimmen nicht überein!');
+        }
+
+        try {
+            await post(`/auth/reset-password:${token}`, values);
+        } catch (e) {
+            console.log(e);
         }
     };
     return (

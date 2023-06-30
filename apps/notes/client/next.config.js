@@ -2,6 +2,9 @@
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { composePlugins, withNx } = require('@nx/next');
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+    enabled: process.env.ANALYZE === 'true',
+});
 
 /**
  * @type {import('@nx/next/plugins/with-nx').WithNxOptions}
@@ -14,6 +17,7 @@ const nextConfig = {
         svgr: false,
     },
     output: 'standalone',
+    optimizeFonts: true,
     async rewrites() {
         return [
             {
@@ -31,6 +35,10 @@ const nextConfig = {
             {
                 source: '/api/auth/send-email',
                 destination: 'http://server:3000/api/auth/send-email',
+            },
+            {
+                source: '/api/auth/reset-password/:path*',
+                destination: 'http://server:3000/api/auth/reset-password/:path*',
             },
             {
                 source: '/api/auth/session',
@@ -64,6 +72,7 @@ const nextConfig = {
 const plugins = [
     // Add more Next.js plugins to this list if needed.
     withNx,
+    withBundleAnalyzer,
 ];
 
 module.exports = composePlugins(...plugins)(nextConfig);

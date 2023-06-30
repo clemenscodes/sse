@@ -3,7 +3,8 @@ import {
     Controller,
     Get,
     HttpCode,
-    HttpStatus, Param,
+    HttpStatus,
+    Param,
     Post,
     Res,
 } from '@nestjs/common';
@@ -65,9 +66,14 @@ export class AuthController {
 
     @Public()
     @Post('send-email')
-    async send_email(
-    ){
-        return await this.authService.send_email()
+    async send_email(@Body() { email }) {
+        return await this.authService.send_email(email);
+    }
+
+    @Public()
+    @Post('reset-password/:token')
+    async passwordReset(@Param('token') token , @Body() { password, confirmPassword }) {
+        return await this.authService.reset_password(token, password, confirmPassword);
     }
 
     @Get('session')

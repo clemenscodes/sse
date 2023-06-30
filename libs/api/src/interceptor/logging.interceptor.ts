@@ -9,24 +9,28 @@ import { Observable, tap } from 'rxjs';
 
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {
+    private readonly logger = new Logger(LoggingInterceptor.name);
     intercept(
         context: ExecutionContext,
         next: CallHandler
     ): Observable<unknown> {
         const now = Date.now();
         const req = context.switchToHttp().getRequest();
-        const { rawHeaders, url, method, body: unparsedBody } = req;
-        Logger.log(`Processing Request: ${method} ${url}`);
-        Logger.log(`Headers: ${JSON.stringify(rawHeaders)}`);
+        const { url, method, body: unparsedBody } = req;
+        this.logger.debug(`${method} ${url}`);
         if ('password' in unparsedBody) {
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const { password, ...body } = unparsedBody;
-            Logger.log(`Body: ${JSON.stringify(body)}`);
+            this.logger.debug(`Body: ${JSON.stringify(body)}`);
         } else {
-            Logger.log(`Body: ${JSON.stringify(unparsedBody)}`);
+            this.logger.debug(`Body: ${JSON.stringify(unparsedBody)}`);
         }
         return next
             .handle()
-            .pipe(tap(() => Logger.log(`Processed in ${Date.now() - now} ms`)));
+            .pipe(
+                tap(() =>
+                    this.logger.log(`Processed in ${Date.now() - now} ms`)
+                )
+            );
     }
 }

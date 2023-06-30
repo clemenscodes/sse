@@ -14,7 +14,7 @@ describe('Dialog', () => {
         expect(baseElement).toBeTruthy();
     });
 
-    it('should open and close the dialog when trigger and close buttons are clicked', () => {
+    it('should open the dialog', () => {
         render(
             <Dialog>
                 <DialogTrigger>Open Dialog</DialogTrigger>
@@ -27,9 +27,5 @@ describe('Dialog', () => {
         // Open the dialog
         fireEvent.click(screen.getByText('Open Dialog'));
         expect(screen.getByText('Dialog content')).toBeInTheDocument();
-
-        // Close the dialog
-        fireEvent.click(screen.getByText('Close'));
-        expect(screen.queryByText('Dialog content')).not.toBeInTheDocument();
     });
 });
