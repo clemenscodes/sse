@@ -6,11 +6,15 @@ import {
     UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { type User } from '@prisma/api';
+import { VerificationToken, type User } from '@prisma/api';
 import { type UserSession } from '@types';
-import type { LoginSchema, UserSchema } from '@utils';
+import type {
+    ForgotPasswordSchema,
+    LoginSchema,
+    ResetPasswordSchema,
+    UserSchema,
+} from '@utils';
 import { Response } from 'express';
-import * as jwt from 'jsonwebtoken';
 import * as nodemailer from 'nodemailer';
 import { IS_PUBLIC_KEY } from '../../decorator/public.decorator';
 import { CookieService } from '../cookie/cookie.service';
@@ -19,7 +23,7 @@ import { JwtService } from '../jwt/jwt.service';
 import { RefreshTokenService } from '../refresh-token/refresh-token.service';
 import { SessionService } from '../session/session.service';
 import { UserService } from '../user/user.service';
-import {VerificationTokenService} from "../verification-token/verification-token.service";
+import { VerificationTokenService } from '../verification-token/verification-token.service';
 
 @Injectable()
 export class AuthService {
@@ -31,7 +35,7 @@ export class AuthService {
         private readonly hashService: HashService,
         private readonly jwtService: JwtService,
         private readonly reflector: Reflector,
-        private readonly verificationTokenService: VerificationTokenService,
+        private readonly verificationTokenService: VerificationTokenService
     ) {}
 
     async register(
@@ -140,7 +144,8 @@ export class AuthService {
         return { id, username };
     }
 
-    async send_email(email: string) {
+    async send_email(payload: ForgotPasswordSchema) {
+        const { email } = payload;
         const transporter = nodemailer.createTransport({
             host: 'mailhog',
             port: 1025,
@@ -149,7 +154,9 @@ export class AuthService {
         if (!old_user) {
             console.log('User does not exist');
         }
-        const resetToken = this.verificationTokenService.createToken(old_user.id);
+        const resetToken = this.verificationTokenService.createToken(
+            old_user.id
+        );
 
         const resetLink = `http://localhost:4200/reset-password/${resetToken}`;
 
@@ -174,9 +181,15 @@ export class AuthService {
         });
     }
 
-    async reset_password(token, password, confirmPassword) {
-
-        const data = this.verificationTokenService.findByVerificationToken(token)
-        this.userService.updatePassword(data.userId, password);
+    async reset_password(
+        token: VerificationToken['token'],
+        payload: ResetPasswordSchema
+    ) {
+        const data =
+            await this.verificationTokenService.findByVerificationToken(token);
+        if (!data) {
+            throw new InternalServerErrorException('No data found');
+        }
+        this.userService.updatePassword(data.userId, payload);
     }
 }

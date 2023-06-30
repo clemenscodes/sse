@@ -8,9 +8,13 @@ import {
     Post,
     Res,
 } from '@nestjs/common';
-import { User } from '@prisma/api';
+import { User, VerificationToken } from '@prisma/api';
 import type { Auth } from '@types';
-import { type LoginSchema } from '@utils';
+import {
+    ForgotPasswordSchema,
+    ResetPasswordSchema,
+    type LoginSchema,
+} from '@utils';
 import { Response } from 'express';
 import { SignedCookies } from '../../decorator/cookies.decorator';
 import { Public } from '../../decorator/public.decorator';
@@ -66,14 +70,17 @@ export class AuthController {
 
     @Public()
     @Post('send-email')
-    async send_email(@Body() { email }) {
-        return await this.authService.send_email(email);
+    async send_email(@Body() payload: ForgotPasswordSchema) {
+        return await this.authService.send_email(payload);
     }
 
     @Public()
     @Post('reset-password/:token')
-    async passwordReset(@Param('token') token , @Body() { password, confirmPassword }) {
-        return await this.authService.reset_password(token, password, confirmPassword);
+    async passwordReset(
+        @Param('token') token: VerificationToken['token'],
+        @Body() payload: ResetPasswordSchema
+    ) {
+        return await this.authService.reset_password(token, payload);
     }
 
     @Get('session')

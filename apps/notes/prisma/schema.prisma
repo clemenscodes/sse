@@ -18,9 +18,9 @@ enum Role {
 }
 
 model User {
-    id            String        @id @default(cuid())
-    username      String        @unique
-    email         String        @unique
+    id            String             @id @default(cuid())
+    username      String             @unique
+    email         String             @unique
     emailVerified DateTime?
     password      String
     salt          Bytes
@@ -87,9 +87,8 @@ model Account {
 
 // Used with email verification
 model VerificationToken {
-    identifier String
-    token      String   @unique
-    expires    DateTime
-
-    @@unique([identifier, token])
+    expires DateTime
+    token   String   @unique
+    userId  String   @unique
+    user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

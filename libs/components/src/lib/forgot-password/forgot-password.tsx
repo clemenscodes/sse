@@ -1,13 +1,8 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { cn } from '@styles';
-import { Auth } from '@types';
-import { post, RegisterSchema } from '@utils';
+import { forgotPasswordSchema, ForgotPasswordSchema, post } from '@utils';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
-import {
-    forgotPasswordSchema,
-    type ForgotPasswordSchema,
-} from '../../../../utils/src/lib/models/forgotPasswordSchema';
 import { Button } from '../button/button';
 import {
     Form,

@@ -1,35 +1,41 @@
-import { Injectable } from '@nestjs/common';
-import {SessionService} from "../session/session.service";
-import {PrismaService} from "../prisma/prisma.service";
-import {data} from "autoprefixer";
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { User, VerificationToken } from '@prisma/api';
+import { fromDate } from '@utils';
+import { PrismaService } from '../prisma/prisma.service';
+import { SessionService } from '../session/session.service';
 
 @Injectable()
 export class VerificationTokenService {
-    constructor(private readonly sessionService: SessionService,
-                private readonly prismaService: PrismaService) {
-    }
+    constructor(
+        private readonly sessionService: SessionService,
+        private readonly prismaService: PrismaService
+    ) {}
 
-    async createToken(userId) {
-        const token= this.sessionService.generateSessionToken();
-
-        this.prismaService.verificationToken.create({
+    public static readonly verificationTokenDefaultTTLms: number =
+        5 * 60 * 1000; // 1 hour
+    async createToken(userId: User['id']) {
+        const token = this.sessionService.generateSessionToken();
+        const expires = fromDate(
+            VerificationTokenService.verificationTokenDefaultTTLms
+        );
+        const data = await this.prismaService.verificationToken.create({
             data: {
                 token,
                 expires,
                 user: { connect: { id: userId } },
             },
         });
-        return token;
+        return data;
     }
 
-    async findByVerificationToken(token) {
-        try{
+    async findByVerificationToken(token: VerificationToken['token']) {
+        try {
             const data = await this.prismaService.verificationToken.findUnique({
-                where: {token},
-            })
+                where: { token },
+            });
             return data;
-        }catch (e) {
-            console.log(e)
+        } catch (e) {
+            throw new InternalServerErrorException('Error happened when looking for verifcation token')
         }
     }
 }

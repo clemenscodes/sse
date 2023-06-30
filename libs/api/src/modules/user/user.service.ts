@@ -5,7 +5,7 @@ import {
     UnauthorizedException,
 } from '@nestjs/common';
 import { Prisma, User } from '@prisma/api';
-import { type UserSchema } from '@utils';
+import type { ResetPasswordSchema, UserSchema } from '@utils';
 import { HashService } from '../hash/hash.service';
 import { PrismaService } from '../prisma/prisma.service';
 
@@ -168,15 +168,16 @@ export class UserService {
         }
     }
 
-    async updatePassword(userId, password, confirmPassword) {
-
+    async updatePassword(userId: User['id'], payload: ResetPasswordSchema) {
+        const { password } = payload;
         const [hashedPassword, salt] = await this.hashService.hashPassword(
             password
         );
         await this.prismaService.user.update({
-            where: {userId},
+            where: { id: userId },
             data: {
                 password: hashedPassword,
+                salt,
             },
         });
     }

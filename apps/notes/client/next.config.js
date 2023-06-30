@@ -38,7 +38,8 @@ const nextConfig = {
             },
             {
                 source: '/api/auth/reset-password/:path*',
-                destination: 'http://server:3000/api/auth/reset-password/:path*',
+                destination:
+                    'http://server:3000/api/auth/reset-password/:path*',
             },
             {
                 source: '/api/auth/session',
