@@ -150,14 +150,10 @@ export class AuthService {
             host: 'mailhog',
             port: 1025,
         });
-        const old_user = await this.userService.findByEmail(email);
-        if (!old_user) {
-            console.log('User does not exist');
-        }
-        const resetToken = this.verificationTokenService.createToken(
-            old_user.id
+        const user = await this.userService.findByEmail(email);
+        const resetToken = await this.verificationTokenService.createToken(
+            user.id
         );
-
         const resetLink = `http://localhost:4200/reset-password/${resetToken}`;
 
         // Beispiel-E-Mail senden

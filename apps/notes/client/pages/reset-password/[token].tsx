@@ -1,6 +1,4 @@
-import { ResetPasswordProps } from '@components';
-import { NotePageProps } from '@types';
-import { getCookies, getNote } from '@utils';
+import type { ResetPasswordPageProps } from '@types';
 import { GetServerSideProps } from 'next';
 import dynamic from 'next/dynamic';
 
@@ -9,7 +7,7 @@ const ResetPasswordPage = dynamic(() =>
 );
 
 export const getServerSideProps: GetServerSideProps<
-    ResetPasswordProps
+    ResetPasswordPageProps
 > = async ({ params }) => {
     if (!params) {
         const error = 'No parameter';

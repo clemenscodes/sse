@@ -24,6 +24,7 @@ services:
         networks:
             - notes
     mailhog:
+        container_name: mailhog
         image: mailhog/mailhog:latest
         restart: always
         ports:

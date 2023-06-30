@@ -18,14 +18,14 @@ export class VerificationTokenService {
         const expires = fromDate(
             VerificationTokenService.verificationTokenDefaultTTLms
         );
-        const data = await this.prismaService.verificationToken.create({
+        await this.prismaService.verificationToken.create({
             data: {
                 token,
                 expires,
                 user: { connect: { id: userId } },
             },
         });
-        return data;
+        return token;
     }
 
     async findByVerificationToken(token: VerificationToken['token']) {
@@ -35,7 +35,9 @@ export class VerificationTokenService {
             });
             return data;
         } catch (e) {
-            throw new InternalServerErrorException('Error happened when looking for verifcation token')
+            throw new InternalServerErrorException(
+                'Error happened when looking for verifcation token'
+            );
         }
     }
 }

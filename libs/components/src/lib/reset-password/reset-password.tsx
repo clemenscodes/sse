@@ -14,7 +14,7 @@ import { Input } from '../input/input';
 
 export type ResetPasswordProps = React.ComponentPropsWithoutRef<'form'> & {
     submit?: (values: ResetPasswordSchema) => Promise<void>;
-    token?: string;
+    token: string;
 };
 
 export const ResetPassword: React.FC<ResetPasswordProps> = ({
@@ -56,6 +56,7 @@ export const ResetPassword: React.FC<ResetPasswordProps> = ({
                         <FormItem className='w-full'>
                             <FormControl>
                                 <Input
+                                    type='password'
                                     placeholder='Password'
                                     {...field}
                                     className='w-full border-2 border-gray-300'
@@ -67,11 +68,12 @@ export const ResetPassword: React.FC<ResetPasswordProps> = ({
                 />
                 <FormField
                     control={form.control}
-                    name='password'
+                    name='confirmPassword'
                     render={({ field }) => (
                         <FormItem className='w-full'>
                             <FormControl>
                                 <Input
+                                    type='password'
                                     placeholder='Confirm Password'
                                     {...field}
                                     className='w-full border-2 border-gray-300'
