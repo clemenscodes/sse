@@ -13,6 +13,21 @@ export class VerificationTokenService {
 
     public static readonly verificationTokenDefaultTTLms: number =
         5 * 60 * 1000; // 1 hour
+
+    async findByUserId(userId: User['id']) {
+        const user = await this.prismaService.verificationToken.findUnique({
+            where: { userId },
+        });
+        return user;
+    }
+
+    async deleteByToken(resetToken: VerificationToken) {
+        const { token } = resetToken;
+        return await this.prismaService.verificationToken.delete({
+            where: { token },
+        });
+    }
+
     async createToken(userId: User['id']) {
         const token = this.sessionService.generateSessionToken();
         const expires = fromDate(

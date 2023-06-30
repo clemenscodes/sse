@@ -151,6 +151,10 @@ export class AuthService {
             port: 1025,
         });
         const user = await this.userService.findByEmail(email);
+        const token = await this.verificationTokenService.findByUserId(user.id);
+        if (token) {
+            await this.verificationTokenService.deleteByToken(token);
+        }
         const resetToken = await this.verificationTokenService.createToken(
             user.id
         );
