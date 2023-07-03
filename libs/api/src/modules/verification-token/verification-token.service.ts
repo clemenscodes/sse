@@ -44,12 +44,16 @@ export class VerificationTokenService {
     async deleteByToken(resetToken: VerificationToken) {
         try {
             const {token} = resetToken;
-            return await this.prismaService.verificationToken.delete({
+            const deletedToken = await this.prismaService.verificationToken.delete({
                 where: {token},
             });
+            if(!deletedToken){
+                throw new NotFoundException('Verification Token not found')
+            }
+            return deletedToken
         } catch (e) {
             throw new InternalServerErrorException(
-                'Error happened while deleting verification token'
+                'Failed to delete Verification Token'
             );
         }
     }
@@ -90,6 +94,9 @@ export class VerificationTokenService {
             const data = await this.prismaService.verificationToken.findUnique({
                 where: { token },
             });
+            if(!data){
+                throw new NotFoundException('User not found')
+            }
             return data;
         } catch (e) {
             throw new InternalServerErrorException(
