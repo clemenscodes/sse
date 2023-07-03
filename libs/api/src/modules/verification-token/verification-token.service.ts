@@ -48,7 +48,7 @@ export class VerificationTokenService {
                 where: {token},
             });
             if(!deletedToken){
-                throw new NotFoundException('Verification Token not found')
+                throw new NotFoundException('Verification Token not found');
             }
             return deletedToken
         } catch (e) {
@@ -95,7 +95,7 @@ export class VerificationTokenService {
                 where: { token },
             });
             if(!data){
-                throw new NotFoundException('User not found')
+                throw new NotFoundException('User not found');
             }
             return data;
         } catch (e) {

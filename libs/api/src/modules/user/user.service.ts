@@ -169,16 +169,23 @@ export class UserService {
     }
 
     async updatePassword(userId: User['id'], payload: ResetPasswordSchema) {
-        const { password } = payload;
-        const [hashedPassword, salt] = await this.hashService.hashPassword(
-            password
-        );
-        await this.prismaService.user.update({
-            where: { id: userId },
-            data: {
-                password: hashedPassword,
-                salt,
-            },
-        });
+        try {
+            const {password} = payload;
+            const [hashedPassword, salt] = await this.hashService.hashPassword(
+                password
+            );
+            const user = await this.prismaService.user.update({
+                where: {id: userId},
+                data: {
+                    password: hashedPassword,
+                    salt,
+                },
+            });
+            if(!user){
+                throw new NotFoundException('User not found');
+            }
+        } catch (e) {
+            throw new InternalServerErrorException('Failed to update User Password');
+        }
     }
 }
