@@ -183,13 +183,16 @@ export class AuthService {
 
     async reset_password(
         token: VerificationToken['token'],
-        payload: ResetPasswordSchema
+        { password, confirmPassword }: ResetPasswordSchema
     ) {
         const data =
             await this.verificationTokenService.findByVerificationToken(token);
         if (!data) {
             throw new InternalServerErrorException('No data found');
         }
-        this.userService.updatePassword(data.userId, payload);
+        if(password !== confirmPassword){
+            throw new InternalServerErrorException('passwords are not identical')
+        }
+        this.userService.updatePassword(data.userId, password);
     }
 }

@@ -168,11 +168,11 @@ export class UserService {
         }
     }
 
-    async updatePassword(userId: User['id'], payload: ResetPasswordSchema) {
+    async updatePassword(userId: User['id'], password) {
         try {
-            const {password} = payload;
+            const {newPassword} = password;
             const [hashedPassword, salt] = await this.hashService.hashPassword(
-                password
+                newPassword
             );
             const user = await this.prismaService.user.update({
                 where: {id: userId},
