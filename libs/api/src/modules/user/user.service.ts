@@ -168,11 +168,13 @@ export class UserService {
         }
     }
 
-    async updatePassword(userId: User['id'], password) {
+    async updatePassword(userId: User['id'], {password, confirmPassword}: ResetPasswordSchema) {
         try {
-            const {newPassword} = password;
+            if(password !== confirmPassword){
+                throw new InternalServerErrorException('password are not identical');
+            }
             const [hashedPassword, salt] = await this.hashService.hashPassword(
-                newPassword
+                password
             );
             const user = await this.prismaService.user.update({
                 where: {id: userId},

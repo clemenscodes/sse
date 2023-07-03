@@ -190,9 +190,6 @@ export class AuthService {
         if (!data) {
             throw new InternalServerErrorException('No data found');
         }
-        if(password !== confirmPassword){
-            throw new InternalServerErrorException('passwords are not identical')
-        }
-        this.userService.updatePassword(data.userId, password);
+        this.userService.updatePassword(data.userId, {password, confirmPassword});
     }
 }

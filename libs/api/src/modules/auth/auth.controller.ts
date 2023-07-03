@@ -81,7 +81,7 @@ export class AuthController {
         @Param('token') token: VerificationToken['token'],
         @Body(new PasswordResetPipe()) { password, confirmPassword }: ResetPasswordSchema,
     ) {
-        return await this.authService.reset_password(token, password, confirmPassword);
+        return await this.authService.reset_password(token, {password, confirmPassword});
     }
 
     @Get('session')
