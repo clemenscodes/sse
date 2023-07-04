@@ -1,9 +1,13 @@
-import {Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException} from '@nestjs/common';
-import { User, VerificationToken } from '@prisma/api';
+import {
+    Injectable,
+    InternalServerErrorException,
+    NotFoundException,
+    UnauthorizedException,
+} from '@nestjs/common';
+import { Prisma, User, VerificationToken } from '@prisma/api';
 import { fromDate } from '@utils';
 import { PrismaService } from '../prisma/prisma.service';
 import { SessionService } from '../session/session.service';
-import {Prisma} from "@prisma/api";
 
 @Injectable()
 export class VerificationTokenService {
@@ -18,15 +22,15 @@ export class VerificationTokenService {
     async findByUserId(userId: User['id']) {
         try {
             const user = await this.prismaService.verificationToken.findUnique({
-                where: {userId},
+                where: { userId },
             });
-            if(!user){
+            if (!user) {
                 throw new UnauthorizedException('Invalid credentials');
             }
             return user;
-        }catch (e) {
+        } catch (e) {
             if (e instanceof Prisma.PrismaClientKnownRequestError) {
-                throw  new InternalServerErrorException(
+                throw new InternalServerErrorException(
                     'Failed to rtrieve User'
                 );
             } else if (e instanceof Prisma.PrismaClientValidationError) {
@@ -43,14 +47,15 @@ export class VerificationTokenService {
 
     async deleteByToken(resetToken: VerificationToken) {
         try {
-            const {token} = resetToken;
-            const deletedToken = await this.prismaService.verificationToken.delete({
-                where: {token},
-            });
-            if(!deletedToken){
+            const { token } = resetToken;
+            const deletedToken =
+                await this.prismaService.verificationToken.delete({
+                    where: { token },
+                });
+            if (!deletedToken) {
                 throw new NotFoundException('Verification Token not found');
             }
-            return deletedToken
+            return deletedToken;
         } catch (e) {
             throw new InternalServerErrorException(
                 'Failed to delete Verification Token'
@@ -64,27 +69,34 @@ export class VerificationTokenService {
             const expires = fromDate(
                 VerificationTokenService.verificationTokenDefaultTTLms
             );
-            const createdData = await this.prismaService.verificationToken.create({
-                data: {
-                    token,
-                    expires,
-                    user: {connect: {id: userId}},
-                },
-            });
-            if(!createdData){
-                throw new InternalServerErrorException('Verification Token registration failed');
+            const createdData =
+                await this.prismaService.verificationToken.create({
+                    data: {
+                        token,
+                        expires,
+                        user: { connect: { id: userId } },
+                    },
+                });
+            if (!createdData) {
+                throw new InternalServerErrorException(
+                    'Verification Token registration failed'
+                );
             }
             return token;
-        }catch (e) {
+        } catch (e) {
             if (
                 e instanceof Prisma.PrismaClientKnownRequestError &&
                 e.code === 'P2002'
             ) {
-                throw new InternalServerErrorException('Verification Token registration failed');
+                throw new InternalServerErrorException(
+                    'Verification Token registration failed'
+                );
             } else if (e instanceof InternalServerErrorException) {
                 throw e;
             } else {
-                throw new InternalServerErrorException('Verification Token registration failed');
+                throw new InternalServerErrorException(
+                    'Verification Token registration failed'
+                );
             }
         }
     }
@@ -94,7 +106,7 @@ export class VerificationTokenService {
             const data = await this.prismaService.verificationToken.findUnique({
                 where: { token },
             });
-            if(!data){
+            if (!data) {
                 throw new NotFoundException('User not found');
             }
             return data;

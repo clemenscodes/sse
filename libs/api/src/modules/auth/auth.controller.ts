@@ -23,7 +23,7 @@ import { UserPipe } from '../user/user.pipe';
 import { UserService } from '../user/user.service';
 import { AuthService } from './auth.service';
 import { LoginPipe } from './login.pipe';
-import {PasswordResetPipe} from "./password-reset.pipe";
+import { PasswordResetPipe } from './password-reset.pipe';
 
 @Controller('auth')
 export class AuthController {
@@ -79,9 +79,13 @@ export class AuthController {
     @Post('reset-password/:token')
     async passwordReset(
         @Param('token') token: VerificationToken['token'],
-        @Body(new PasswordResetPipe()) { password, confirmPassword }: ResetPasswordSchema,
+        @Body(new PasswordResetPipe())
+        { password, confirmPassword }: ResetPasswordSchema
     ) {
-        return await this.authService.reset_password(token, {password, confirmPassword});
+        return await this.authService.reset_password(token, {
+            password,
+            confirmPassword,
+        });
     }
 
     @Get('session')
