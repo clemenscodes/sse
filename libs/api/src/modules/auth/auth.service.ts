@@ -3,6 +3,7 @@ import {
     HttpStatus,
     Injectable,
     InternalServerErrorException,
+    Logger,
     UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
@@ -37,6 +38,8 @@ export class AuthService {
         private readonly reflector: Reflector,
         private readonly verificationTokenService: VerificationTokenService
     ) {}
+
+    private readonly logger = new Logger(AuthService.name);
 
     async register(
         data: UserSchema,
@@ -150,14 +153,34 @@ export class AuthService {
             host: 'mailhog',
             port: 1025,
         });
-        const user = await this.userService.findByEmail(email);
-        const token = await this.verificationTokenService.findByUserId(user.id);
-        if (token) {
-            await this.verificationTokenService.deleteByToken(token);
+
+        let user: Pick<User, 'id'>;
+
+        try {
+            user = await this.userService.findByEmail(email);
+        } catch (e) {
+            this.logger.debug(JSON.stringify(e));
+            return;
         }
-        const resetToken = await this.verificationTokenService.createToken(
-            user.id
-        );
+
+        let token: VerificationToken;
+        let resetToken: VerificationToken['token'] | undefined = undefined;
+
+        try {
+            token = await this.verificationTokenService.findByUserId(user.id);
+            if (token) {
+                await this.verificationTokenService.deleteByToken(token);
+            }
+        } catch (e) {
+            resetToken = await this.verificationTokenService.createToken(
+                user.id
+            );
+        }
+
+        if (!resetToken) {
+            return;
+        }
+
         const resetLink = `http://localhost:4200/reset-password/${resetToken}`;
 
         // Beispiel-E-Mail senden
@@ -169,16 +192,7 @@ export class AuthService {
         };
 
         await transporter.verify();
-        transporter.sendMail(mailOptions, (error, info) => {
-            if (error) {
-                console.error(error);
-            } else {
-                console.log(
-                    'E-Mail wurde erfolgreich gesendet:',
-                    info.response
-                );
-            }
-        });
+        await transporter.sendMail(mailOptions);
     }
 
     async reset_password(
@@ -188,9 +202,7 @@ export class AuthService {
         const valid =
             await this.verificationTokenService.checkVerificationToken(token);
         if (!valid) {
-            throw new InternalServerErrorException(
-                'Der Zurücksetzungslink ist abgelaufen'
-            );
+            throw new UnauthorizedException();
         }
         const data =
             await this.verificationTokenService.findByVerificationToken(token);

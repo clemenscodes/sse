@@ -11,6 +11,7 @@ import { SessionService } from '../session/session.service';
 import { UserService } from '../user/user.service';
 import { VerificationTokenService } from '../verification-token/verification-token.service';
 import { AuthService } from './auth.service';
+import { Logger } from '@nestjs/common';
 
 describe('AuthService', () => {
     let service: AuthService;
@@ -23,6 +24,8 @@ describe('AuthService', () => {
     let jwtService: JwtService;
     let verificationTokenService: VerificationTokenService;
     let prisma: DeepMockProxy<PrismaClient>;
+
+    const logger = mockDeep<Logger>();
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
@@ -59,6 +62,8 @@ describe('AuthService', () => {
             .useValue(mockDeep<PrismaClient>())
             .compile();
 
+        module.useLogger(logger);
+
         service = module.get<AuthService>(AuthService);
         configService = module.get(ConfigService);
         sessionService = module.get(SessionService);
@@ -82,5 +87,6 @@ describe('AuthService', () => {
         expect(jwtService).toBeDefined();
         expect(verificationTokenService).toBeDefined();
         expect(prisma).toBeDefined();
+        expect(logger).toBeDefined();
     });
 });

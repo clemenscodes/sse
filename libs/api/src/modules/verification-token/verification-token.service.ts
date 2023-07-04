@@ -2,7 +2,6 @@ import {
     Injectable,
     InternalServerErrorException,
     NotFoundException,
-    UnauthorizedException,
 } from '@nestjs/common';
 import { Prisma, User, VerificationToken } from '@prisma/api';
 import { fromDate } from '@utils';
@@ -16,30 +15,29 @@ export class VerificationTokenService {
         private readonly prismaService: PrismaService
     ) {}
 
-    public static readonly verificationTokenDefaultTTLms: number =
-        5 * 60 * 1000; // 1 hour
+    public static readonly verificationTokenDefaultTTLms = 5 * 60 * 1000; // 5 minutes
 
     async findByUserId(userId: User['id']) {
         try {
-            const user = await this.prismaService.verificationToken.findUnique({
+            const token = await this.prismaService.verificationToken.findUnique({
                 where: { userId },
             });
-            if (!user) {
-                throw new UnauthorizedException('Invalid credentials');
+            if (!token) {
+                throw new NotFoundException('Token not found');
             }
-            return user;
+            return token;
         } catch (e) {
             if (e instanceof Prisma.PrismaClientKnownRequestError) {
                 throw new InternalServerErrorException(
-                    'Failed to rtrieve User'
+                    'Failed to retrieve token'
                 );
             } else if (e instanceof Prisma.PrismaClientValidationError) {
-                throw new NotFoundException('User not found');
+                throw new NotFoundException('Token not found');
             } else if (e instanceof NotFoundException) {
                 throw e;
             } else {
                 throw new InternalServerErrorException(
-                    'Failed to retrieve user'
+                    'Failed to retrieve token'
                 );
             }
         }

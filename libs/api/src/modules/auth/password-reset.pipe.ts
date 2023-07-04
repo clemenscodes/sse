@@ -6,8 +6,8 @@ export class PasswordResetPipe<T extends ResetPasswordSchema>
     implements PipeTransform<T>
 {
     constructor(public schema = resetPasswordSchema) {}
-    transform(value: T) {
-        this.schema.parse(value);
+    async transform(value: T) {
+        this.schema.parseAsync(value);
         return value;
     }
 }
