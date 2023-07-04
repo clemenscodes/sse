@@ -3,13 +3,20 @@ import {
     HttpStatus,
     Injectable,
     InternalServerErrorException,
+    Logger,
     UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { type User } from '@prisma/api';
+import { VerificationToken, type User } from '@prisma/api';
 import { type UserSession } from '@types';
-import type { LoginSchema, UserSchema } from '@utils';
+import type {
+    ForgotPasswordSchema,
+    LoginSchema,
+    ResetPasswordSchema,
+    UserSchema,
+} from '@utils';
 import { Response } from 'express';
+import * as nodemailer from 'nodemailer';
 import { IS_PUBLIC_KEY } from '../../decorator/public.decorator';
 import { CookieService } from '../cookie/cookie.service';
 import { HashService } from '../hash/hash.service';
@@ -17,6 +24,7 @@ import { JwtService } from '../jwt/jwt.service';
 import { RefreshTokenService } from '../refresh-token/refresh-token.service';
 import { SessionService } from '../session/session.service';
 import { UserService } from '../user/user.service';
+import { VerificationTokenService } from '../verification-token/verification-token.service';
 
 @Injectable()
 export class AuthService {
@@ -27,8 +35,11 @@ export class AuthService {
         private readonly refreshTokenService: RefreshTokenService,
         private readonly hashService: HashService,
         private readonly jwtService: JwtService,
-        private readonly reflector: Reflector
+        private readonly reflector: Reflector,
+        private readonly verificationTokenService: VerificationTokenService
     ) {}
+
+    private readonly logger = new Logger(AuthService.name);
 
     async register(
         data: UserSchema,
@@ -134,5 +145,73 @@ export class AuthService {
             throw new InternalServerErrorException('Failed getting user');
         }
         return { id, username };
+    }
+
+    async send_email(payload: ForgotPasswordSchema) {
+        const { email } = payload;
+        const transporter = nodemailer.createTransport({
+            host: 'mailhog',
+            port: 1025,
+        });
+
+        let user: Pick<User, 'id'>;
+
+        try {
+            user = await this.userService.findByEmail(email);
+        } catch (e) {
+            this.logger.debug(JSON.stringify(e));
+            return;
+        }
+
+        let token: VerificationToken;
+        let resetToken: VerificationToken['token'] | undefined = undefined;
+
+        try {
+            token = await this.verificationTokenService.findByUserId(user.id);
+            if (token) {
+                await this.verificationTokenService.deleteByToken(token);
+            }
+        } catch (e) {
+            resetToken = await this.verificationTokenService.createToken(
+                user.id
+            );
+        }
+
+        if (!resetToken) {
+            return;
+        }
+
+        const resetLink = `http://localhost:4200/reset-password/${resetToken}`;
+
+        // Beispiel-E-Mail senden
+        const mailOptions = {
+            from: 'support@notes.de',
+            to: email,
+            subject: 'Passwort zurücksetzen',
+            html: `<p>Klicken Sie auf den folgenden Link, um Ihr Passwort zurückzusetzen: <a href="${resetLink}">${resetLink}</a></p>`,
+        };
+
+        await transporter.verify();
+        await transporter.sendMail(mailOptions);
+    }
+
+    async reset_password(
+        token: VerificationToken['token'],
+        { password, confirmPassword }: ResetPasswordSchema
+    ) {
+        const valid =
+            await this.verificationTokenService.checkVerificationToken(token);
+        if (!valid) {
+            throw new UnauthorizedException();
+        }
+        const data =
+            await this.verificationTokenService.findByVerificationToken(token);
+        if (!data) {
+            throw new InternalServerErrorException('No data found');
+        }
+        await this.userService.updatePassword(data.userId, {
+            password,
+            confirmPassword,
+        });
     }
 }

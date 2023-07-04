@@ -5,7 +5,7 @@ import {
     UnauthorizedException,
 } from '@nestjs/common';
 import { Prisma, User } from '@prisma/api';
-import { type UserSchema } from '@utils';
+import type { ResetPasswordSchema, UserSchema } from '@utils';
 import { HashService } from '../hash/hash.service';
 import { PrismaService } from '../prisma/prisma.service';
 
@@ -165,6 +165,36 @@ export class UserService {
                     'Failed to retrieve user'
                 );
             }
+        }
+    }
+
+    async updatePassword(
+        userId: User['id'],
+        { password, confirmPassword }: ResetPasswordSchema
+    ) {
+        try {
+            if (password !== confirmPassword) {
+                throw new InternalServerErrorException(
+                    'password are not identical'
+                );
+            }
+            const [hashedPassword, salt] = await this.hashService.hashPassword(
+                password
+            );
+            const user = await this.prismaService.user.update({
+                where: { id: userId },
+                data: {
+                    password: hashedPassword,
+                    salt,
+                },
+            });
+            if (!user) {
+                throw new NotFoundException('User not found');
+            }
+        } catch (e) {
+            throw new InternalServerErrorException(
+                'Failed to update User Password'
+            );
         }
     }
 }

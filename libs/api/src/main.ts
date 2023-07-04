@@ -7,7 +7,6 @@ import helmet from 'helmet';
 import { PasswordFilter } from './filter/password.filter';
 import { YouTubeFilter } from './filter/youtube.filter';
 import { ZodFilter } from './filter/zod.filter';
-import { LoggingInterceptor } from './interceptor/logging.interceptor';
 import { ApiModule } from './modules/api.module';
 
 export async function bootstrap() {
@@ -28,7 +27,6 @@ export async function bootstrap() {
     app.useGlobalFilters(new ZodFilter());
     app.useGlobalFilters(new PasswordFilter());
     app.useGlobalFilters(new YouTubeFilter());
-    app.useGlobalInterceptors(new LoggingInterceptor());
     app.use(cookieParser(secret));
     app.use(
         helmet({

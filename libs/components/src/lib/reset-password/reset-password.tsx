@@ -1,15 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { cn } from '@styles';
-import { IconLogin } from '@tabler/icons-react';
-import { type Auth } from '@types';
-import {
-    getSession,
-    loginSchema,
-    post,
-    useSessionStore,
-    type LoginSchema,
-} from '@utils';
-import Link from 'next/link';
+import { post, ResetPasswordSchema, resetPasswordSchema } from '@utils';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import { Button } from '../button/button';
@@ -23,62 +14,45 @@ import {
 import { Input } from '../input/input';
 import { toast } from '../toast/useToast';
 
-export type LoginFormProps = React.ComponentPropsWithoutRef<'form'> & {
-    submit?: (values: LoginSchema) => Promise<void>;
+export type ResetPasswordProps = React.ComponentPropsWithoutRef<'form'> & {
+    submit?: (values: ResetPasswordSchema) => Promise<void>;
+    token?: string;
 };
 
-export const LoginForm: React.FC<LoginFormProps> = ({ submit, ...props }) => {
+export const ResetPassword: React.FC<ResetPasswordProps> = ({
+    submit,
+    token,
+    ...props
+}) => {
     const router = useRouter();
-    const form = useForm<LoginSchema>({
-        resolver: zodResolver(loginSchema),
+    const form = useForm<ResetPasswordSchema>({
+        resolver: zodResolver(resetPasswordSchema),
         defaultValues: {
-            username: '',
             password: '',
+            confirmPassword: '',
         },
     });
 
-    const onSubmit = async (values: LoginSchema) => {
+    const onSubmit = async (values: ResetPasswordSchema) => {
         if (submit) {
             return submit(values);
         }
-        const { data, status } = await post<LoginSchema, Auth>(
-            '/auth/login',
-            values
-        );
-        if (!data || status !== 200) {
-            toast({
-                title: 'Failed logging in',
-                variant: 'destructive',
-            });
-            return null;
-        }
-        const { jwt } = data;
-        if (jwt) {
-            useSessionStore.setState((state) => {
-                return {
-                    ...state,
-                    jwt,
-                };
-            });
-        }
         try {
-            const session = await getSession();
-            useSessionStore.setState((state) => {
-                return { ...state, session };
-            });
-            router.push('/note');
-            toast({
-                title: 'Successfully logged in',
-                description: `Welcome to notes, ${session?.username}`,
-            });
-        } catch {
-            toast({
-                title: 'Failed logging in',
-                variant: 'destructive',
-            });
+            const { status } = await post(
+                `/auth/reset-password/${token}`,
+                values
+            );
+            if (status === 201) {
+                toast({ title: 'Password reset success' });
+                router.push('/login');
+                return;
+            }
+            toast({ title: 'Password reset failure', variant: 'destructive' });
+        } catch (e) {
+            console.log(e);
+            toast({ title: 'Password reset failure', variant: 'destructive' });
         }
     };
-
     return (
         <Form {...form}>
             <form
@@ -88,22 +62,6 @@ export const LoginForm: React.FC<LoginFormProps> = ({ submit, ...props }) => {
                 )}
                 {...props}
             >
-                <FormField
-                    control={form.control}
-                    name='username'
-                    render={({ field }) => (
-                        <FormItem className='w-full'>
-                            <FormControl>
-                                <Input
-                                    placeholder='Username'
-                                    {...field}
-                                    className='w-full border-2 border-gray-300'
-                                />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
                 <FormField
                     control={form.control}
                     name='password'
@@ -121,15 +79,29 @@ export const LoginForm: React.FC<LoginFormProps> = ({ submit, ...props }) => {
                         </FormItem>
                     )}
                 />
-                <Button type='submit' className='w-full' data-testid='Login'>
-                    <IconLogin />
+                <FormField
+                    control={form.control}
+                    name='confirmPassword'
+                    render={({ field }) => (
+                        <FormItem className='w-full'>
+                            <FormControl>
+                                <Input
+                                    type='password'
+                                    placeholder='Confirm Password'
+                                    {...field}
+                                    className='w-full border-2 border-gray-300'
+                                />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <Button type='submit' className='w-full'>
+                    Reset Password
                 </Button>
-                <Link href={'/forgot-password'}>
-                    <p style={{ float: 'right' }}>forgot password?</p>
-                </Link>
             </form>
         </Form>
     );
 };
 
-export default LoginForm;
+export default ResetPassword;

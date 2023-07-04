@@ -21,5 +21,7 @@ export * from './lib/models/passwordSchema';
 export * from './lib/models/usernameSchema';
 export * from './lib/models/registerSchema';
 export * from './lib/models/emailSchema';
+export * from './lib/models/resetPasswordSchema';
+export * from './lib/models/forgotPasswordSchema';
 export * from './lib/models/contentSchema';
 export * from './lib/models/youtubeSchema';

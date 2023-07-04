@@ -1,3 +1,6 @@
+export * from './lib/email-sent/email-sent';
+export * from './lib/reset-password/reset-password';
+export * from './lib/forgot-password/forgot-password';
 export * from './lib/note/note';
 export * from './lib/search/search';
 export * from './lib/create-note/create-note';

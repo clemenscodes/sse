@@ -23,6 +23,15 @@ services:
             dockerfile: apps/notes/prisma/docker/development/Dockerfile
         networks:
             - notes
+    mailhog:
+        container_name: mailhog
+        image: mailhog/mailhog:latest
+        restart: always
+        ports:
+            - '1025:1025'
+            - '8025:8025'
+        networks:
+            - notes
     server:
         container_name: server
         depends_on:

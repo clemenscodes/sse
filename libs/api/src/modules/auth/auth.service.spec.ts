@@ -1,3 +1,4 @@
+import { Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaClient } from '@prisma/api';
@@ -9,6 +10,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { RefreshTokenService } from '../refresh-token/refresh-token.service';
 import { SessionService } from '../session/session.service';
 import { UserService } from '../user/user.service';
+import { VerificationTokenService } from '../verification-token/verification-token.service';
 import { AuthService } from './auth.service';
 
 describe('AuthService', () => {
@@ -20,7 +22,10 @@ describe('AuthService', () => {
     let userService: UserService;
     let hashService: HashService;
     let jwtService: JwtService;
+    let verificationTokenService: VerificationTokenService;
     let prisma: DeepMockProxy<PrismaClient>;
+
+    const logger = mockDeep<Logger>();
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
@@ -34,6 +39,7 @@ describe('AuthService', () => {
                 SessionService,
                 HashService,
                 JwtService,
+                VerificationTokenService,
             ],
         })
             .overrideProvider(ConfigService)
@@ -50,9 +56,13 @@ describe('AuthService', () => {
             .useValue(mockDeep<HashService>())
             .overrideProvider(JwtService)
             .useValue(mockDeep<JwtService>())
+            .overrideProvider(VerificationTokenService)
+            .useValue(mockDeep<VerificationTokenService>())
             .overrideProvider(PrismaService)
             .useValue(mockDeep<PrismaClient>())
             .compile();
+
+        module.useLogger(logger);
 
         service = module.get<AuthService>(AuthService);
         configService = module.get(ConfigService);
@@ -62,6 +72,7 @@ describe('AuthService', () => {
         userService = module.get(UserService);
         hashService = module.get(HashService);
         jwtService = module.get(JwtService);
+        verificationTokenService = module.get(VerificationTokenService);
         prisma = module.get(PrismaService);
     });
 
@@ -74,6 +85,8 @@ describe('AuthService', () => {
         expect(userService).toBeDefined();
         expect(hashService).toBeDefined();
         expect(jwtService).toBeDefined();
+        expect(verificationTokenService).toBeDefined();
         expect(prisma).toBeDefined();
+        expect(logger).toBeDefined();
     });
 });

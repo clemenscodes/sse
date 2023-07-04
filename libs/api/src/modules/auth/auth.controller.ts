@@ -4,12 +4,17 @@ import {
     Get,
     HttpCode,
     HttpStatus,
+    Param,
     Post,
     Res,
 } from '@nestjs/common';
-import { User } from '@prisma/api';
+import { User, VerificationToken } from '@prisma/api';
 import type { Auth } from '@types';
-import { type LoginSchema } from '@utils';
+import {
+    ForgotPasswordSchema,
+    ResetPasswordSchema,
+    type LoginSchema,
+} from '@utils';
 import { Response } from 'express';
 import { SignedCookies } from '../../decorator/cookies.decorator';
 import { Public } from '../../decorator/public.decorator';
@@ -18,6 +23,7 @@ import { UserPipe } from '../user/user.pipe';
 import { UserService } from '../user/user.service';
 import { AuthService } from './auth.service';
 import { LoginPipe } from './login.pipe';
+import { PasswordResetPipe } from './password-reset.pipe';
 
 @Controller('auth')
 export class AuthController {
@@ -61,6 +67,25 @@ export class AuthController {
         @Res({ passthrough: true }) res: Response
     ) {
         return await this.authService.logout(userId, cookies, res);
+    }
+
+    @Public()
+    @Post('send-email')
+    async send_email(@Body() payload: ForgotPasswordSchema) {
+        return await this.authService.send_email(payload);
+    }
+
+    @Public()
+    @Post('reset-password/:token')
+    async passwordReset(
+        @Param('token') token: VerificationToken['token'],
+        @Body(new PasswordResetPipe())
+        { password, confirmPassword }: ResetPasswordSchema
+    ) {
+        return await this.authService.reset_password(token, {
+            password,
+            confirmPassword,
+        });
     }
 
     @Get('session')

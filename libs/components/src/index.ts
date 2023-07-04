@@ -1,3 +1,5 @@
+export * from './lib/reset-password/reset-password';
+export * from './lib/forgot-password/forgot-password';
 export * from './lib/consent/consent';
 export * from './lib/video/video';
 export * from './lib/preview/preview';

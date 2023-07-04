@@ -9,3 +9,5 @@ export * from './lib/pages/login';
 export * from './lib/pages/note';
 export * from './lib/pages/notes';
 export * from './lib/pages/search';
+export * from './lib/pages/forgot-password';
+export * from './lib/pages/reset-password';
