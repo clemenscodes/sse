@@ -1,3 +1,4 @@
+import { Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaClient } from '@prisma/api';
@@ -11,7 +12,6 @@ import { SessionService } from '../session/session.service';
 import { UserService } from '../user/user.service';
 import { VerificationTokenService } from '../verification-token/verification-token.service';
 import { AuthService } from './auth.service';
-import { Logger } from '@nestjs/common';
 
 describe('AuthService', () => {
     let service: AuthService;

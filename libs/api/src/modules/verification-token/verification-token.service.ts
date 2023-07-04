@@ -19,9 +19,11 @@ export class VerificationTokenService {
 
     async findByUserId(userId: User['id']) {
         try {
-            const token = await this.prismaService.verificationToken.findUnique({
-                where: { userId },
-            });
+            const token = await this.prismaService.verificationToken.findUnique(
+                {
+                    where: { userId },
+                }
+            );
             if (!token) {
                 throw new NotFoundException('Token not found');
             }
