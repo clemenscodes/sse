@@ -104,4 +104,16 @@ export class VerificationTokenService {
             );
         }
     }
+
+    async checkVerificationToken(token: VerificationToken['token']) {
+        try {
+            const { expires } = await this.findByVerificationToken(token);
+            const sessionTimestamp = expires.getTime();
+            const currentTimestamp = Date.now();
+            const validToken = sessionTimestamp > currentTimestamp;
+            return validToken;
+        } catch (e) {
+            return false;
+        }
+    }
 }

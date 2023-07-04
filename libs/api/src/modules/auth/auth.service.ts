@@ -185,11 +185,15 @@ export class AuthService {
         token: VerificationToken['token'],
         { password, confirmPassword }: ResetPasswordSchema
     ) {
+        const valid = await this.verificationTokenService.checkVerificationToken(token);
+        if (!valid) {
+            throw new InternalServerErrorException('Der Zurücksetzungslink ist abgelaufen')
+        }
         const data =
             await this.verificationTokenService.findByVerificationToken(token);
         if (!data) {
             throw new InternalServerErrorException('No data found');
         }
-        this.userService.updatePassword(data.userId, {password, confirmPassword});
+        await this.userService.updatePassword(data.userId, {password, confirmPassword});
     }
 }
