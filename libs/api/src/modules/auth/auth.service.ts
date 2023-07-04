@@ -187,7 +187,7 @@ export class AuthService {
     ) {
         const valid = await this.verificationTokenService.checkVerificationToken(token);
         if (!valid) {
-            throw new InternalServerErrorException('Der Zurücksetzungslink ist abgelaufen')
+            throw new InternalServerErrorException('Der Zurücksetzungslink ist abgelaufen');
         }
         const data =
             await this.verificationTokenService.findByVerificationToken(token);
