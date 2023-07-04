@@ -9,6 +9,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { RefreshTokenService } from '../refresh-token/refresh-token.service';
 import { SessionService } from '../session/session.service';
 import { UserService } from '../user/user.service';
+import { VerificationTokenService } from '../verification-token/verification-token.service';
 import { AuthService } from './auth.service';
 
 describe('AuthService', () => {
@@ -20,6 +21,7 @@ describe('AuthService', () => {
     let userService: UserService;
     let hashService: HashService;
     let jwtService: JwtService;
+    let verificationTokenService: VerificationTokenService;
     let prisma: DeepMockProxy<PrismaClient>;
 
     beforeEach(async () => {
@@ -34,6 +36,7 @@ describe('AuthService', () => {
                 SessionService,
                 HashService,
                 JwtService,
+                VerificationTokenService,
             ],
         })
             .overrideProvider(ConfigService)
@@ -50,6 +53,8 @@ describe('AuthService', () => {
             .useValue(mockDeep<HashService>())
             .overrideProvider(JwtService)
             .useValue(mockDeep<JwtService>())
+            .overrideProvider(VerificationTokenService)
+            .useValue(mockDeep<VerificationTokenService>())
             .overrideProvider(PrismaService)
             .useValue(mockDeep<PrismaClient>())
             .compile();
@@ -62,6 +67,7 @@ describe('AuthService', () => {
         userService = module.get(UserService);
         hashService = module.get(HashService);
         jwtService = module.get(JwtService);
+        verificationTokenService = module.get(VerificationTokenService);
         prisma = module.get(PrismaService);
     });
 
@@ -74,6 +80,7 @@ describe('AuthService', () => {
         expect(userService).toBeDefined();
         expect(hashService).toBeDefined();
         expect(jwtService).toBeDefined();
+        expect(verificationTokenService).toBeDefined();
         expect(prisma).toBeDefined();
     });
 });
