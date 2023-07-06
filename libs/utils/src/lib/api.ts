@@ -7,6 +7,10 @@ export const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
+    if (process.title !== 'browser') {
+        return config;
+    }
+
     config.withCredentials = true;
     const { jwt } = useSessionStore.getState();
 

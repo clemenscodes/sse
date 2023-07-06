@@ -22,7 +22,6 @@ export const useSessionStore = create<SessionStore>()(
             {
                 name: 'session-store',
             }
-        ),
-        { enabled: process.env['NODE_ENV'] === 'development' }
+        )
     )
 );

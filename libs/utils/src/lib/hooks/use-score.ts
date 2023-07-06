@@ -17,7 +17,6 @@ export const useScoreStore = create<ScoreStore>()(
             {
                 name: 'score-store',
             }
-        ),
-        { enabled: process.env['NODE_ENV'] === 'development' }
+        )
     )
 );
