@@ -1,0 +1,45 @@
+---
+slug: /features/note
+label: Features
+sidebar_position: 5
+---
+
+# Notizen
+
+Nach erfolgreicher Anmeldung ist die Kernfunktionalität der Anwendung nun verfügbar.
+
+## Notizen erstellen
+
+Notizen können nun mit Markdown oder HTML erstellt werden.
+Es steht zusätzlich eine Vorschau der Notiz zur Verfügung.
+
+### Sicherheitsmaßnahmen
+
+-   Die Eingabe im Formular zum Erstellen der Notizen wird mit zod validert
+-   Nur angemeldete Benutzer können Notizen erstellen
+-   Beim Erstellen wird die Benutzer-ID aus der Session entnommen und die Notiz mit dem Benutzer assoziiert
+-   Jeglicher Inhalt der Notiz wird zunächst mit der Biblithek Showdown von Markdown zu HTML geparst
+-   Dabei besteht das Risiko für `XSS`, welches mit einer weiteren anschließenden Parsung durch isomorphic-dompurify bereinigt wird
+-   Sowie im Client als auch auf dem Server wird der Payload Pipes geparst bevor die Route zum Erstellen der Notizen überhaupt erst aufgerufen wird
+
+## YouTube-Video als Anhang der Notiz
+
+Es ist möglich der Notiz ein YouTube-Video anzuhängen. Dafür wird der Link zu dem Video in ein Eingabefeld eingegeben.
+
+### Sicherheitsmaßnahmen
+
+Dieses Eingabefeld transformiert die Eingabe nun mit Hilfe von zod zu einer YouTube-Video-ID
+welche mit einem regulären Ausdruck `([-_A-Za-z0-9]{10}[AEIMQUYcgkosw048])` gefiltert werden.
+Beim Erstellen der Notiz wird die YouTube-Video-ID an das Backend mitgesendet, wo wie gewohnt erneut strikt validiert wird.
+Zusätzlich wird im Backend allerdings die YouTube-ID genommen und eine Anfrage an YouTube mit dieser an `https://img.youtube.com/vi/${parsedVideoId}/default.jpg`
+gesendet. Dies birgt das Risiko für `Serverside-Request-Forgery`, wird allerdings durch die strikte vorherige Validierung und Parsung mitigiert.
+Die Anfrage an YouTube erfolgt, um sicherstellen, dass die Video-ID auch zu einem YouTube-Video gehört. Falls dem so ist, ist der Statuscode 200, falls nicht, nicht.
+Im Fehlerfall wird die Anfrage zurückgewiesen und im Client eine Fehlermeldung angezeigt.
+Somit kann deterministisch festgestellt werden, ob das Video der Notiz angehangen werden kann.
+Ist die Video-ID gültig, wird diese mit der Notiz assoziiert.
+Im Client kann nun diese Video-ID aus der Notiz abgefragt werden und eine korrekte URL zu dem YouTube-Video konstruiert werden.
+
+### Datenschutz
+
+Um den Datenschutz zu gewährleisten wird für das Einbinden von YouTube-Videos die Zwei-Klick-Methode implementiert.
+Jegliches Video muss zunächst mit einem Klick bestätigt werden, bevor das Video in den DOM eingebunden wird. Der Nutzer erklärt sich somit einverstanden.

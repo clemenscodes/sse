@@ -1,0 +1,20 @@
+---
+slug: /features/search
+label: Features
+sidebar_position: 5
+---
+
+# Suche
+
+Als angemeldeter Nutzer kann man durch das gleichzeitige Drücken von Strg + k die Suche aufrufen.
+Alternativ über den Knopf in der Navigationsleiste.
+In dem erscheinenden Eingabefeld kann nun ein Text eingegeben werden, um öffentliche Notizen zu suchen, die diesen Text beinhalten.
+Der eingebene Suchbegriff wird im Client auf der Seite und in der URL als Query-Parameter angezeigt.
+Sind keine Notizen mit dem Inhalt vorhanden, wird dies im Client angezeigt. Ansonsten werden die Notizen in einer Liste angezeigt.
+Bei Klick auf einer Notiz kann man sich die Notiz auf der Notizseite ansehen.
+
+## Sicherheitsmaßnahmen
+
+-   Das Eingabefeld wird mit zod abgesichert
+-   Die Eingabe wird mit Reacts eingebauten Textparser zu einem String geparst und im Client angezeigt
+-   Der Parameter der URL wird mit isomorphic-dompurify und showdown geparst und gegen XSS abgesichert
