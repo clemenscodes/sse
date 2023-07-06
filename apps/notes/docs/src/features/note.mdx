@@ -25,6 +25,9 @@ Es steht zusätzlich eine Vorschau der Notiz zur Verfügung.
 ## YouTube-Video als Anhang der Notiz
 
 Es ist möglich der Notiz ein YouTube-Video anzuhängen. Dafür wird der Link zu dem Video in ein Eingabefeld eingegeben.
+
+### Sicherheitsmaßnahmen
+
 Dieses Eingabefeld transformiert die Eingabe nun mit Hilfe von zod zu einer YouTube-Video-ID
 welche mit einem regulären Ausdruck `([-_A-Za-z0-9]{10}[AEIMQUYcgkosw048])` gefiltert werden.
 Beim Erstellen der Notiz wird die YouTube-Video-ID an das Backend mitgesendet, wo wie gewohnt erneut strikt validiert wird.
