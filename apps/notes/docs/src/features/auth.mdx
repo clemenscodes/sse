@@ -5,3 +5,176 @@ sidebar_position: 4
 ---
 
 # Autorisierung
+
+Autorisierung erfolgt über Cookies und JWT Tokens.
+Jegliche Anfragen an das Backend mit Ausnahme der Anmeldung, Registrierung und Passwort vergessen Funktionalität werden durch Autorisierungsguards geschützt.
+Damit eine Anfrage an den Controller kommt, muss entweder ein Gültiger JWT, Session-Cookie oder Auffrischungs-Cookie mitgesendet werden.
+Zusätzlich gibt es rollenbasierte Autorisierung. Nutzer haben die Rolle "USER".
+Bei den Endpunkten in der Anwendung ist es möglich Administrationsendpunkte zu kennzeichnen, die nur von Administratoren aufgerufen werden können.
+Administrationsfunktionalität wurde nicht implementiert.
+
+## Allgemeine Sicherheitsmechanismen
+
+- Security Middleware setzt Security Header bei jeder Response
+
+```typescript
+import { Injectable, NestMiddleware } from '@nestjs/common';
+import { NextFunction, Request, Response } from 'express';
+
+@Injectable()
+export class SecurityMiddleware implements NestMiddleware {
+    use(req: Request, res: Response, next: NextFunction) {
+        res.setHeader('Content-Security-Policy', "default-src 'self'");
+        res.setHeader('X-Content-Type-Options', 'nosniff');
+        res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+        res.setHeader(
+            'Strict-Transport-Security',
+            'max-age=31536000; includeSubDomains'
+        );
+        res.setHeader('Referrer-Policy', 'no-referrer');
+        next();
+    }
+}
+```
+
+- Globale `ZodFilter`, `PasswordFilter` und `YouTubeFilter` fangen jegliche Exception und behandeln sie entsprechend
+- `CORS` erlaubt nur Anfragen von definiertem Frontend und wenige HTTP-Methoden
+- Cookies werden mit `cookie-parser` geparst
+- Weitere Security Headers und `Content-Security-Policy` wird mit `helmet` konfiguriert
+
+```typescript
+import { Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { NestFactory } from '@nestjs/core';
+import { NestExpressApplication } from '@nestjs/platform-express';
+import cookieParser from 'cookie-parser';
+import helmet from 'helmet';
+import { PasswordFilter } from './filter/password.filter';
+import { YouTubeFilter } from './filter/youtube.filter';
+import { ZodFilter } from './filter/zod.filter';
+import { ApiModule } from './modules/api.module';
+
+export async function bootstrap() {
+    const app = await NestFactory.create<NestExpressApplication>(ApiModule);
+    const configService = app.get(ConfigService);
+    const globalPrefix = 'api';
+    const host = '0.0.0.0';
+    const port = configService.get<number>('PORT') || 3000;
+    const frontend_url = configService.get<string>('FRONTEND_URL');
+    const secret = configService.get<string>('SECRET');
+    app.enableCors({
+        credentials: true,
+        methods: ['GET', 'POST'],
+        allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
+        origin: frontend_url || 'http://localhost:4200',
+    });
+    app.setGlobalPrefix(globalPrefix);
+    app.useGlobalFilters(new ZodFilter());
+    app.useGlobalFilters(new PasswordFilter());
+    app.useGlobalFilters(new YouTubeFilter());
+    app.use(cookieParser(secret));
+    app.use(
+        helmet({
+            contentSecurityPolicy: {
+                directives: {
+                    imgSrc: [`'self'`],
+                    scriptSrc: [`'self'`],
+                    manifestSrc: [`'self'`],
+                    frameSrc: [`'self'`],
+                },
+            },
+        })
+    );
+    await app.listen(port);
+    Logger.log(
+        `🚀 Application is running on: http://${host}:${port}/${globalPrefix}`
+    );
+}
+```
+
+- Globaler Konfigurationsservice
+- Globales Throttling (10 Anfragen pro Minute)
+- Globale Rollenbasierte Autorisierung
+- Gloable JWT und Session Autorisierung
+
+```typescript
+import {
+    Global,
+    Logger,
+    MiddlewareConsumer,
+    Module,
+    ModuleMetadata,
+    NestModule,
+} from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { SecurityMiddleware } from '../middleware/security.middleware';
+import { AccountModule } from './account/account.module';
+import { AuthModule } from './auth/auth.module';
+import { RolesGuard } from './auth/roles.guard';
+import { CookieModule } from './cookie/cookie.module';
+import { HashModule } from './hash/hash.module';
+import { JwtGuard } from './jwt/jwt.guard';
+import { JwtModule } from './jwt/jwt.module';
+import { NoteModule } from './note/note.module';
+import { PrismaModule } from './prisma/prisma.module';
+import { RefreshTokenModule } from './refresh-token/refresh-token.module';
+import { SessionModule } from './session/session.module';
+import { UserModule } from './user/user.module';
+import { VerificationTokenModule } from './verification-token/verification-token.module';
+
+const modules: ModuleMetadata['imports'] = [
+    ConfigModule.forRoot({
+        cache: true,
+        isGlobal: true,
+        expandVariables: true,
+        envFilePath: ['.env', '.env.skeleton'],
+    }),
+    ThrottlerModule.forRootAsync({
+        imports: [ConfigModule],
+        inject: [ConfigService],
+        useFactory: (config: ConfigService) => ({
+            ttl: config.get('THROTTLE_TTL'),
+            limit: config.get('THROTTLE_LIMIT'),
+        }),
+    }),
+    PrismaModule,
+    UserModule,
+    NoteModule,
+    AuthModule,
+    SessionModule,
+    RefreshTokenModule,
+    VerificationTokenModule,
+    AccountModule,
+    CookieModule,
+    JwtModule,
+    HashModule,
+];
+
+@Global()
+@Module({
+    imports: [...modules],
+    exports: [...modules],
+    providers: [
+        {
+            provide: APP_GUARD,
+            useClass: JwtGuard,
+        },
+        {
+            provide: APP_GUARD,
+            useClass: RolesGuard,
+        },
+        {
+            provide: APP_GUARD,
+            useClass: ThrottlerGuard,
+        },
+        Logger,
+    ],
+})
+export class ApiModule implements NestModule {
+    configure(consumer: MiddlewareConsumer) {
+        consumer.apply(SecurityMiddleware).forRoutes('*');
+    }
+}
+```
