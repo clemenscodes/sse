@@ -66,3 +66,16 @@ Dieses Verfahren macht es unmöglich die Passwörter der Benutzer zu Bruteforcen
 Somit sind die Benutzeraccounts sicher.
 
 Nach der Erstellung des Benutzers ist die Registrierung erfolgt und man wird automatisch eingeloggt durch das Loginverfahren.
+
+## Sicherheitsmaßnahmen
+
+### Nichteindeutige Fehlermeldungen
+
+Sollte eine bereits vorhandene E-Mail oder Benutzername verwendet werden, wird lediglich eine nicht-eindeutige Fehlermeldung gesendet.
+Registrierung fehlgeschlagen.
+Dies verhindert Kenntnisse über die Benutzerbasis zu bekommen.
+
+### Throttling
+
+Um Bruteforcing weiter einzudämmen, wurde Throttling mit Hilfe der von Nest.js bereitgestellten Bibliothek @nestjs/throttler implementiert.
+Man kann pro Minute zehn Anfragen an das Backend schicken. Überschreitet man dieses Limit, wird die Anfrage mit dem Statuscode 429 zurückgewiesen.

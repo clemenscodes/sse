@@ -6,4 +6,56 @@ sidebar_position: 2
 
 # Anmeldung
 
+## Validierung
 
+Für die Anmeldung wird wie schon bei der Registrierung zod für die Datenvalidierung verwendet.
+Es wird sich Benutzername und Passwort angemeldet. Erfolgt eine ungültige Dateneingabe, sei es clientseitig oder serverseitig, erhält man eine Fehlermeldung, die nicht aussagekräftig ist.
+Die Bedingungen für die Datenvalidierung sind die identisch zur Registrierung für den Benutzernamen und das Passwort.
+
+## Überprüfung der Anmeldedaten
+
+Nach Eingabe der gültigen Anmeldedaten wird das Passwort überprüft, indem das Passwort mit dem selben Verfahren gehasht wird und mit dem gespeicherten Hashs des Benutzers verglichen wird.
+Ist der Hash identisch, erfolgt die Erstellung der Session.
+
+## Erstellung der Session
+
+Für die Session wird eine Session-ID mit Hilfe des UUIDv4-Verfahren erstellt.
+Dies garantiert zufällige, nicht-deterministische Session-IDs, um angemeldete Benutzer zu identifizieren.
+Die Session wird in der Datenbank gespeichert und mit einem Benutzer assoziiert.
+Standardmäßig ist eine Session eine Stunde gültig.
+
+Zusätzlich zur Session wird ebenfalls eine Auffrischungssession erstellt und mit dem Benutzer assoziiert,
+welche 30 Tage gültig ist.
+Ist die Session abgelaufen, wird die Auffrischungssession verwendet, und eine neue Session erstellt.
+Nach 30 Tagen muss sich der Benutzer erneut anmelden.
+
+## Erstellung eines JWT
+
+Um die Last der Datenbank zu minimieren, wird zusätzlich Session ein JWT erstellt und mit dem Benutzer assoziiert.
+
+## Sicherheitsmaßnahmen
+
+- Die Session-IDs werden als sichere und signierte HTTP-Only Cookies an das Frontend zurückgesendet
+- Die enthalten die gleiche Gültigkeitsdauer
+- Zusätzlich können die Cookies nur von der selben Domain aus versendet werden
+- Das Signieren der Cookies erfolgt durch einen aus der Umgebung sicher ausgelesenen Schlüssel
+- Die Cookies können nur mit HTTPS versendet werden
+- Der JWT verwendet das Standardhashverfahren SHA-256
+- Der JWT ist ebenfalls nur eine Stunde gültig
+- Der JWT wird mit einem aus der Umgebung sicher ausgelesenen Schlüssel signiert
+
+## Weiteres Vorgehen im Client
+
+Es existieren nun zwei Cookies und ein JWT welche für die Authentifizierung und Autorisierung der Benutzer verwendet werden.
+Diese Cookies und JWTs werden automatisch beim Verwenden der Anwendung in nachfolgenden Anfragen an das Backend verwendet,
+um den Benutzer eine sichere und dennoch angenehme Benutzung der Anwendung zu ermöglichen.
+
+Läuft eine Session aus, bekommt der Nutzer davon nichts mit.
+Auffrischungen der Sessions und der JWTs laufen automatisiert bei jeder Anfrage mit Hilfe von Axios Interceptors ab.
+Der JWT und die Session werden im Client im LocalStorage gespeichert.
+Loggt der Benutzer sich aus, werden alle Cookies und Sessions gelöscht und der LocalStorage komplett geleert.
+
+Als angemeldeter Nutzer ist es nun nicht mehr möglich die Landingseite, Anmeldeseite oder Registrierungsseite aufzurufen
+und man wird auf die Seite zur Erstellung der Notizen weitergeleitet.
+
+Ohne gültige Session oder JWT kann man lediglich die vorher genannten Seiten aufrufen, selbst mit Wissen über die URL.
