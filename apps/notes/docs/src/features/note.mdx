@@ -15,12 +15,12 @@ Es steht zusätzlich eine Vorschau der Notiz zur Verfügung.
 
 ### Sicherheitsmaßnahmen
 
-- Die Eingabe im Formular zum Erstellen der Notizen wird mit zod validert
-- Nur angemeldete Benutzer können Notizen erstellen
-- Beim Erstellen wird die Benutzer-ID aus der Session entnommen und die Notiz mit dem Benutzer assoziiert
-- Jeglicher Inhalt der Notiz wird zunächst mit der Biblithek Showdown von Markdown zu HTML geparst
-- Dabei besteht das Risiko für `XSS`, welches mit einer weiteren anschließenden Parsung durch isomorphic-dompurify bereinigt wird
-- Sowie im Client als auch auf dem Server wird der Payload Pipes geparst bevor die Route zum Erstellen der Notizen überhaupt erst aufgerufen wird
+-   Die Eingabe im Formular zum Erstellen der Notizen wird mit zod validert
+-   Nur angemeldete Benutzer können Notizen erstellen
+-   Beim Erstellen wird die Benutzer-ID aus der Session entnommen und die Notiz mit dem Benutzer assoziiert
+-   Jeglicher Inhalt der Notiz wird zunächst mit der Biblithek Showdown von Markdown zu HTML geparst
+-   Dabei besteht das Risiko für `XSS`, welches mit einer weiteren anschließenden Parsung durch isomorphic-dompurify bereinigt wird
+-   Sowie im Client als auch auf dem Server wird der Payload Pipes geparst bevor die Route zum Erstellen der Notizen überhaupt erst aufgerufen wird
 
 ## YouTube-Video als Anhang der Notiz
 
@@ -43,4 +43,3 @@ Im Client kann nun diese Video-ID aus der Notiz abgefragt werden und eine korrek
 
 Um den Datenschutz zu gewährleisten wird für das Einbinden von YouTube-Videos die Zwei-Klick-Methode implementiert.
 Jegliches Video muss zunächst mit einem Klick bestätigt werden, bevor das Video in den DOM eingebunden wird. Der Nutzer erklärt sich somit einverstanden.
-

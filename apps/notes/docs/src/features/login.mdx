@@ -35,14 +35,14 @@ Um die Last der Datenbank zu minimieren, wird zusätzlich Session ein JWT erstel
 
 ## Sicherheitsmaßnahmen
 
-- Die Session-IDs werden als sichere und signierte HTTP-Only Cookies an das Frontend zurückgesendet
-- Diese Cookies enthalten die gleiche Gültigkeitsdauer
-- Zusätzlich können die Cookies nur von der selben Domain aus versendet werden
-- Das Signieren der Cookies erfolgt durch einen aus der Umgebung sicher ausgelesenen Schlüssel
-- Die Cookies können nur mit HTTPS versendet werden
-- Der JWT verwendet das Standardhashverfahren SHA-256
-- Der JWT ist ebenfalls nur eine Stunde gültig
-- Der JWT wird mit einem aus der Umgebung sicher ausgelesenen Schlüssel signiert
+-   Die Session-IDs werden als sichere und signierte HTTP-Only Cookies an das Frontend zurückgesendet
+-   Diese Cookies enthalten die gleiche Gültigkeitsdauer
+-   Zusätzlich können die Cookies nur von der selben Domain aus versendet werden
+-   Das Signieren der Cookies erfolgt durch einen aus der Umgebung sicher ausgelesenen Schlüssel
+-   Die Cookies können nur mit HTTPS versendet werden
+-   Der JWT verwendet das Standardhashverfahren SHA-256
+-   Der JWT ist ebenfalls nur eine Stunde gültig
+-   Der JWT wird mit einem aus der Umgebung sicher ausgelesenen Schlüssel signiert
 
 ## Weiteres Vorgehen im Client
 

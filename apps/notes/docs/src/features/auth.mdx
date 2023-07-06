@@ -15,7 +15,7 @@ Administrationsfunktionalität wurde nicht implementiert.
 
 ## Allgemeine Sicherheitsmechanismen
 
-- Security Middleware setzt Security Header bei jeder Response
+-   Security Middleware setzt Security Header bei jeder Response
 
 ```typescript
 import { Injectable, NestMiddleware } from '@nestjs/common';
@@ -37,10 +37,10 @@ export class SecurityMiddleware implements NestMiddleware {
 }
 ```
 
-- Globale `ZodFilter`, `PasswordFilter` und `YouTubeFilter` fangen jegliche Exception und behandeln sie entsprechend
-- `CORS` erlaubt nur Anfragen von definiertem Frontend und wenige HTTP-Methoden
-- Cookies werden mit `cookie-parser` geparst
-- Weitere Security Headers und `Content-Security-Policy` wird mit `helmet` konfiguriert
+-   Globale `ZodFilter`, `PasswordFilter` und `YouTubeFilter` fangen jegliche Exception und behandeln sie entsprechend
+-   `CORS` erlaubt nur Anfragen von definiertem Frontend und wenige HTTP-Methoden
+-   Cookies werden mit `cookie-parser` geparst
+-   Weitere Security Headers und `Content-Security-Policy` wird mit `helmet` konfiguriert
 
 ```typescript
 import { Logger } from '@nestjs/common';
@@ -92,10 +92,10 @@ export async function bootstrap() {
 }
 ```
 
-- Globaler Konfigurationsservice
-- Globales Throttling (10 Anfragen pro Minute)
-- Globale Rollenbasierte Autorisierung
-- Gloable JWT und Session Autorisierung
+-   Globaler Konfigurationsservice
+-   Globales Throttling (10 Anfragen pro Minute)
+-   Globale Rollenbasierte Autorisierung
+-   Gloable JWT und Session Autorisierung
 
 ```typescript
 import {
