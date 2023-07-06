@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="generator" content="Docusaurus v0.0.0-5614">
 <title data-rh="true">Registrierung | Notes</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="robots" content="noindex, nofollow"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:url" content="https://clemenscodes.github.io/sse/features/registration"><meta data-rh="true" name="docusaurus_locale" content="de"><meta data-rh="true" name="docsearch:language" content="de"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="Registrierung | Notes"><meta data-rh="true" name="description" content="Für die Validierung der Daten im Formular der Registrierung wird clientseitig zod verwendet."><meta data-rh="true" property="og:description" content="Für die Validierung der Daten im Formular der Registrierung wird clientseitig zod verwendet."><link data-rh="true" rel="canonical" href="https://clemenscodes.github.io/sse/features/registration"><link data-rh="true" rel="alternate" href="https://clemenscodes.github.io/sse/features/registration" hreflang="de"><link data-rh="true" rel="alternate" href="https://clemenscodes.github.io/sse/en/features/registration" hreflang="en"><link data-rh="true" rel="alternate" href="https://clemenscodes.github.io/sse/features/registration" hreflang="x-default"><link rel="stylesheet" href="/sse/assets/css/styles.74e2d94d.css">
-<script src="/sse/assets/js/runtime~main.3ac809d0.js" defer="defer"></script>
+<script src="/sse/assets/js/runtime~main.fce74357.js" defer="defer"></script>
 <script src="/sse/assets/js/main.b56c9111.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -54,7 +54,7 @@ Zusätzlich aus dem Salt und dem sicher ausgelesenen Secret wird dann mit HMAC u
 das dann bei Argon2 dem vorher generierten Salt verwendet wird, um das Passwort zu hashen.
 Dieses Verfahren macht es unmöglich die Passwörter der Benutzer zu Bruteforcen, selbst bei Wissen über das Verwendete Hashverfahren.</p>
 <p>Somit sind die Benutzeraccounts sicher.</p>
-<p>Nach der Erstellung des Benutzers ist die Registrierung erfolgt und man wird automatisch eingeloggt durch das Loginverfahren.</p>
+<p>Nach der Erstellung des Benutzers ist die Registrierung erfolgt und man wird automatisch durch das Anmeldeverfahren angemeldet.</p>
 <h2 class="anchor anchorWithStickyNavbar_fMI7" id="sicherheitsmaßnahmen">Sicherheitsmaßnahmen<a href="#sicherheitsmaßnahmen" class="hash-link" aria-label="Direkter Link zur Sicherheitsmaßnahmen" title="Direkter Link zur Sicherheitsmaßnahmen">​</a></h2>
 <h3 class="anchor anchorWithStickyNavbar_fMI7" id="nichteindeutige-fehlermeldungen">Nichteindeutige Fehlermeldungen<a href="#nichteindeutige-fehlermeldungen" class="hash-link" aria-label="Direkter Link zur Nichteindeutige Fehlermeldungen" title="Direkter Link zur Nichteindeutige Fehlermeldungen">​</a></h3>
 <p>Sollte eine bereits vorhandene E-Mail oder Benutzername verwendet werden, wird lediglich eine nicht-eindeutige Fehlermeldung gesendet.
