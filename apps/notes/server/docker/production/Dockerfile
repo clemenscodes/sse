@@ -51,6 +51,7 @@ RUN addgroup --system $APP && \
     adduser --system -G $APP $APP
 
 COPY --from=builder --chown=$APP:$APP /app/dist/$APP_DIR $APP
+COPY --from=builder --chown=$APP:$APP /app/$APP_DIR/.env.skeleton ./
 COPY --from=builder --chown=$APP:$APP /app/node_modules/@prisma ./node_modules/@prisma/
 
 RUN npm --prefix $APP --omit=dev -f install
