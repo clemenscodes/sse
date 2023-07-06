@@ -11,4 +11,8 @@ docker compose up
 
 [Hier](https://clemenscodes.github.io/sse/) auf GitHub Pages mit Hilfe von Docusaurus.
 
-Informationen zum Entwickeln sind [hier](https://github.com/clemenscodes/sse/tree/main/apps/notes).
+Informationen zum Entwickeln sind [hier](https://github.com/clemenscodes/sse/tree/main/assets/project/Abschlussprojekt.pdf).
+
+## Präsentation
+
+Die Präsentation zum Abschlussprojekt befindet sich [hier]()
