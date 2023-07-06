@@ -1,0 +1,28 @@
+---
+slug: /description/setup
+sidebar_position: 4
+---
+
+# Projektaufbau
+
+Das Repository ist ein `Nx` Monorepo.
+Dort sind alle Aufgaben und Ressourcen des gesamten Moduls zu finden und können über die Nx-CLI verwaltet werden.
+
+Projekte befinden sich im Ordner `apps`.
+Das Abschlussprojekt befindet sich im Ordner `apps/notes`.
+Nx ermöglicht das einfache Importieren und Konsumieren von Bibliotheken in den Projekten durch global registrierte Importpfade in der `tsconfig.base.json`.
+Die internen Bibliotheken befinden sich im Ordner `libs`.
+
+Jedes Projekt wird durch Metadaten beschrieben, welche Nx mitteilen, welcher Code zu der Bibliothek oder Anwendung gehört.
+Diese Metadaten werden in der `project.json` angegeben. Es wird außerdem angegeben welche Projekte voneinander abhängen,
+damit rekursive Abhängigkeiten erkannt und verhindert werden können und Treeshaking vorgenommen kann.
+
+Die einzelnen Projekte haben für die Entwicklungsvariante und Produktionsvariante jeweils einen `Dockerfile`.
+
+Das Abschlussprojekt lässt sich mit `Docker Compose` starten.
+
+Weitere Informationen zum Starten und Entwickeln des Projekts befinden sich [hier](https://github.com/clemenscodes/sse/blob/feature/docs/apps/notes/README.md).
+
+
+
+
