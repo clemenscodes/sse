@@ -1,33 +1,14 @@
 # Secure Software Engineering
 
-## Developing
-
-There are two helper scripts which can generate a new component or page in the ```libs/components``` or ```libs/pages``` libraries.
-
-### Creating a new component
+## Abschlussprojekt Schnellstart
 
 ```sh
-yarn component login-button
+git clone git@github.com:clemenscodes/sse.git
+docker compose up
 ```
 
-This will generate the ```LoginButton``` component as ```libs/components/src/login-button/login-button.tsx``` along with ```Jest``` test files and export it from the shared library.
+## Dokumentation
 
-Afterwards, you can use the component in all apps by importing it with:
+[Hier](https://clemenscodes.github.io/sse/) auf GitHub Pages mit Hilfe von Docusaurus.
 
-```ts
-import { LoginButton } from '@components';
-```
-
-### Creating a new page
-
-```sh
-yarn page dashboard
-```
-
-This will generate the ```Dashboard``` page as ```libs/pages/src/dashboard/Dashboard.tsx``` along with ```Jest``` test files and export it from the shared library.
-
-Afterwards, you can use the page in all apps by importing it with:
-
-```ts
-import { Dashboard } from '@pages';
-```
+Informationen zum Entwickeln sind [hier](https://github.com/clemenscodes/sse/tree/main/apps/notes).
