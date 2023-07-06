@@ -1,7 +1,68 @@
 ---
 slug: /features/registration
 label: Features
-sidebar_position: 2
+sidebar_position: 1
 ---
 
 # Registrierung
+
+Für die Validierung der Daten im Formular der Registrierung wird clientseitig zod verwendet.
+Zod ist eine Biblithek um Datenstrukturen mit Hilfe von TypeScript zu definieren und zu validieren.
+Es wird sichergestellt, dass die übergebenen Daten genau dem vorher definierten Datenformat entsprechen.
+Wenn die Daten invalide sind, ist das Formular in einem fehlerhaften Zustand,
+die Fehlermeldung wird im Client angezeigt und es nicht möglich über die Benutzeroberfläche das Formular abzuschicken.
+
+## Datenvalidierung
+
+Für die Registrierung ist die Eingabe eines Benutzernamens, einer E-Mail sowie des Passworts notwendig.
+
+Diese Eingaben unterliegen folgenden Einschränkungen:
+
+### Clientseitige Validierung
+
+#### Benutzername
+
+- Muss zwischen 2 und 20 Zeichen sein
+- Darf nur Groß,- und Kleinbuchstaben enthalten
+- Darf nur Zahlen von 0 bis 9 enthalten
+- Das einzig erlaubte Sonderzeichen ist ein Unterstrich
+
+#### Email
+
+- Muss eine gültige E-Mail sein
+
+#### Passwort
+
+- Muss mindestens 8 Zeichen enthalten
+- Muss mindestens einen kleinen Buchstaben enthalten
+- Muss mindestens einen großen Buchstaben enthalten
+- Muss mindestens eine Zahl enthalten
+- Muss mindestens ein Sonderzeichen enthalten
+- Muss die Überprüfung von zxcvbn-ts überstehen und den maximalen Sicherheitswert 4/4 erreichen
+
+
+Logischerweise muss das Passwort bei der Registrierung auch bestätigt werden und miteinander übereinstimmen.
+
+Treffen all diese Bedingungen zu, kann das Formular an das Backend abgeschickt werden.
+
+### Serverseitige Validierung
+
+Auch serverseitig werden die Daten mit Hilfe von zod validiert. Die Regeln sind dabei die selben wie clientseitig.
+Wird versucht über reine HTTP-Anfragen invalide Daten direkt an das Backend zu senden,
+erhält man einen Statuscode von 406 und eine Erläuterung welche Datenformate erwartet wurden und warum die gesendeten Daten ungültig sind.
+
+## Erstellung des neuen Benutzers
+
+Da sichergestellt wurde, dass die Daten dem erwarteten Datenformat entsprechen, kann nun mit Hilfe von Prisma ein neuer Nutzer angelegt werden.
+
+Das Passwort befindet sich aktuell noch im Klartext und muss sicher gehasht werden.
+Dafür wird die argon2 Bibliothek verwendet. Zunächst wird aus einer Umgebungsvariable ein Secret ausgelesen.
+Danach werden zufällig 128 Bits generiert mit Hilfe der in Node.js eingebauten Methode randomBytes.
+Diese zufälligen Bytes dienen nun als Salt.
+Zusätzlich aus dem Salt und dem sicher ausgelesenen Secret wird dann mit HMAC und dem SHA-512 Hashverfahren ein Secret generiert,
+das dann bei Argon2 dem vorher generierten Salt verwendet wird, um das Passwort zu hashen.
+Dieses Verfahren macht es unmöglich die Passwörter der Benutzer zu Bruteforcen, selbst bei Wissen über das Verwendete Hashverfahren.
+
+Somit sind die Benutzeraccounts sicher.
+
+Nach der Erstellung des Benutzers ist die Registrierung erfolgt und man wird automatisch eingeloggt durch das Loginverfahren.
