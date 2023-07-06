@@ -5,3 +5,22 @@ sidebar_position: 3
 ---
 
 # Struktur des Entwicklungsprozesses
+
+## Git-Flow
+
+Es wird nachdem Git-Flow gearbeitet. Es gibt zwei Hauptbranches.
+
+Der main-Branch ist der Branch, der die deployte und vollständig getestete und unterstütze Version der Anwendung enthält.
+
+Der develop-Branch ist der Branch, der alle getesteten und neuen Features enthält, die jedoch noch nicht releast wurden.
+
+### Feature-Branches
+
+Dann gibt es Feature-Branches, auf denen neue Features isoliert und parallel von allen Teammitgliedern entwickelt und getestet werden.
+Die Feature-Branches widmen sich jeweils einem GitHub-Issue.
+
+Nach Fertigstellung eines Features wird dann ein Pullrequest auf den develop-Branch erstellt und mit der Pipeline sichergestellt,
+dass das neue Feature der Anwendung keine Sicherheitslücken oder ungetesteten Code enthält.
+
+Nach jeder Iteration werden dann regelmäßig die neuen Features von dem develop-Branch per Pullrequest auf den main-Branch releast.
+Läuft die Pipeline fehlerfrei durch, werden alle GitHub Issues, die im Pullrequest als erledigt erwähnt wurden, automatisch geschlossen.

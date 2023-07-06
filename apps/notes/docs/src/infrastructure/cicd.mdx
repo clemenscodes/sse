@@ -5,3 +5,14 @@ sidebar_position: 1
 ---
 
 # CI/CD
+
+Es wird GitHub Actions verwendet. Bei einem Pullrequest oder einem Push auf main wird die Pipeline durchgeführt.
+Die Pipeline umfasst eine Code-Analyse, in der entdeckte Sicherheitsrisiken einen Merge blockieren.
+Außerdem wird die Anwendung umfassend getestet. Zunächst werden alle Dependencies installiert und gecacht,
+damit die Pipeline so effizient und ressourcenschonend wie möglich ist. Es wird überprüft, ob der Code vollständig gemäß Prettier formatiert ist.
+
+Dann werden alle internen Bibliotheken und Anwendungen mit Hilfe von Nx dezentral und parallel gelintet,
+gebaut und getestet, wobei jeweils nur von Änderungen betroffenene Projekte in der Pipeline getestet werden.
+
+Zusätzlich werden die vorhandenen Dependencies regelmäßig und automatisch auf Updates und Sicherheitslücken überprüft.
+Dies geschieht durch Dependabot. Dabei werden regelmäßig Pullrequests erstellt, die die Updates beinhalten.
