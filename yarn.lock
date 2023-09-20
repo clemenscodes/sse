@@ -2822,10 +2822,10 @@
   dependencies:
     md5 "^2.2.1"
 
-"@next/bundle-analyzer@^13.4.6":
-  version "13.4.6"
-  resolved "https://registry.yarnpkg.com/@next/bundle-analyzer/-/bundle-analyzer-13.4.6.tgz#e32d2b3236e984829059791b773bb239970226d6"
-  integrity sha512-HqqQxZ4y71az1TYCKILmJXjjY/645/21q/EUVFCGIzKkST+DrvgcJcBpWwlnI0wAuMRbdxvN1FMi7jSlSUIByw==
+"@next/bundle-analyzer@^13.5.1":
+  version "13.5.1"
+  resolved "https://registry.yarnpkg.com/@next/bundle-analyzer/-/bundle-analyzer-13.5.1.tgz#5858579a2176962b6b02bb03e80c2fe28c47c5c1"
+  integrity sha512-QdH6ktjlnMOfoxXg6GYtz08u0A4067WqoTMAdhm8soMDVy1t9ANo3PY4fPdelER/TU7nw+jSSInXB/Ig9FSxiA==
   dependencies:
     webpack-bundle-analyzer "4.7.0"
 
